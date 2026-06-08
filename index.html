@@ -91,14 +91,15 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .kpi-card.c-amber::before{background:var(--primary);}
 .kpi-card.c-purple::before{background:var(--purple);}
 .kpi-card.c-red::before{background:var(--accent);}
-.kpi-label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.kpi-header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;}
+.kpi-label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;}
 .kpi-value{font-size:28px;font-weight:500;color:var(--text);line-height:1;margin-bottom:8px;font-family:'DM Mono',monospace;}
 .kpi-value.loading{color:var(--text3);font-size:18px;}
 .kpi-delta{font-size:12px;display:flex;align-items:center;gap:4px;}
 .delta-up{color:var(--green);}
 .delta-down{color:var(--accent);}
 .delta-neutral{color:var(--text3);}
-.kpi-source{position:absolute;top:12px;right:12px;font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;}
+.kpi-source{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;white-space:nowrap;flex-shrink:0;}
 
 /* CHARTS */
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem;}
@@ -196,6 +197,50 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .guide-step-list{list-style:none;}
 .guide-step-list li{font-size:12px;color:var(--text2);padding:3px 0;display:flex;gap:8px;}
 .guide-step-list li::before{content:'→';color:var(--primary);flex-shrink:0;}
+
+/* INTELLIGENCE */
+.tab-btn.tab-intel{display:flex;align-items:center;gap:5px;}
+.tab-intel-icon{width:13px;height:13px;flex-shrink:0;}
+.intel-header{background:linear-gradient(135deg,rgba(255,185,42,.08) 0%,rgba(244,91,128,.06) 100%);border:1px solid rgba(255,185,42,.2);border-radius:var(--radius-lg);padding:1.5rem 1.75rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.intel-header-left{display:flex;align-items:center;gap:14px;}
+.intel-spark{width:36px;height:36px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.intel-spark svg{width:18px;height:18px;}
+.intel-title{font-family:'Instrument Serif',serif;font-size:20px;color:var(--text);margin-bottom:2px;}
+.intel-time{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;}
+.intel-summary-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1.5rem;}
+.intel-summary-label{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;}
+.intel-summary-text{font-size:14px;color:var(--text);line-height:1.7;}
+.intel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.5rem;}
+@media(max-width:900px){.intel-grid{grid-template-columns:1fr;}}
+.intel-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;display:flex;flex-direction:column;gap:12px;}
+.intel-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.intel-card-title{font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:7px;}
+.intel-card-icon{font-size:15px;line-height:1;}
+.intel-status{font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.is-strong{background:rgba(22,163,74,.1);color:#15803d;border:1px solid rgba(22,163,74,.2);}
+.is-developing{background:rgba(255,185,42,.12);color:#92600a;border:1px solid rgba(255,185,42,.3);}
+.is-attention{background:rgba(244,91,128,.1);color:#be185d;border:1px solid rgba(244,91,128,.2);}
+.intel-prose{font-size:13px;color:var(--text2);line-height:1.65;}
+.intel-findings{display:flex;flex-direction:column;gap:6px;margin-top:2px;}
+.intel-finding{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--text2);}
+.intel-finding-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.ifd-good{background:var(--green);}
+.ifd-warn{background:var(--primary);}
+.ifd-bad{background:var(--accent);}
+.intel-actions-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1.5rem;}
+.intel-actions-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+.intel-action-list{display:flex;flex-direction:column;gap:8px;}
+.intel-action{display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);}
+.intel-action-num{width:20px;height:20px;border-radius:50%;background:var(--primary);color:#1a1712;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.intel-action-text{font-size:13px;color:var(--text);line-height:1.5;}
+.intel-action-text strong{font-weight:600;}
+.intel-action-text span{display:block;font-size:11px;color:var(--text3);margin-top:2px;}
+.intel-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem 2rem;text-align:center;gap:12px;}
+.intel-empty-icon{font-size:36px;opacity:.4;}
+.intel-empty-title{font-size:16px;font-weight:500;color:var(--text);}
+.intel-empty-sub{font-size:13px;color:var(--text2);max-width:320px;}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.intel-animate{animation:fadeSlideUp .35s ease forwards;}
 
 /* TOAST */
 .notif{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text);max-width:300px;z-index:1000;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;}
@@ -313,17 +358,18 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <button class="tab-btn" onclick="showTab('performance')">Performance</button>
       <button class="tab-btn" onclick="showTab('vitals')">Core Web Vitals</button>
       <button class="tab-btn" onclick="showTab('guide')">Guide</button>
+      <button class="tab-btn tab-intel" onclick="showTab('intelligence')"><svg class="tab-intel-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 2L11.5 7.5H17L12.5 10.5L14 16L10 13L6 16L7.5 10.5L3 7.5H8.5L10 2Z" fill="currentColor" opacity=".9"/></svg>Intelligence</button>
     </div>
 
     <!-- OVERVIEW -->
     <div id="tab-overview">
       <div class="kpi-grid">
-        <div class="kpi-card c-green"><div class="kpi-source">GA4</div><div class="kpi-label">Organic sessions</div><div class="kpi-value loading" id="kpi-sessions">—</div><div class="kpi-delta delta-neutral" id="d-sessions">loading…</div></div>
-        <div class="kpi-card c-blue"><div class="kpi-source">GSC</div><div class="kpi-label">Avg. position</div><div class="kpi-value loading" id="kpi-position">—</div><div class="kpi-delta delta-neutral" id="d-position">lower is better</div></div>
-        <div class="kpi-card c-teal"><div class="kpi-source">GSC</div><div class="kpi-label">Click-through rate</div><div class="kpi-value loading" id="kpi-ctr">—</div><div class="kpi-delta delta-neutral" id="d-ctr">loading…</div></div>
-        <div class="kpi-card c-amber"><div class="kpi-source">PageSpeed</div><div class="kpi-label">Mobile speed score</div><div class="kpi-value loading" id="kpi-speed">—</div><div class="kpi-delta delta-neutral" id="d-speed">0–100</div></div>
-        <div class="kpi-card c-purple"><div class="kpi-source">GA4</div><div class="kpi-label">Bounce rate</div><div class="kpi-value loading" id="kpi-bounce">—</div><div class="kpi-delta delta-neutral" id="d-bounce">loading…</div></div>
-        <div class="kpi-card c-red"><div class="kpi-source">HubSpot</div><div class="kpi-label">New contacts (week)</div><div class="kpi-value loading" id="kpi-conv">—</div><div class="kpi-delta delta-neutral" id="d-conv">loading…</div></div>
+        <div class="kpi-card c-green"><div class="kpi-header"><div class="kpi-label">Organic sessions</div><div class="kpi-source">GA4</div></div><div class="kpi-value loading" id="kpi-sessions">—</div><div class="kpi-delta delta-neutral" id="d-sessions">loading…</div></div>
+        <div class="kpi-card c-blue"><div class="kpi-header"><div class="kpi-label">Avg. position</div><div class="kpi-source">GSC</div></div><div class="kpi-value loading" id="kpi-position">—</div><div class="kpi-delta delta-neutral" id="d-position">lower is better</div></div>
+        <div class="kpi-card c-teal"><div class="kpi-header"><div class="kpi-label">Click-through rate</div><div class="kpi-source">GSC</div></div><div class="kpi-value loading" id="kpi-ctr">—</div><div class="kpi-delta delta-neutral" id="d-ctr">loading…</div></div>
+        <div class="kpi-card c-amber"><div class="kpi-header"><div class="kpi-label">Mobile speed score</div><div class="kpi-source">PageSpeed</div></div><div class="kpi-value loading" id="kpi-speed">—</div><div class="kpi-delta delta-neutral" id="d-speed">0–100</div></div>
+        <div class="kpi-card c-purple"><div class="kpi-header"><div class="kpi-label">Bounce rate</div><div class="kpi-source">GA4</div></div><div class="kpi-value loading" id="kpi-bounce">—</div><div class="kpi-delta delta-neutral" id="d-bounce">loading…</div></div>
+        <div class="kpi-card c-red"><div class="kpi-header"><div class="kpi-label">New contacts (week)</div><div class="kpi-source">HubSpot</div></div><div class="kpi-value loading" id="kpi-conv">—</div><div class="kpi-delta delta-neutral" id="d-conv">loading…</div></div>
       </div>
       <div class="chart-grid">
         <div class="chart-card full">
@@ -474,6 +520,38 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   </div>
 </div>
 
+    <!-- INTELLIGENCE -->
+    <div id="tab-intelligence" style="display:none;">
+      <div id="intel-empty" class="intel-empty">
+        <div class="intel-empty-icon">✦</div>
+        <div class="intel-empty-title">No data to analyze yet</div>
+        <div class="intel-empty-sub">Load data first, then come back here for your intelligence report.</div>
+        <button class="btn-primary" style="margin-top:8px;" onclick="refreshAll()">↻ Load data</button>
+      </div>
+      <div id="intel-content" style="display:none;">
+        <div class="intel-header">
+          <div class="intel-header-left">
+            <div class="intel-spark"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 1L12 8H19L13.5 12L15.5 19L10 15L4.5 19L6.5 12L1 8H8L10 1Z" fill="white"/></svg></div>
+            <div>
+              <div class="intel-title">Intelligence Report</div>
+              <div class="intel-time" id="intel-time">—</div>
+            </div>
+          </div>
+          <button class="btn-sm btn-refresh" onclick="generateIntelligence()">↻ Re-analyze</button>
+        </div>
+        <div class="intel-summary-card intel-animate" id="intel-summary-card">
+          <div class="intel-summary-label">Overall assessment</div>
+          <div class="intel-summary-text" id="intel-summary-text">—</div>
+        </div>
+        <div class="intel-grid">
+          <div class="intel-card intel-animate" id="ic-seo"></div>
+          <div class="intel-card intel-animate" id="ic-performance"></div>
+          <div class="intel-card intel-animate" id="ic-cwv"></div>
+        </div>
+        <div class="intel-actions-card intel-animate" id="ic-actions"></div>
+      </div>
+    </div>
+
 <!-- CWV MODAL -->
 <div class="modal-overlay" id="cwv-modal" onclick="closeCwvModal(event)">
   <div class="modal-box">
@@ -560,7 +638,7 @@ function startDashboard(){
 }
 
 // TABS
-const TABS=['overview','seo','performance','vitals','guide'];
+const TABS=['overview','seo','performance','vitals','guide','intelligence'];
 function showTab(name){
   TABS.forEach(t=>document.getElementById('tab-'+t).style.display=t===name?'':'none');
   document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',TABS[i]===name));
@@ -798,7 +876,7 @@ function cwvStatus(key,num){if(num===null||num===undefined)return'needs';const t
 const CWV_LBL={good:'Good',needs:'Needs work',poor:'Poor'};
 const CWV_CLS={good:'status-good',needs:'status-needs',poor:'status-poor'};
 
-function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs){
+function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,kwRaw){
   if(ga4cur){
     const s=ga4cur.organicSessions||ga4cur.sessions,sp=ga4prev?ga4prev.organicSessions||ga4prev.sessions:null;
     document.getElementById('kpi-sessions').textContent=fmt(s);
@@ -874,6 +952,189 @@ function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs){
   rebuildTrendChart();
   document.getElementById('last-updated').textContent='Updated: '+new Date().toLocaleTimeString();
   updateBenchmarks(gsccur, psi, ga4cur);
+  lastIntelData={gsccur,gscprev,psi,ga4cur,ga4prev,kwRaw:kwRaw||null};
+  generateIntelligence();
+}
+
+// INTELLIGENCE DATA STORE
+let lastIntelData=null;
+
+function generateIntelligence(){
+  const d=lastIntelData;
+  const empty=document.getElementById('intel-empty');
+  const content=document.getElementById('intel-content');
+  if(!d){empty.style.display='flex';content.style.display='none';return;}
+  empty.style.display='none';content.style.display='block';
+
+  const {gsccur,gscprev,psi,ga4cur,ga4prev,kwRaw}=d;
+  const weeks=getData().weeks;
+
+  // ── helpers ──────────────────────────────────────────────
+  function trend(cur,prev,lowerBetter=false){
+    if(!prev||prev===0)return 'stable';
+    const pct=((cur-prev)/Math.abs(prev))*100;
+    if(Math.abs(pct)<3)return 'stable';
+    if(lowerBetter)return pct<0?'improving':'declining';
+    return pct>0?'improving':'declining';
+  }
+  function trendTxt(t){return{improving:'↑ improving',declining:'↓ declining',stable:'→ stable'}[t]||'—';}
+  function statusCls(good,ok){return good?'is-strong':ok?'is-developing':'is-attention';}
+  function statusLbl(good,ok){return good?'Strong':ok?'Developing':'Needs attention';}
+  function finding(dot,text){return`<div class="intel-finding"><div class="intel-finding-dot ${dot}"></div><div>${text}</div></div>`;}
+
+  // ── SEO section ──────────────────────────────────────────
+  let seoHtml='<div class="intel-card-header"><div class="intel-card-title"><span class="intel-card-icon">🔍</span>SEO</div>';
+  const posOk=gsccur&&gsccur.position<=20, posGood=gsccur&&gsccur.position<=10;
+  const ctrOk=gsccur&&gsccur.ctr>=2, ctrGood=gsccur&&gsccur.ctr>=5;
+  const seoGood=posGood&&ctrGood, seoOk=posOk&&ctrOk;
+  seoHtml+=`<div class="intel-status ${statusCls(seoGood,seoOk)}">${statusLbl(seoGood,seoOk)}</div></div>`;
+
+  if(gsccur){
+    const posTrend=gscprev?trend(gsccur.position,gscprev.position,true):'stable';
+    const ctrTrend=gscprev?trend(gsccur.ctr,gscprev.ctr):'stable';
+    const pos=gsccur.position.toFixed(1), ctr=gsccur.ctr.toFixed(1)+'%';
+    const clicks=gsccur.clicks.toLocaleString(), imp=gsccur.impressions.toLocaleString();
+
+    let prose='';
+    if(posGood)prose=`Your average position of ${pos} puts you firmly on the first page of Google results. `;
+    else if(posOk)prose=`An average position of ${pos} means you appear on the second page for most queries — closing in on the first page. `;
+    else prose=`An average position of ${pos} indicates limited first-page visibility. Targeting your top-20 keywords for on-page improvements could move the needle quickly. `;
+
+    if(ctrGood)prose+=`A CTR of ${ctr} is excellent, suggesting your meta titles and descriptions resonate strongly with searchers.`;
+    else if(ctrOk)prose+=`A CTR of ${ctr} is in line with B2B benchmarks. Testing stronger meta titles for high-impression pages could lift it further.`;
+    else prose+=`A CTR of ${ctr} signals room for improvement — review meta titles on your highest-impression pages.`;
+
+    seoHtml+=`<div class="intel-prose">${prose}</div><div class="intel-findings">`;
+    seoHtml+=finding(posGood?'ifd-good':posOk?'ifd-warn':'ifd-bad',`Avg. position <strong>${pos}</strong> — ${trendTxt(posTrend)}`);
+    seoHtml+=finding(ctrGood?'ifd-good':ctrOk?'ifd-warn':'ifd-bad',`CTR <strong>${ctr}</strong> — ${trendTxt(ctrTrend)}`);
+    seoHtml+=finding('ifd-good',`<strong>${clicks}</strong> clicks from <strong>${imp}</strong> impressions this week`);
+    if(kwRaw&&kwRaw.rows&&kwRaw.rows.length){
+      const topNonBrand=kwRaw.rows.find(r=>!['planima','planima ab','planima.se','planima underhållsplan','planima crm'].includes(r.keys[0].toLowerCase()));
+      if(topNonBrand)seoHtml+=finding('ifd-good',`Top non-brand keyword: <strong>${topNonBrand.keys[0]}</strong> (pos ${topNonBrand.position.toFixed(1)})`);
+    }
+    seoHtml+='</div>';
+  } else {
+    seoHtml+='<div class="intel-prose" style="color:var(--text3);">No Search Console data loaded. Sign in with Google to see SEO analysis.</div>';
+  }
+  document.getElementById('ic-seo').innerHTML=seoHtml;
+
+  // ── Performance section ──────────────────────────────────
+  let perfHtml='<div class="intel-card-header"><div class="intel-card-title"><span class="intel-card-icon">📈</span>Performance</div>';
+  const bounceGood=ga4cur&&ga4cur.bounce<0.4, bounceOk=ga4cur&&ga4cur.bounce<0.7;
+  const engGood=ga4cur&&ga4cur.engage>0.6, engOk=ga4cur&&ga4cur.engage>0.4;
+  const perfGood=bounceGood&&engGood, perfOk=bounceOk&&engOk;
+  perfHtml+=`<div class="intel-status ${statusCls(perfGood,perfOk)}">${statusLbl(perfGood,perfOk)}</div></div>`;
+
+  if(ga4cur){
+    const bounce=Math.round(ga4cur.bounce*100)+'%';
+    const eng=Math.round(ga4cur.engage*100)+'%';
+    const dur=ga4cur.engTime>=60?Math.floor(ga4cur.engTime/60)+'m '+Math.round(ga4cur.engTime%60)+'s':Math.round(ga4cur.engTime)+'s';
+    const sessions=(ga4cur.organicSessions||ga4cur.sessions).toLocaleString();
+    const bounceTrend=ga4prev?trend(ga4cur.bounce,ga4prev.bounce,true):'stable';
+    const sessTrend=ga4prev?trend(ga4cur.organicSessions||ga4cur.sessions,ga4prev.organicSessions||ga4prev.sessions):'stable';
+
+    let wTrend='';
+    if(weeks.length>=3){
+      const last=weeks[weeks.length-1].sessions,first=weeks[weeks.length-3].sessions;
+      const chg=Math.round(((last-first)/first)*100);
+      wTrend=chg>0?` Traffic is up ${chg}% over the last 3 weeks.`:chg<-3?` Traffic has dipped ${Math.abs(chg)}% over the last 3 weeks — worth investigating.`:'';
+    }
+
+    let prose='';
+    if(bounceGood)prose=`Visitors are engaging well — a bounce rate of ${bounce} and engagement rate of ${eng} indicate high content relevance.${wTrend}`;
+    else if(bounceOk)prose=`Engagement is reasonable with a ${bounce} bounce rate. Average session duration of ${dur} shows visitors spend quality time on site.${wTrend}`;
+    else prose=`A ${bounce} bounce rate suggests visitors may not be finding what they expect. Aligning landing page content with top search queries could help.${wTrend}`;
+
+    perfHtml+=`<div class="intel-prose">${prose}</div><div class="intel-findings">`;
+    perfHtml+=finding(bounceGood?'ifd-good':bounceOk?'ifd-warn':'ifd-bad',`Bounce rate <strong>${bounce}</strong> — ${trendTxt(bounceTrend)}`);
+    perfHtml+=finding(engGood?'ifd-good':engOk?'ifd-warn':'ifd-bad',`Engagement rate <strong>${eng}</strong>`);
+    perfHtml+=finding('ifd-good',`Avg. session duration <strong>${dur}</strong>`);
+    perfHtml+=finding((sessTrend==='improving'?'ifd-good':sessTrend==='declining'?'ifd-bad':'ifd-warn'),`Organic sessions <strong>${sessions}</strong> — ${trendTxt(sessTrend)}`);
+    perfHtml+='</div>';
+  } else {
+    perfHtml+='<div class="intel-prose" style="color:var(--text3);">No GA4 data loaded. Sign in with Google to see performance analysis.</div>';
+  }
+  document.getElementById('ic-performance').innerHTML=perfHtml;
+
+  // ── CWV section ──────────────────────────────────────────
+  let cwvHtml='<div class="intel-card-header"><div class="intel-card-title"><span class="intel-card-icon">⚡</span>Core Web Vitals</div>';
+  const mScore=psi&&psi.mobile?psi.mobile.performance:null;
+  const cwvGood=mScore&&mScore>=75, cwvOk=mScore&&mScore>=60;
+  cwvHtml+=`<div class="intel-status ${statusCls(cwvGood,cwvOk)}">${statusLbl(cwvGood,cwvOk)}</div></div>`;
+
+  if(psi&&psi.mobile){
+    const m=psi.mobile;
+    const vitals=[
+      {key:'LCP',num:m.lcpNum,val:m.lcp,good:2500,ok:4000,unit:'ms',lowerBetter:true},
+      {key:'CLS',num:m.clsNum,val:m.cls,good:0.1,ok:0.25,unit:'',lowerBetter:true},
+      {key:'INP',num:m.inpNum,val:m.inp,good:200,ok:500,unit:'ms',lowerBetter:true},
+    ];
+    const passing=vitals.filter(v=>v.num!=null&&v.num<=v.good).length;
+    const failing=vitals.filter(v=>v.num!=null&&v.num>v.ok);
+    const worst=failing.sort((a,b)=>{
+      const ra=a.num/a.ok, rb=b.num/b.ok;return rb-ra;
+    })[0];
+
+    let prose='';
+    if(cwvGood)prose=`Mobile speed score of ${mScore} is solid. ${passing} of 3 Core Web Vitals pass the "good" threshold.`;
+    else if(cwvOk)prose=`Mobile speed score of ${mScore} is acceptable but below the 75+ target. ${passing} of 3 Core Web Vitals meet the "good" threshold — there is room to improve.`;
+    else prose=`Mobile speed score of ${mScore} is below the recommended 60 threshold. This may impact rankings and user experience.`;
+
+    if(worst)prose+=` The biggest opportunity is <strong>${worst.key}</strong> at ${worst.val} — addressing this will have the most impact on your CWV score.`;
+
+    cwvHtml+=`<div class="intel-prose">${prose}</div><div class="intel-findings">`;
+    cwvHtml+=finding(cwvGood?'ifd-good':cwvOk?'ifd-warn':'ifd-bad',`Mobile speed <strong>${mScore}</strong> / 100 (desktop: ${psi.desktop?psi.desktop.performance:'-'})`);
+    vitals.forEach(v=>{
+      if(v.num==null)return;
+      const dot=v.num<=v.good?'ifd-good':v.num<=v.ok?'ifd-warn':'ifd-bad';
+      cwvHtml+=finding(dot,`${v.key} <strong>${v.val}</strong>`);
+    });
+    cwvHtml+='</div>';
+  } else {
+    cwvHtml+='<div class="intel-prose" style="color:var(--text3);">No PageSpeed data loaded. Add your PSI API key in Settings.</div>';
+  }
+  document.getElementById('ic-cwv').innerHTML=cwvHtml;
+
+  // ── Priority actions ──────────────────────────────────────
+  const actions=[];
+  if(gsccur&&gsccur.position>10&&gsccur.position<=25)
+    actions.push({head:'Push positions 11–20 onto page one',detail:'Identify your highest-impression keywords ranking 11–20 and update their pages: improve headings, add internal links, and expand thin content.'});
+  if(gsccur&&gsccur.ctr<2)
+    actions.push({head:'Rewrite meta titles for high-impression pages',detail:'A CTR under 2% suggests weak titles. Test benefit-led, question-based, or number-driven formats on your top 5 pages by impression.'});
+  if(psi&&psi.mobile&&psi.mobile.performance<75){
+    const worst2=psi.mobile.lcpNum>4000?'LCP':psi.mobile.inpNum>500?'INP':psi.mobile.clsNum>0.25?'CLS':'mobile speed';
+    actions.push({head:`Fix ${worst2} — your biggest technical bottleneck`,detail:'Open this dashboard\'s Core Web Vitals tab and click the failing metric for a prioritized fix list.'});
+  }
+  if(ga4cur&&ga4cur.bounce>0.6)
+    actions.push({head:'Reduce bounce rate on top landing pages',detail:'Match page content more closely to search intent. Add a clear above-the-fold CTA and ensure the page loads fast on mobile.'});
+  if(gsccur&&gsccur.ctr>=2&&gsccur&&gsccur.position>15)
+    actions.push({head:'Build internal links to ranking pages',detail:'Pages ranking 15–25 often just need more internal link authority. Add links from your homepage and high-traffic blog posts.'});
+  if(actions.length===0)
+    actions.push({head:'Maintain current momentum',detail:'All key metrics are in a healthy range. Focus on publishing new content targeting keywords in positions 11–20 to capture more organic traffic.'});
+
+  let actHtml='<div class="intel-actions-title">🎯 Top priority actions</div><div class="intel-action-list">';
+  actions.slice(0,3).forEach((a,i)=>{
+    actHtml+=`<div class="intel-action"><div class="intel-action-num">${i+1}</div><div class="intel-action-text"><strong>${a.head}</strong><span>${a.detail}</span></div></div>`;
+  });
+  actHtml+='</div>';
+  document.getElementById('ic-actions').innerHTML=actHtml;
+
+  // ── Overall summary ───────────────────────────────────────
+  const scores=[seoGood?2:seoOk?1:0, perfGood?2:perfOk?1:0, cwvGood?2:cwvOk?1:0];
+  const total=scores.reduce((a,b)=>a+b,0);
+  let overallTxt='';
+  if(total>=5)overallTxt=`Planima's web presence is performing strongly across all three areas. SEO visibility, user engagement, and technical performance are all at or above benchmark. The main opportunity is compounding this momentum by pushing more mid-page keywords into the top 10.`;
+  else if(total>=3)overallTxt=`Planima shows solid fundamentals with ${scores.filter(s=>s===2).length===1?'one area':'some areas'} performing well and clear opportunities for improvement. Prioritizing the actions below should meaningfully lift organic traffic and user engagement over the next 4–8 weeks.`;
+  else overallTxt=`There are significant growth opportunities across SEO, performance, and/or technical quality. Addressing the priority actions below — especially the technical bottlenecks — will have the highest compound impact on rankings and conversion.`;
+
+  document.getElementById('intel-summary-text').textContent=overallTxt;
+  document.getElementById('intel-time').textContent='Analyzed '+new Date().toLocaleTimeString();
+
+  // stagger animations
+  ['intel-summary-card','ic-seo','ic-performance','ic-cwv','ic-actions'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el){el.style.opacity='0';el.style.animation='none';setTimeout(()=>{el.style.animation=`fadeSlideUp .35s ease ${i*70}ms forwards`;},10);}
+  });
 }
 
 // BENCHMARK COLUMN
@@ -935,7 +1196,7 @@ async function refreshAll(){
   const ga4cur=ga4Raw?processGA4Rows(ga4Raw):null,ga4prev=ga4PrevRaw?processGA4Rows(ga4PrevRaw):null,gsccur=gscRaw?processGSCRows(gscRaw):null,gscprev=gscPrevRaw?processGSCRows(gscPrevRaw):null,psi=psiRaw?processPSI(psiRaw):null;
   if(!ga4cur&&!gsccur&&!psi&&hsRaw===null)notify('Could not connect to any API. Check credentials in Settings.','error');
   else notify('Data refreshed!','success');
-  renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hsRaw);
+  renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hsRaw,kwRaw);
   renderKeywords(kwRaw);
   document.getElementById('spin').style.display='none';
   document.getElementById('refresh-lbl').textContent='↻ Refresh data';
@@ -965,7 +1226,7 @@ function loadDemoData(){
   renderKeywords(demoKeywords);
   const stored=getData();
   if(stored.weeks.length<2){stored.weeks=[{label:'W40',sessions:1820,ctr:2.1},{label:'W41',sessions:2100,ctr:2.3},{label:'W42',sessions:2340,ctr:2.5},{label:'W43',sessions:2180,ctr:2.4},{label:'W44',sessions:2510,ctr:2.7},{label:'W45',sessions:2760,ctr:2.9},{label:'W46',sessions:2850,ctr:3.1},{label:'W47',sessions:3180,ctr:3.25}];saveData(stored);}
-  renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs);
+  renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,demoKeywords);
   notify('Demo data loaded. Add API keys in Settings for live data.','info');
 }
 
