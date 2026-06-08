@@ -128,6 +128,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .chg-up{color:var(--green);}
 .chg-down{color:var(--accent);}
 .chg-neutral{color:var(--text3);}
+.kw-row{grid-template-columns:2fr 65px 90px 75px 70px;}
+.kw-brand::before{content:'B';display:inline-block;font-size:9px;font-family:'DM Mono',monospace;background:rgba(255,185,42,.2);color:var(--primary2);border-radius:3px;padding:1px 4px;margin-left:6px;vertical-align:middle;}
 
 /* PAGESPEED */
 .ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem;}
@@ -354,6 +356,19 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
           <div class="metric-row"><span class="metric-name">Organic users</span><span class="metric-desc">Unique visitors from organic search</span><span class="metric-val" id="m-users">—</span><span class="metric-prev" id="mp-users">—</span><span class="metric-chg chg-neutral" id="mc-users">—</span></div>
           <div class="metric-row"><span class="metric-name">Engagement rate</span><span class="metric-desc">Sessions where user actively engaged</span><span class="metric-val" id="m-engage">—</span><span class="metric-prev" id="mp-engage">—</span><span class="metric-chg chg-neutral" id="mc-engage">—</span></div>
           <div class="metric-row"><span class="metric-name">Avg. engagement time</span><span class="metric-desc">Time users actively used the page</span><span class="metric-val" id="m-engtime">—</span><span class="metric-prev" id="mp-engtime">—</span><span class="metric-chg chg-neutral" id="mc-engtime">—</span></div>
+        </div>
+      </div>
+      <div class="metrics-section">
+        <div class="section-title">Top keywords — last 30 days</div>
+        <div class="metric-table">
+          <div class="metric-row kw-row header">
+            <span>Keyword</span>
+            <span style="text-align:right">Clicks</span>
+            <span style="text-align:right">Impressions</span>
+            <span style="text-align:right">Position</span>
+            <span style="text-align:right">CTR</span>
+          </div>
+          <div id="keywords-body"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">Loading…</div></div>
         </div>
       </div>
     </div>
@@ -664,6 +679,36 @@ function processGSCRows(data){
   return agg;
 }
 
+// API: GSC Keywords (30 days)
+const BRAND_KW=new Set(['planima','planima ab','planima.se','planima underhållsplan','planima crm']);
+async function fetchGSCKeywords(cfg){
+  if(!cfg.gsc||!isGoogleAuthed())return null;
+  const url='https://www.googleapis.com/webmasters/v3/sites/'+encodeURIComponent(cfg.gsc)+'/searchAnalytics/query';
+  const end=isoDate(new Date()),start=isoDate(daysAgo(30));
+  try{
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+googleAccessToken},body:JSON.stringify({startDate:start,endDate:end,dimensions:['query'],rowLimit:20,orderBy:[{fieldName:'clicks',sortOrder:'DESCENDING'}]})});
+    if(!r.ok)return null;
+    return await r.json();
+  }catch(e){console.error('GSC keywords',e);return null;}
+}
+function renderKeywords(data){
+  const el=document.getElementById('keywords-body');
+  if(!el)return;
+  if(!data||!data.rows||!data.rows.length){el.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">No keyword data available — sign in with Google to load.</div>';return;}
+  el.innerHTML=data.rows.map(r=>{
+    const kw=r.keys[0];
+    const isBrand=BRAND_KW.has(kw.toLowerCase());
+    const posColor=r.position<=10?'color:#15803d':r.position<=20?'':'color:var(--text3)';
+    return '<div class="metric-row kw-row">'
+      +'<span class="metric-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+kw+(isBrand?'<span class="kw-brand"></span>':'')+'</span>'
+      +'<span class="metric-val">'+Math.round(r.clicks).toLocaleString()+'</span>'
+      +'<span class="metric-val">'+Math.round(r.impressions).toLocaleString()+'</span>'
+      +'<span class="metric-val" style="'+posColor+'">'+r.position.toFixed(1)+'</span>'
+      +'<span class="metric-val">'+(r.ctr*100).toFixed(1)+'%</span>'
+      +'</div>';
+  }).join('');
+}
+
 // API: PageSpeed
 async function fetchPageSpeed(cfg){
   if(!cfg.gsc||!cfg.psi)return null;
@@ -824,11 +869,12 @@ async function refreshAll(){
   const endDate=isoDate(new Date()),startDate=isoDate(daysAgo(7)),prevEnd=isoDate(daysAgo(7)),prevStart=isoDate(daysAgo(14));
   if(cfg.oauth&&!isGoogleAuthed()){setStatus('ga4',false,'GA4: click "Sign in with Google"');setStatus('gsc',false,'GSC: click "Sign in with Google"');}
   notify('Fetching live data…','info');
-  const [ga4Raw,ga4PrevRaw,gscRaw,gscPrevRaw,psiRaw,hsRaw]=await Promise.all([fetchGA4Week(cfg,startDate,endDate),fetchGA4Week(cfg,prevStart,prevEnd),fetchGSCWeek(cfg,startDate,endDate),fetchGSCWeek(cfg,prevStart,prevEnd),fetchPageSpeed(cfg),fetchHubSpot(cfg)]);
+  const [ga4Raw,ga4PrevRaw,gscRaw,gscPrevRaw,psiRaw,hsRaw,kwRaw]=await Promise.all([fetchGA4Week(cfg,startDate,endDate),fetchGA4Week(cfg,prevStart,prevEnd),fetchGSCWeek(cfg,startDate,endDate),fetchGSCWeek(cfg,prevStart,prevEnd),fetchPageSpeed(cfg),fetchHubSpot(cfg),fetchGSCKeywords(cfg)]);
   const ga4cur=ga4Raw?processGA4Rows(ga4Raw):null,ga4prev=ga4PrevRaw?processGA4Rows(ga4PrevRaw):null,gsccur=gscRaw?processGSCRows(gscRaw):null,gscprev=gscPrevRaw?processGSCRows(gscPrevRaw):null,psi=psiRaw?processPSI(psiRaw):null;
   if(!ga4cur&&!gsccur&&!psi&&hsRaw===null)notify('Could not connect to any API. Check credentials in Settings.','error');
   else notify('Data refreshed!','success');
   renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hsRaw);
+  renderKeywords(kwRaw);
   document.getElementById('spin').style.display='none';
   document.getElementById('refresh-lbl').textContent='↻ Refresh data';
 }
@@ -842,6 +888,19 @@ function loadDemoData(){
   const psi={mobile:{performance:68,accessibility:91,bestPractices:87,seo:94,lcp:'2.8 s',cls:'0.08',inp:'180 ms',fcp:'1.6 s',tbt:'240 ms',si:'3.9 s',lcpNum:2800,clsNum:0.08,inpNum:180,fcpNum:1600,tbtNum:240,siNum:3900},desktop:{performance:88,accessibility:94,bestPractices:92,seo:97,lcp:'1.1 s',cls:'0.02',inp:'60 ms',fcp:'0.7 s',tbt:'80 ms',si:'1.4 s',lcpNum:1100,clsNum:0.02,inpNum:60,fcpNum:700,tbtNum:80,siNum:1400}};
   const hs={current:48,previous:39};
   setStatus('ga4',true,'GA4 (demo)');setStatus('gsc',true,'Search Console (demo)');setStatus('ps',true,'PageSpeed (demo)');setStatus('hs',true,'HubSpot (demo)');
+  const demoKeywords={rows:[
+    {keys:['underhållsplan fastighet'],clicks:312,impressions:8400,position:6.2,ctr:0.037},
+    {keys:['planima'],clicks:284,impressions:3100,position:1.4,ctr:0.092},
+    {keys:['underhållsplan mall'],clicks:198,impressions:6200,position:8.8,ctr:0.032},
+    {keys:['digitalt underhållsregister'],clicks:176,impressions:4800,position:7.1,ctr:0.037},
+    {keys:['planima underhållsplan'],clicks:154,impressions:2200,position:2.1,ctr:0.070},
+    {keys:['fastighetsskötsel system'],clicks:132,impressions:5600,position:11.4,ctr:0.024},
+    {keys:['underhållsbudget fastighet'],clicks:118,impressions:4100,position:9.3,ctr:0.029},
+    {keys:['planima crm'],clicks:96,impressions:1400,position:1.8,ctr:0.069},
+    {keys:['fastighetsförvaltning program'],clicks:88,impressions:7800,position:14.2,ctr:0.011},
+    {keys:['underhållsplan bostadsrättsförening'],clicks:76,impressions:3900,position:12.6,ctr:0.019}
+  ]};
+  renderKeywords(demoKeywords);
   const stored=getData();
   if(stored.weeks.length<2){stored.weeks=[{label:'W40',sessions:1820,ctr:2.1},{label:'W41',sessions:2100,ctr:2.3},{label:'W42',sessions:2340,ctr:2.5},{label:'W43',sessions:2180,ctr:2.4},{label:'W44',sessions:2510,ctr:2.7},{label:'W45',sessions:2760,ctr:2.9},{label:'W46',sessions:2850,ctr:3.1},{label:'W47',sessions:3180,ctr:3.25}];saveData(stored);}
   renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs);
