@@ -91,7 +91,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .kpi-card.c-amber::before{background:var(--primary);}
 .kpi-card.c-purple::before{background:var(--purple);}
 .kpi-card.c-red::before{background:var(--accent);}
-.kpi-header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;}
+.kpi-header{display:flex;flex-direction:column;gap:3px;margin-bottom:10px;}
 .kpi-label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;}
 .kpi-value{font-size:28px;font-weight:500;color:var(--text);line-height:1;margin-bottom:8px;font-family:'DM Mono',monospace;}
 .kpi-value.loading{color:var(--text3);font-size:18px;}
@@ -201,10 +201,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 /* INTELLIGENCE */
 .tab-btn.tab-intel{display:flex;align-items:center;gap:5px;}
 .tab-intel-icon{width:13px;height:13px;flex-shrink:0;}
-.intel-header{background:linear-gradient(135deg,rgba(255,185,42,.08) 0%,rgba(244,91,128,.06) 100%);border:1px solid rgba(255,185,42,.2);border-radius:var(--radius-lg);padding:1.5rem 1.75rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.intel-header{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem 1.75rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
 .intel-header-left{display:flex;align-items:center;gap:14px;}
-.intel-spark{width:36px;height:36px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.intel-spark svg{width:18px;height:18px;}
+.intel-spark{width:34px;height:34px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.intel-spark svg{width:16px;height:16px;color:var(--primary2);}
 .intel-title{font-family:'Instrument Serif',serif;font-size:20px;color:var(--text);margin-bottom:2px;}
 .intel-time{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;}
 .intel-summary-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1.5rem;}
@@ -215,7 +215,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .intel-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;display:flex;flex-direction:column;gap:12px;}
 .intel-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
 .intel-card-title{font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:7px;}
-.intel-card-icon{font-size:15px;line-height:1;}
+.intel-card-icon{width:14px;height:14px;flex-shrink:0;color:var(--text3);}
 .intel-status{font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
 .is-strong{background:rgba(22,163,74,.1);color:#15803d;border:1px solid rgba(22,163,74,.2);}
 .is-developing{background:rgba(255,185,42,.12);color:#92600a;border:1px solid rgba(255,185,42,.3);}
@@ -358,18 +358,18 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <button class="tab-btn" onclick="showTab('performance')">Performance</button>
       <button class="tab-btn" onclick="showTab('vitals')">Core Web Vitals</button>
       <button class="tab-btn" onclick="showTab('guide')">Guide</button>
-      <button class="tab-btn tab-intel" onclick="showTab('intelligence')"><svg class="tab-intel-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 2L11.5 7.5H17L12.5 10.5L14 16L10 13L6 16L7.5 10.5L3 7.5H8.5L10 2Z" fill="currentColor" opacity=".9"/></svg>Intelligence</button>
+      <button class="tab-btn tab-intel" onclick="showTab('intelligence')"><svg class="tab-intel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5z"/><path d="M5 3l.8 2.2L8 6l-2.2.8L5 9l-.8-2.2L2 6l2.2-.8z"/><path d="M19 17l.6 1.4 1.4.6-1.4.6-.6 1.4-.6-1.4-1.4-.6 1.4-.6z"/></svg>Intelligence Report</button>
     </div>
 
     <!-- OVERVIEW -->
     <div id="tab-overview">
       <div class="kpi-grid">
-        <div class="kpi-card c-green"><div class="kpi-header"><div class="kpi-label">Organic sessions</div><div class="kpi-source">GA4</div></div><div class="kpi-value loading" id="kpi-sessions">—</div><div class="kpi-delta delta-neutral" id="d-sessions">loading…</div></div>
-        <div class="kpi-card c-blue"><div class="kpi-header"><div class="kpi-label">Avg. position</div><div class="kpi-source">GSC</div></div><div class="kpi-value loading" id="kpi-position">—</div><div class="kpi-delta delta-neutral" id="d-position">lower is better</div></div>
-        <div class="kpi-card c-teal"><div class="kpi-header"><div class="kpi-label">Click-through rate</div><div class="kpi-source">GSC</div></div><div class="kpi-value loading" id="kpi-ctr">—</div><div class="kpi-delta delta-neutral" id="d-ctr">loading…</div></div>
-        <div class="kpi-card c-amber"><div class="kpi-header"><div class="kpi-label">Mobile speed score</div><div class="kpi-source">PageSpeed</div></div><div class="kpi-value loading" id="kpi-speed">—</div><div class="kpi-delta delta-neutral" id="d-speed">0–100</div></div>
-        <div class="kpi-card c-purple"><div class="kpi-header"><div class="kpi-label">Bounce rate</div><div class="kpi-source">GA4</div></div><div class="kpi-value loading" id="kpi-bounce">—</div><div class="kpi-delta delta-neutral" id="d-bounce">loading…</div></div>
-        <div class="kpi-card c-red"><div class="kpi-header"><div class="kpi-label">New contacts (week)</div><div class="kpi-source">HubSpot</div></div><div class="kpi-value loading" id="kpi-conv">—</div><div class="kpi-delta delta-neutral" id="d-conv">loading…</div></div>
+        <div class="kpi-card c-green"><div class="kpi-header"><div class="kpi-source">GA4</div><div class="kpi-label">Organic sessions</div></div><div class="kpi-value loading" id="kpi-sessions">—</div><div class="kpi-delta delta-neutral" id="d-sessions">loading…</div></div>
+        <div class="kpi-card c-blue"><div class="kpi-header"><div class="kpi-source">GSC</div><div class="kpi-label">Avg. position</div></div><div class="kpi-value loading" id="kpi-position">—</div><div class="kpi-delta delta-neutral" id="d-position">lower is better</div></div>
+        <div class="kpi-card c-teal"><div class="kpi-header"><div class="kpi-source">GSC</div><div class="kpi-label">Click-through rate</div></div><div class="kpi-value loading" id="kpi-ctr">—</div><div class="kpi-delta delta-neutral" id="d-ctr">loading…</div></div>
+        <div class="kpi-card c-amber"><div class="kpi-header"><div class="kpi-source">PageSpeed</div><div class="kpi-label">Mobile speed score</div></div><div class="kpi-value loading" id="kpi-speed">—</div><div class="kpi-delta delta-neutral" id="d-speed">0–100</div></div>
+        <div class="kpi-card c-purple"><div class="kpi-header"><div class="kpi-source">GA4</div><div class="kpi-label">Bounce rate</div></div><div class="kpi-value loading" id="kpi-bounce">—</div><div class="kpi-delta delta-neutral" id="d-bounce">loading…</div></div>
+        <div class="kpi-card c-red"><div class="kpi-header"><div class="kpi-source">HubSpot</div><div class="kpi-label">New contacts (week)</div></div><div class="kpi-value loading" id="kpi-conv">—</div><div class="kpi-delta delta-neutral" id="d-conv">loading…</div></div>
       </div>
       <div class="chart-grid">
         <div class="chart-card full">
@@ -523,7 +523,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <!-- INTELLIGENCE -->
     <div id="tab-intelligence" style="display:none;">
       <div id="intel-empty" class="intel-empty">
-        <div class="intel-empty-icon">✦</div>
+        <div class="intel-empty-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text3)"><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5z"/><path d="M5 3l.8 2.2L8 6l-2.2.8L5 9l-.8-2.2L2 6l2.2-.8z"/><path d="M19 17l.6 1.4 1.4.6-1.4.6-.6 1.4-.6-1.4-1.4-.6 1.4-.6z"/></svg></div>
         <div class="intel-empty-title">No data to analyze yet</div>
         <div class="intel-empty-sub">Load data first, then come back here for your intelligence report.</div>
         <button class="btn-primary" style="margin-top:8px;" onclick="refreshAll()">↻ Load data</button>
@@ -531,7 +531,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <div id="intel-content" style="display:none;">
         <div class="intel-header">
           <div class="intel-header-left">
-            <div class="intel-spark"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 1L12 8H19L13.5 12L15.5 19L10 15L4.5 19L6.5 12L1 8H8L10 1Z" fill="white"/></svg></div>
+            <div class="intel-spark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5z"/><path d="M5 3l.8 2.2L8 6l-2.2.8L5 9l-.8-2.2L2 6l2.2-.8z"/><path d="M19 17l.6 1.4 1.4.6-1.4.6-.6 1.4-.6-1.4-1.4-.6 1.4-.6z"/></svg></div>
             <div>
               <div class="intel-title">Intelligence Report</div>
               <div class="intel-time" id="intel-time">—</div>
@@ -983,7 +983,11 @@ function generateIntelligence(){
   function finding(dot,text){return`<div class="intel-finding"><div class="intel-finding-dot ${dot}"></div><div>${text}</div></div>`;}
 
   // ── SEO section ──────────────────────────────────────────
-  let seoHtml='<div class="intel-card-header"><div class="intel-card-title"><span class="intel-card-icon">🔍</span>SEO</div>';
+  const icoSEO='<svg class="intel-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><path d="M21 21l-4.35-4.35"/></svg>';
+  const icoPerf='<svg class="intel-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 14 7 9 11 12 18 5"/><polyline points="16 5 18 5 18 7"/></svg>';
+  const icoCWV='<svg class="intel-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg>';
+  const icoActions='<svg style="width:14px;height:14px;flex-shrink:0;color:var(--text3)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+  let seoHtml='<div class="intel-card-header"><div class="intel-card-title">'+icoSEO+'SEO</div>';
   const posOk=gsccur&&gsccur.position<=20, posGood=gsccur&&gsccur.position<=10;
   const ctrOk=gsccur&&gsccur.ctr>=2, ctrGood=gsccur&&gsccur.ctr>=5;
   const seoGood=posGood&&ctrGood, seoOk=posOk&&ctrOk;
@@ -1019,7 +1023,7 @@ function generateIntelligence(){
   document.getElementById('ic-seo').innerHTML=seoHtml;
 
   // ── Performance section ──────────────────────────────────
-  let perfHtml='<div class="intel-card-header"><div class="intel-card-title"><span class="intel-card-icon">📈</span>Performance</div>';
+  let perfHtml='<div class="intel-card-header"><div class="intel-card-title">'+icoPerf+'Performance</div>';
   const bounceGood=ga4cur&&ga4cur.bounce<0.4, bounceOk=ga4cur&&ga4cur.bounce<0.7;
   const engGood=ga4cur&&ga4cur.engage>0.6, engOk=ga4cur&&ga4cur.engage>0.4;
   const perfGood=bounceGood&&engGood, perfOk=bounceOk&&engOk;
@@ -1057,7 +1061,7 @@ function generateIntelligence(){
   document.getElementById('ic-performance').innerHTML=perfHtml;
 
   // ── CWV section ──────────────────────────────────────────
-  let cwvHtml='<div class="intel-card-header"><div class="intel-card-title"><span class="intel-card-icon">⚡</span>Core Web Vitals</div>';
+  let cwvHtml='<div class="intel-card-header"><div class="intel-card-title">'+icoCWV+'Core Web Vitals</div>';
   const mScore=psi&&psi.mobile?psi.mobile.performance:null;
   const cwvGood=mScore&&mScore>=75, cwvOk=mScore&&mScore>=60;
   cwvHtml+=`<div class="intel-status ${statusCls(cwvGood,cwvOk)}">${statusLbl(cwvGood,cwvOk)}</div></div>`;
@@ -1112,7 +1116,7 @@ function generateIntelligence(){
   if(actions.length===0)
     actions.push({head:'Maintain current momentum',detail:'All key metrics are in a healthy range. Focus on publishing new content targeting keywords in positions 11–20 to capture more organic traffic.'});
 
-  let actHtml='<div class="intel-actions-title">🎯 Top priority actions</div><div class="intel-action-list">';
+  let actHtml='<div class="intel-actions-title">'+icoActions+'Top priority actions</div><div class="intel-action-list">';
   actions.slice(0,3).forEach((a,i)=>{
     actHtml+=`<div class="intel-action"><div class="intel-action-num">${i+1}</div><div class="intel-action-text"><strong>${a.head}</strong><span>${a.detail}</span></div></div>`;
   });
