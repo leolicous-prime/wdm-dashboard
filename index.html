@@ -73,7 +73,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .tab-btn.active{background:var(--bg2);color:var(--text);font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.08);}
 
 /* STATUS */
-.status-bar{display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap;}
+.status-bar{display:flex;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap;}
 .status-pill{display:flex;align-items:center;gap:6px;font-size:11px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;color:var(--text2);}
 .status-dot{width:7px;height:7px;border-radius:50%;}
 .dot-green{background:var(--green);box-shadow:0 0 6px rgba(22,163,74,.4);}
@@ -230,34 +230,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .intel-actions-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1.5rem;}
 .intel-actions-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:7px;}
 .intel-action-list{display:flex;flex-direction:column;gap:8px;}
-.intel-action{display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:border-color .15s,background .15s;}
-.intel-action:hover{border-color:var(--border2);background:var(--bg2);}
+.intel-action{display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);}
 .intel-action-num{width:20px;height:20px;border-radius:50%;background:var(--primary);color:#1a1712;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
-.intel-action-text{flex:1;font-size:13px;color:var(--text);line-height:1.5;}
+.intel-action-text{font-size:13px;color:var(--text);line-height:1.5;}
 .intel-action-text strong{font-weight:600;}
 .intel-action-text span{display:block;font-size:11px;color:var(--text3);margin-top:2px;}
-.intel-action-arrow{font-size:14px;color:var(--text3);align-self:center;flex-shrink:0;transition:transform .15s;}
-.intel-action:hover .intel-action-arrow{transform:translateX(3px);color:var(--text2);}
-/* ACTION GUIDE MODAL */
-.action-modal-box{background:var(--bg2);border-radius:var(--radius-lg);padding:0;max-width:600px;width:100%;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.18);}
-.action-modal-header{padding:1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;background:linear-gradient(135deg,rgba(255,185,42,.07),rgba(244,91,128,.04));}
-.action-modal-num{width:28px;height:28px;border-radius:50%;background:var(--primary);color:#1a1712;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
-.action-modal-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px;}
-.action-modal-why{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;}
-.action-modal-body{padding:1.5rem;overflow-y:auto;display:flex;flex-direction:column;gap:1.25rem;}
-.action-section-label{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;}
-.action-data-table{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
-.action-data-row{display:grid;align-items:center;padding:8px 12px;border-bottom:1px solid var(--border);font-size:12px;gap:8px;}
-.action-data-row:last-child{border-bottom:none;}
-.action-data-row.header{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;background:var(--bg3);}
-.action-steps{display:flex;flex-direction:column;gap:8px;}
-.action-step{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);}
-.action-step-num{width:18px;height:18px;border-radius:50%;background:var(--bg2);border:1px solid var(--border2);font-size:10px;font-weight:600;color:var(--text2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
-.action-step-body{font-size:12px;color:var(--text);line-height:1.55;}
-.action-step-body strong{font-weight:600;}
-.action-resource{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);font-size:12px;color:var(--text2);text-decoration:none;}
-.action-resource:hover{border-color:var(--border2);color:var(--text);}
-.action-resources{display:flex;flex-direction:column;gap:6px;}
 .intel-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem 2rem;text-align:center;gap:12px;}
 .intel-empty-icon{font-size:36px;opacity:.4;}
 .intel-empty-title{font-size:16px;font-weight:500;color:var(--text);}
@@ -423,7 +400,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <div class="metrics-section">
         <div class="section-title">Search Console — last 7 days</div>
         <div class="metric-table">
-          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right" class="col-current">This week</span><span style="text-align:right" class="col-prev">Last week</span><span style="text-align:right">Change</span></div>
+          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right">This week</span><span style="text-align:right">Last week</span><span style="text-align:right">Change</span></div>
           <div class="metric-row"><span class="metric-name">Impressions</span><span class="metric-desc">Times your pages appeared in search results</span><span class="metric-val" id="m-impressions">—</span><span class="metric-prev" id="mp-impressions">—</span><span class="metric-chg chg-neutral" id="mc-impressions">—</span></div>
           <div class="metric-row"><span class="metric-name">Total clicks</span><span class="metric-desc">Clicks from Google search to your site</span><span class="metric-val" id="m-clicks">—</span><span class="metric-prev" id="mp-clicks">—</span><span class="metric-chg chg-neutral" id="mc-clicks">—</span></div>
           <div class="metric-row"><span class="metric-name">Avg. position</span><span class="metric-desc">Mean ranking across all keywords (lower = better)</span><span class="metric-val" id="m-position">—</span><span class="metric-prev" id="mp-position">—</span><span class="metric-chg chg-neutral" id="mc-position">—</span></div>
@@ -433,7 +410,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <div class="metrics-section">
         <div class="section-title">GA4 — organic acquisition</div>
         <div class="metric-table">
-          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right" class="col-current">This week</span><span style="text-align:right" class="col-prev">Last week</span><span style="text-align:right">Change</span></div>
+          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right">This week</span><span style="text-align:right">Last week</span><span style="text-align:right">Change</span></div>
           <div class="metric-row"><span class="metric-name">Organic sessions</span><span class="metric-desc">Visits that arrived via unpaid search</span><span class="metric-val" id="m-sessions">—</span><span class="metric-prev" id="mp-sessions">—</span><span class="metric-chg chg-neutral" id="mc-sessions">—</span></div>
           <div class="metric-row"><span class="metric-name">Organic users</span><span class="metric-desc">Unique visitors from organic search</span><span class="metric-val" id="m-users">—</span><span class="metric-prev" id="mp-users">—</span><span class="metric-chg chg-neutral" id="mc-users">—</span></div>
           <div class="metric-row"><span class="metric-name">Engagement rate</span><span class="metric-desc">Sessions where user actively engaged</span><span class="metric-val" id="m-engage">—</span><span class="metric-prev" id="mp-engage">—</span><span class="metric-chg chg-neutral" id="mc-engage">—</span></div>
@@ -460,14 +437,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <div class="metrics-section">
         <div class="section-title">HubSpot — new contacts</div>
         <div class="metric-table">
-          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right" class="col-current">This week</span><span style="text-align:right" class="col-prev">Last week</span><span style="text-align:right">Change</span></div>
+          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right">This week</span><span style="text-align:right">Last week</span><span style="text-align:right">Change</span></div>
           <div class="metric-row"><span class="metric-name">New contacts</span><span class="metric-desc">Total new contacts created (all sources)</span><span class="metric-val" id="m-contacts">—</span><span class="metric-prev" id="mp-contacts">—</span><span class="metric-chg chg-neutral" id="mc-contacts">—</span></div>
         </div>
       </div>
       <div class="metrics-section">
         <div class="section-title">GA4 — engagement &amp; bounce</div>
         <div class="metric-table">
-          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right" class="col-current">This week</span><span style="text-align:right" class="col-prev">Last week</span><span style="text-align:right">Change</span></div>
+          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right">This week</span><span style="text-align:right">Last week</span><span style="text-align:right">Change</span></div>
           <div class="metric-row"><span class="metric-name">Bounce rate</span><span class="metric-desc">Sessions with no interaction. Lower is better.</span><span class="metric-val" id="m-bounce">—</span><span class="metric-prev" id="mp-bounce">—</span><span class="metric-chg chg-neutral" id="mc-bounce">—</span></div>
           <div class="metric-row"><span class="metric-name">Pages / session</span><span class="metric-desc">Average pages viewed per visit</span><span class="metric-val" id="m-pps">—</span><span class="metric-prev" id="mp-pps">—</span><span class="metric-chg chg-neutral" id="mc-pps">—</span></div>
           <div class="metric-row"><span class="metric-name">Avg. session duration</span><span class="metric-desc">Mean time spent per visit</span><span class="metric-val" id="m-duration">—</span><span class="metric-prev" id="mp-duration">—</span><span class="metric-chg chg-neutral" id="mc-duration">—</span></div>
@@ -576,23 +553,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   </div><!-- /content -->
 </div><!-- /dashboard -->
 
-<!-- ACTION GUIDE MODAL -->
-<div class="modal-overlay" id="action-modal" onclick="closeActionModal(event)">
-  <div class="action-modal-box">
-    <div class="action-modal-header">
-      <div style="display:flex;align-items:flex-start;gap:12px;">
-        <div class="action-modal-num" id="am-num">1</div>
-        <div>
-          <div class="action-modal-title" id="am-title">—</div>
-          <div class="action-modal-why" id="am-why">—</div>
-        </div>
-      </div>
-      <button class="modal-close" onclick="closeActionModal()">&#10005;</button>
-    </div>
-    <div class="action-modal-body" id="am-body"></div>
-  </div>
-</div>
-
 <!-- CWV MODAL -->
 <div class="modal-overlay" id="cwv-modal" onclick="closeCwvModal(event)">
   <div class="modal-box">
@@ -675,12 +635,7 @@ function startDashboard(){
   if(channelChart){channelChart.destroy();channelChart=null;}
   if(impClickChart){impClickChart.destroy();impClickChart=null;}
   initCharts();
-  if(cfg.demo){loadDemoData();}
-  else{
-    const cached=loadRangeData('week');
-    if(cached){renderFromCache(cached);}
-    else{showEmptyState();}
-  }
+  if(!cfg.demo)refreshAll();else loadDemoData();
 }
 
 // TABS
@@ -743,47 +698,14 @@ function setKpiDelta(id,cur,prev,lowerBetter=false){
   const pct=pctChange(cur,prev);
   if(pct===null)return;
   const better=lowerBetter?pct<0:pct>0;
-  const arrow=better?'↑':'↓';
-  el.textContent=arrow+' '+Math.abs(Math.round(pct))+'% vs prev. week';
+  const arrow=pct>0?'↑':'↓';
+  el.textContent=arrow+' '+Math.abs(Math.round(pct))+'% vs last week';
   el.className='kpi-delta '+(better?'delta-up':'delta-down');
 }
 
 // DATE HELPERS
 function isoDate(d){return d.toISOString().split('T')[0];}
 function daysAgo(n){const d=new Date();d.setDate(d.getDate()-n);return d;}
-
-// CACHE
-const CACHE_PFX='wdm_live_';
-function saveRangeData(range,payload){
-  try{localStorage.setItem(CACHE_PFX+range,JSON.stringify({ts:Date.now(),payload}));}catch(e){console.warn('Cache write failed',e);}
-}
-function loadRangeData(range){
-  try{const raw=localStorage.getItem(CACHE_PFX+range);return raw?JSON.parse(raw):null;}catch(e){return null;}
-}
-function renderFromCache(cached){
-  if(!cached)return false;
-  const {ga4cur,ga4prev,gsccur,gscprev,psi,hsRaw,kwRaw}=cached.payload;
-  renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hsRaw,kwRaw);
-  renderKeywords(kwRaw);
-  const d=new Date(cached.ts);
-  const ago=Math.round((Date.now()-cached.ts)/60000);
-  const agoStr=ago<1?'just now':ago<60?ago+'m ago':Math.round(ago/60)+'h ago';
-  document.getElementById('last-updated').textContent='Cached '+agoStr+' ('+d.toLocaleDateString()+' '+d.toLocaleTimeString()+')';
-  return true;
-}
-function showEmptyState(){
-  document.getElementById('last-updated').textContent='No data — click Refresh to load';
-}
-
-// DATE RANGE (this week only)
-function getDateRange(){
-  return{
-    start:isoDate(daysAgo(6)),
-    end:isoDate(new Date()),
-    prevStart:isoDate(daysAgo(13)),
-    prevEnd:isoDate(daysAgo(7))
-  };
-}
 function getWeekNum(d){const j=new Date(d.getFullYear(),0,1);return Math.ceil(((d-j)/86400000+j.getDay()+1)/7);}
 
 // CHARTS
@@ -1029,6 +951,7 @@ function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,kwRaw){
     }
   }
   rebuildTrendChart();
+  document.getElementById('last-updated').textContent='Updated: '+new Date().toLocaleTimeString();
   updateBenchmarks(gsccur, psi, ga4cur);
   lastIntelData={gsccur,gscprev,psi,ga4cur,ga4prev,kwRaw:kwRaw||null};
   generateIntelligence();
@@ -1180,25 +1103,23 @@ function generateIntelligence(){
   // ── Priority actions ──────────────────────────────────────
   const actions=[];
   if(gsccur&&gsccur.position>10&&gsccur.position<=25)
-    actions.push({key:'positions',head:'Push positions 11–20 onto page one',detail:'Identify your highest-impression keywords ranking 11–20 and update their pages: improve headings, add internal links, and expand thin content.'});
+    actions.push({head:'Push positions 11–20 onto page one',detail:'Identify your highest-impression keywords ranking 11–20 and update their pages: improve headings, add internal links, and expand thin content.'});
   if(gsccur&&gsccur.ctr<2)
-    actions.push({key:'ctr',head:'Rewrite meta titles for high-impression pages',detail:'A CTR under 2% suggests weak titles. Test benefit-led, question-based, or number-driven formats on your top 5 pages by impression.'});
+    actions.push({head:'Rewrite meta titles for high-impression pages',detail:'A CTR under 2% suggests weak titles. Test benefit-led, question-based, or number-driven formats on your top 5 pages by impression.'});
   if(psi&&psi.mobile&&psi.mobile.performance<75){
-    const cwvM=psi.mobile.lcpNum>4000?'LCP':psi.mobile.inpNum>500?'INP':psi.mobile.clsNum>0.25?'CLS':'LCP';
-    actions.push({key:'cwv',cwvMetric:cwvM,head:`Fix ${cwvM} — your biggest technical bottleneck`,detail:`Your ${cwvM} is the primary drag on Core Web Vitals. Fixing it will improve both rankings and user experience.`});
+    const worst2=psi.mobile.lcpNum>4000?'LCP':psi.mobile.inpNum>500?'INP':psi.mobile.clsNum>0.25?'CLS':'mobile speed';
+    actions.push({head:`Fix ${worst2} — your biggest technical bottleneck`,detail:'Open this dashboard\'s Core Web Vitals tab and click the failing metric for a prioritized fix list.'});
   }
   if(ga4cur&&ga4cur.bounce>0.6)
-    actions.push({key:'bounce',head:'Reduce bounce rate on top landing pages',detail:'Match page content more closely to search intent. Add a clear above-the-fold CTA and ensure the page loads fast on mobile.'});
+    actions.push({head:'Reduce bounce rate on top landing pages',detail:'Match page content more closely to search intent. Add a clear above-the-fold CTA and ensure the page loads fast on mobile.'});
   if(gsccur&&gsccur.ctr>=2&&gsccur&&gsccur.position>15)
-    actions.push({key:'internal-links',head:'Build internal links to ranking pages',detail:'Pages ranking 15–25 often just need more internal link authority. Add links from your homepage and high-traffic blog posts.'});
+    actions.push({head:'Build internal links to ranking pages',detail:'Pages ranking 15–25 often just need more internal link authority. Add links from your homepage and high-traffic blog posts.'});
   if(actions.length===0)
-    actions.push({key:'generic',head:'Maintain current momentum',detail:'All key metrics are in a healthy range. Focus on publishing new content targeting keywords in positions 11–20 to capture more organic traffic.'});
+    actions.push({head:'Maintain current momentum',detail:'All key metrics are in a healthy range. Focus on publishing new content targeting keywords in positions 11–20 to capture more organic traffic.'});
 
-  // Store actions for modal use
-  window._actions=actions.slice(0,3);
   let actHtml='<div class="intel-actions-title">'+icoActions+'Top priority actions</div><div class="intel-action-list">';
   actions.slice(0,3).forEach((a,i)=>{
-    actHtml+=`<div class="intel-action" onclick="openActionModal(${i})"><div class="intel-action-num">${i+1}</div><div class="intel-action-text"><strong>${a.head}</strong><span>${a.detail}</span></div><div class="intel-action-arrow">›</div></div>`;
+    actHtml+=`<div class="intel-action"><div class="intel-action-num">${i+1}</div><div class="intel-action-text"><strong>${a.head}</strong><span>${a.detail}</span></div></div>`;
   });
   actHtml+='</div>';
   document.getElementById('ic-actions').innerHTML=actHtml;
@@ -1273,19 +1194,15 @@ async function refreshAll(){
   if(cfg.demo){loadDemoData();return;}
   document.getElementById('spin').style.display='block';
   document.getElementById('refresh-lbl').textContent='Fetching…';
-  const {start:startDate,end:endDate,prevStart,prevEnd}=getDateRange();
+  const endDate=isoDate(new Date()),startDate=isoDate(daysAgo(7)),prevEnd=isoDate(daysAgo(7)),prevStart=isoDate(daysAgo(14));
   if(cfg.oauth&&!isGoogleAuthed()){setStatus('ga4',false,'GA4: click "Sign in with Google"');setStatus('gsc',false,'GSC: click "Sign in with Google"');}
   notify('Fetching live data…','info');
   const [ga4Raw,ga4PrevRaw,gscRaw,gscPrevRaw,psiRaw,hsRaw,kwRaw]=await Promise.all([fetchGA4Week(cfg,startDate,endDate),fetchGA4Week(cfg,prevStart,prevEnd),fetchGSCWeek(cfg,startDate,endDate),fetchGSCWeek(cfg,prevStart,prevEnd),fetchPageSpeed(cfg),fetchHubSpot(cfg),fetchGSCKeywords(cfg)]);
   const ga4cur=ga4Raw?processGA4Rows(ga4Raw):null,ga4prev=ga4PrevRaw?processGA4Rows(ga4PrevRaw):null,gsccur=gscRaw?processGSCRows(gscRaw):null,gscprev=gscPrevRaw?processGSCRows(gscPrevRaw):null,psi=psiRaw?processPSI(psiRaw):null;
   if(!ga4cur&&!gsccur&&!psi&&hsRaw===null)notify('Could not connect to any API. Check credentials in Settings.','error');
-  else{
-    notify('Data refreshed!','success');
-    saveRangeData('week',{ga4cur,ga4prev,gsccur,gscprev,psi,hsRaw,kwRaw});
-  }
+  else notify('Data refreshed!','success');
   renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hsRaw,kwRaw);
   renderKeywords(kwRaw);
-  document.getElementById('last-updated').textContent='Live: '+new Date().toLocaleTimeString();
   document.getElementById('spin').style.display='none';
   document.getElementById('refresh-lbl').textContent='↻ Refresh data';
 }
@@ -1316,193 +1233,6 @@ function loadDemoData(){
   if(stored.weeks.length<2){stored.weeks=[{label:'W40',sessions:1820,ctr:2.1},{label:'W41',sessions:2100,ctr:2.3},{label:'W42',sessions:2340,ctr:2.5},{label:'W43',sessions:2180,ctr:2.4},{label:'W44',sessions:2510,ctr:2.7},{label:'W45',sessions:2760,ctr:2.9},{label:'W46',sessions:2850,ctr:3.1},{label:'W47',sessions:3180,ctr:3.25}];saveData(stored);}
   renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,demoKeywords);
   notify('Demo data loaded. Add API keys in Settings for live data.','info');
-}
-
-// ACTION GUIDE MODAL
-function closeActionModal(e){
-  if(e&&e.target!==document.getElementById('action-modal'))return;
-  document.getElementById('action-modal').classList.remove('open');
-}
-function openActionModal(idx){
-  const a=window._actions&&window._actions[idx];
-  if(!a)return;
-  const d=lastIntelData||{};
-  const {gsccur,gscprev,psi,ga4cur,kwRaw}=d;
-
-  document.getElementById('am-num').textContent=idx+1;
-  document.getElementById('am-title').textContent=a.head;
-
-  // Build data-driven guide based on action key
-  const key=a.key||'generic';
-  let why='', body='';
-
-  // ── helper: data table ────────────────────────────────────
-  function dataTable(cols,rows){
-    const colStyle=cols.map(c=>`${c.w||'1fr'}`).join(' ');
-    let h=`<div class="action-data-table"><div class="action-data-row header" style="grid-template-columns:${colStyle}">`;
-    h+=cols.map(c=>`<span>${c.label}</span>`).join('');
-    h+='</div>';
-    rows.forEach(r=>{
-      h+=`<div class="action-data-row" style="grid-template-columns:${colStyle}">`;
-      h+=r.map((cell,i)=>`<span style="${cols[i]&&cols[i].style||''}">${cell}</span>`).join('');
-      h+='</div>';
-    });
-    return h+'</div>';
-  }
-  function steps(arr){
-    return '<div class="action-steps">'+arr.map((s,i)=>`<div class="action-step"><div class="action-step-num">${i+1}</div><div class="action-step-body">${s}</div></div>`).join('')+'</div>';
-  }
-  function resources(arr){
-    return '<div class="action-resources">'+arr.map(r=>`<a class="action-resource" href="${r.url}" target="_blank" rel="noopener">↗ ${r.label}</a>`).join('')+'</div>';
-  }
-  function section(label,content){
-    return `<div><div class="action-section-label">${label}</div>${content}</div>`;
-  }
-
-  // ── Build guide per action type ───────────────────────────
-  if(key==='positions'){
-    const pos=gsccur?gsccur.position.toFixed(1):'?';
-    why=`Your avg. position is ${pos} — there are keywords just below page one to push up.`;
-    // Find keywords ranking 11-20 sorted by impressions
-    const targets=kwRaw&&kwRaw.rows?kwRaw.rows.filter(r=>r.position>10&&r.position<=25).sort((a,b)=>b.impressions-a.impressions).slice(0,8):[];
-    const tableSection=targets.length?section('Your keywords to target (pos 11–25, sorted by impressions)',
-      dataTable(
-        [{label:'Keyword',w:'2fr'},{label:'Position',w:'70px',style:'text-align:right'},{label:'Impressions',w:'90px',style:'text-align:right'},{label:'CTR',w:'60px',style:'text-align:right'}],
-        targets.map(r=>[r.keys[0],r.position.toFixed(1),r.impressions.toLocaleString(),(r.ctr*100).toFixed(1)+'%'])
-      )
-    ):'';
-    body=tableSection+section('Step-by-step guide',steps([
-      '<strong>Pick your top 3 targets</strong> — choose the keywords above with the highest impressions and position closest to 10.',
-      '<strong>Audit the landing page</strong> — open Google Search Console → Performance → filter by keyword → click the page. Is the content directly answering search intent?',
-      '<strong>Improve the H1 and title tag</strong> — make sure the exact keyword phrase appears in the H1. Avoid keyword stuffing; one clear, natural mention is enough.',
-      '<strong>Expand thin content</strong> — pages with under 600 words rarely hold position 1–10 for competitive terms. Add an FAQ section, comparison table, or deeper explanation.',
-      '<strong>Add 2–3 internal links</strong> — link from your homepage or other high-traffic pages to the target page using the keyword as anchor text.',
-      '<strong>Request indexing</strong> — after updating, go to Google Search Console → URL Inspection → Request Indexing to speed up re-crawl.',
-    ]))+section('Useful tools',resources([
-      {label:'Google Search Console — Performance',url:'https://search.google.com/search-console/performance/search-analytics'},
-      {label:'Google Search Console — URL Inspection',url:'https://search.google.com/search-console'},
-    ]));
-
-  } else if(key==='ctr'){
-    const ctr=gsccur?gsccur.ctr.toFixed(1)+'%':'?';
-    why=`Your CTR is ${ctr} — improving meta titles on high-impression pages can lift clicks without ranking higher.`;
-    const topByImp=kwRaw&&kwRaw.rows?kwRaw.rows.slice().sort((a,b)=>b.impressions-a.impressions).slice(0,6):[];
-    const tableSection=topByImp.length?section('Highest-impression keywords (rewrite these pages first)',
-      dataTable(
-        [{label:'Keyword',w:'2fr'},{label:'Impressions',w:'90px',style:'text-align:right'},{label:'CTR',w:'60px',style:'text-align:right'}],
-        topByImp.map(r=>[r.keys[0],r.impressions.toLocaleString(),(r.ctr*100).toFixed(1)+'%'])
-      )
-    ):'';
-    body=tableSection+section('Step-by-step guide',steps([
-      '<strong>Find the landing page for each keyword</strong> — in GSC → Performance, filter by keyword, then switch to Pages tab to see which page ranks for it.',
-      '<strong>Rewrite the title tag</strong> — lead with the benefit, not the brand. E.g. instead of "Planima – Underhållsplan" try "Skapa en underhållsplan på 10 minuter | Planima".',
-      '<strong>Test question-based formats</strong> — titles starting with "Hur", "Vad är", or a number ("5 sätt att...") often outperform flat descriptive titles.',
-      '<strong>Update the meta description</strong> — write it as a call to action. Include a key benefit and end with a verb: "Prova gratis" or "Läs mer".',
-      '<strong>Track changes in GSC</strong> — after 2–3 weeks, compare CTR for the updated pages in Search Console Performance.',
-    ]))+section('Useful tools',resources([
-      {label:'Google Search Console — Performance',url:'https://search.google.com/search-console/performance/search-analytics'},
-      {label:'Sistrix SERP Snippet Generator',url:'https://app.sistrix.com/en/serp-snippet-generator'},
-    ]));
-
-  } else if(key==='cwv'){
-    const metric=a.cwvMetric||'LCP';
-    const val=psi&&psi.mobile?psi.mobile[metric.toLowerCase()]||'—':'—';
-    why=`Your ${metric} is ${val} — this is the biggest technical drag on your Core Web Vitals score.`;
-    const cwvSteps={
-      LCP:[
-        '<strong>Identify what the LCP element is</strong> — open Chrome DevTools → Performance tab → run a recording and find the element marked "LCP". Usually a hero image or large heading.',
-        '<strong>Preload the LCP image</strong> — add <code>&lt;link rel="preload" as="image" href="hero.webp"&gt;</code> in your &lt;head&gt;. This tells the browser to fetch it before parsing the rest of the page.',
-        '<strong>Convert images to WebP/AVIF</strong> — these formats are 30–50% smaller than JPEG/PNG. Most WordPress plugins (Smush, ShortPixel) handle this automatically.',
-        '<strong>Reduce server response time (TTFB)</strong> — aim for under 600 ms. Use a caching plugin (WP Rocket, LiteSpeed Cache) and a CDN (Cloudflare is free).',
-        '<strong>Remove render-blocking scripts</strong> — defer non-critical JS with <code>defer</code> attribute. Use Query Monitor to identify slow scripts.',
-      ],
-      CLS:[
-        '<strong>Add explicit width and height to all images</strong> — without these, the browser can\'t reserve space before the image loads, causing layout shift.',
-        '<strong>Reserve space for web fonts</strong> — add <code>font-display: swap</code> to your @font-face declarations so text renders immediately with a fallback font.',
-        '<strong>Audit third-party embeds</strong> — chat widgets, cookie banners, and ad slots that inject content above the fold are the #1 CLS culprit.',
-        '<strong>Use CSS aspect-ratio containers</strong> — wrap iframes and videos in a div with <code>aspect-ratio: 16/9</code> so the space is reserved before they load.',
-      ],
-      INP:[
-        '<strong>Find slow interactions with Chrome DevTools</strong> — open Performance Insights panel, interact with the page, and look for interactions over 200 ms.',
-        '<strong>Break up long JavaScript tasks</strong> — any task over 50 ms blocks the main thread. Split heavy work with <code>setTimeout(fn, 0)</code> or the Scheduler API.',
-        '<strong>Audit third-party scripts</strong> — chat widgets, analytics, and tag managers add main-thread work. Load them after user interaction where possible.',
-        '<strong>Debounce event handlers</strong> — scroll and input events fire continuously. Use a debounce helper to prevent handlers from running on every frame.',
-      ],
-    };
-    const stepsArr=cwvSteps[metric]||cwvSteps.LCP;
-    body=section('Step-by-step guide',steps(stepsArr))+section('Useful tools',resources([
-      {label:'PageSpeed Insights — planima.se',url:'https://pagespeed.web.dev/report?url=https://planima.se'},
-      {label:'web.dev — Core Web Vitals',url:'https://web.dev/articles/vitals'},
-      {label:'Chrome DevTools — Performance',url:'https://developer.chrome.com/docs/devtools/performance'},
-    ]));
-
-  } else if(key==='bounce'){
-    const bounce=ga4cur?Math.round(ga4cur.bounce*100)+'%':'?';
-    why=`Your bounce rate is ${bounce} — visitors are leaving without engaging. Aligning content with search intent will help.`;
-    body=section('Step-by-step guide',steps([
-      '<strong>Identify your highest-bounce landing pages</strong> — in GA4 → Reports → Engagement → Landing page. Sort by Bounce rate descending.',
-      '<strong>Match content to search intent</strong> — open GSC and check which queries bring traffic to each page. Does the page immediately answer what the searcher expected?',
-      '<strong>Improve above-the-fold content</strong> — the first 600 pixels should answer: what is this page, who is it for, and what should I do next.',
-      '<strong>Add a clear CTA</strong> — every landing page should have one primary action. For Planima this is likely a demo request or free trial button.',
-      '<strong>Check mobile experience</strong> — if your mobile speed score is under 75, slow load times inflate bounce rate artificially. Fix speed first.',
-    ]))+section('Useful tools',resources([
-      {label:'GA4 — Landing page report',url:'https://analytics.google.com'},
-      {label:'Google Search Console — Performance',url:'https://search.google.com/search-console'},
-    ]));
-
-  } else if(key==='internal-links'){
-    const pos=gsccur?gsccur.position.toFixed(1):'?';
-    why=`Pages ranking around position ${pos} often just need more internal link authority to break into the top 10.`;
-    const targets=kwRaw&&kwRaw.rows?kwRaw.rows.filter(r=>r.position>10&&r.position<=25).sort((a,b)=>b.impressions-a.impressions).slice(0,5):[];
-    const tableSection=targets.length?section('Priority pages to link to',
-      dataTable(
-        [{label:'Keyword',w:'2fr'},{label:'Position',w:'70px',style:'text-align:right'},{label:'Impressions',w:'90px',style:'text-align:right'}],
-        targets.map(r=>[r.keys[0],r.position.toFixed(1),r.impressions.toLocaleString()])
-      )
-    ):'';
-    body=tableSection+section('Step-by-step guide',steps([
-      '<strong>Find the landing page for each target keyword</strong> — GSC → Performance → filter by keyword → Pages tab.',
-      '<strong>Add links from your homepage</strong> — the homepage typically has the highest internal PageRank. One contextual link to each target page makes a measurable difference.',
-      '<strong>Add links from related blog posts</strong> — search your own site for articles that mention the same topic and add a link with keyword-rich anchor text.',
-      '<strong>Use descriptive anchor text</strong> — instead of "click here", use the target keyword phrase. E.g. "läs mer om underhållsplan fastighet".',
-      '<strong>Avoid over-optimisation</strong> — 2–3 new internal links per page per month is plenty. Focus on the highest-impression pages first.',
-    ]))+section('Useful tools',resources([
-      {label:'Google Search — site:planima.se [keyword]',url:'https://www.google.com/search?q=site:planima.se'},
-      {label:'Ahrefs Internal Link Checker (free)',url:'https://ahrefs.com/internal-link-checker'},
-    ]));
-
-  } else {
-    // Generic / maintain momentum
-    why='All key metrics are in a healthy range.';
-    body=section('What to focus on now',steps([
-      '<strong>Publish new content</strong> — target 1–2 new articles per month aimed at keywords in positions 11–20 where you already have authority.',
-      '<strong>Monitor weekly trends</strong> — use this dashboard\'s Overview tab to catch any drops early before they compound.',
-      '<strong>Run a quarterly CWV audit</strong> — Core Web Vitals scores drift as third-party scripts are added. Re-test every quarter.',
-    ]));
-  }
-
-  document.getElementById('am-why').textContent=why;
-  document.getElementById('am-body').innerHTML=body;
-  document.getElementById('action-modal').classList.add('open');
-}
-
-// ACTION KEY MAPPING — attach to each action at build time
-function buildActionKey(head,gsccur,psi){
-  if(head.includes('position')||head.includes('page one'))return 'positions';
-  if(head.includes('meta title')||head.includes('CTR')||head.includes('ctr'))return 'ctr';
-  if(head.includes('LCP')||head.includes('CLS')||head.includes('INP')||head.includes('technical bottleneck')){
-    // detect which CWV metric
-    let m='LCP';
-    if(psi&&psi.mobile){
-      if(psi.mobile.clsNum>0.25)m='CLS';
-      if(psi.mobile.inpNum>500)m='INP';
-      if(psi.mobile.lcpNum>4000)m='LCP';
-    }
-    return 'cwv';
-  }
-  if(head.includes('bounce'))return 'bounce';
-  if(head.includes('internal link'))return 'internal-links';
-  return 'generic';
 }
 
 // CWV MODAL
