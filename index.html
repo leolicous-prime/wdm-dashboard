@@ -287,7 +287,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 <div id="setup-screen">
   <div class="setup-box">
     <div class="setup-logo">WDM <span>Dashboard</span></div>
-    <p class="setup-sub">Connect your data sources. Credentials are stored locally in your browser only — never sent anywhere.</p>
+    <p class="setup-sub">Anslut dina datakällor. Inloggningsuppgifter lagras lokalt i din webbläsare — skickas aldrig någonstans.</p>
 
     <div class="setup-step">
       <div class="step-header">
@@ -296,13 +296,13 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       </div>
       <div class="step-body">
         <div class="how-to">
-          <div class="how-to-title">Important: add redirect URI in Google Cloud Console</div>
+          <div class="how-to-title">Viktigt: lägg till redirect URI i Google Cloud Console</div>
           <ol>
-            <li>Go to <a href="https://console.cloud.google.com/apis/credentials" target="_blank">console.cloud.google.com/apis/credentials</a></li>
-            <li>Open your Web application OAuth client</li>
-            <li>Under <strong>Authorized redirect URIs</strong>, add: <code>https://leolicous-prime.github.io/wdm-dashboard/</code></li>
-            <li>Under <strong>Authorized JavaScript origins</strong>, confirm: <code>https://leolicous-prime.github.io</code></li>
-            <li>Save and copy the <strong>Client ID</strong></li>
+            <li>Gå till <a href="https://console.cloud.google.com/apis/credentials" target="_blank">console.cloud.google.com/apis/credentials</a></li>
+            <li>Öppna din OAuth-klient för webbapplikation</li>
+            <li>Under <strong>Authorized redirect URIs</strong>, lägg till: <code>https://leolicous-prime.github.io/wdm-dashboard/</code></li>
+            <li>Under <strong>Authorized JavaScript origins</strong>, bekräfta: <code>https://leolicous-prime.github.io</code></li>
+            <li>Spara och kopiera <strong>Client ID</strong></li>
           </ol>
         </div>
         <div class="field-row">
@@ -314,7 +314,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
           <input class="field-input" id="cfg-ga4" type="text" placeholder="e.g. 298509938"/>
         </div>
         <div class="field-row">
-          <div class="field-label">Site URL (Search Console)</div>
+          <div class="field-label">Webbadress (Search Console)</div>
           <input class="field-input" id="cfg-gsc" type="text" placeholder="https://planima.se/"/>
         </div>
         <div class="field-row">
@@ -335,16 +335,16 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
           <input class="field-input" id="cfg-hs" type="text" placeholder="pat-na1-..."/>
         </div>
         <div class="field-row">
-          <div class="field-label">Cloudflare Worker URL <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3)">(required for HubSpot — see Guide tab)</span></div>
+          <div class="field-label">Cloudflare Worker URL <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3)">(krävs för HubSpot — se Guide-fliken)</span></div>
           <input class="field-input" id="cfg-worker" type="text" placeholder="https://wdm-hs-proxy.YOUR_NAME.workers.dev"/>
         </div>
       </div>
     </div>
 
     <div class="setup-footer">
-      <button class="btn-primary" onclick="saveConfig()">Save &amp; open dashboard</button>
-      <button class="btn-ghost" onclick="useDemoData()">Use demo data</button>
-      <span class="setup-note">Credentials stored in your browser only.</span>
+      <button class="btn-primary" onclick="saveConfig()">Spara &amp; öppna dashboard</button>
+      <button class="btn-ghost" onclick="useDemoData()">Använd demodata</button>
+      <span class="setup-note">Inloggningsuppgifter sparas bara i din webbläsare.</span>
     </div>
   </div>
 </div>
@@ -361,18 +361,18 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       </button>
       <button class="btn-sm btn-refresh" onclick="refreshAll()">
         <div class="spinner" id="spin"></div>
-        <span id="refresh-lbl">&#8635; Refresh data</span>
+        <span id="refresh-lbl">&#8635; Uppdatera data</span>
       </button>
-      <button class="btn-sm" onclick="openSettings()">&#9881; Settings</button>
+      <button class="btn-sm" onclick="openSettings()">&#9881; Inställningar</button>
     </div>
   </div>
 
   <div class="content">
     <div class="status-bar" id="status-bar">
-      <div class="status-pill"><div class="status-dot dot-gray" id="dot-ga4"></div><span id="lbl-ga4">GA4 not connected</span></div>
-      <div class="status-pill"><div class="status-dot dot-gray" id="dot-gsc"></div><span id="lbl-gsc">Search Console not connected</span></div>
-      <div class="status-pill"><div class="status-dot dot-gray" id="dot-hs"></div><span id="lbl-hs">HubSpot not connected</span></div>
-      <div class="status-pill"><div class="status-dot dot-gray" id="dot-ps"></div><span id="lbl-ps">PageSpeed not connected</span></div>
+      <div class="status-pill"><div class="status-dot dot-gray" id="dot-ga4"></div><span id="lbl-ga4">GA4 ej ansluten</span></div>
+      <div class="status-pill"><div class="status-dot dot-gray" id="dot-gsc"></div><span id="lbl-gsc">Search Console ej ansluten</span></div>
+      <div class="status-pill"><div class="status-dot dot-gray" id="dot-hs"></div><span id="lbl-hs">HubSpot ej ansluten</span></div>
+      <div class="status-pill"><div class="status-dot dot-gray" id="dot-ps"></div><span id="lbl-ps">PageSpeed ej ansluten</span></div>
     </div>
 
     <div class="tabs">
@@ -387,16 +387,16 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <!-- OVERVIEW -->
     <div id="tab-overview">
       <div class="kpi-grid">
-        <div class="kpi-card c-green"><div class="kpi-header"><div class="kpi-source">GA4</div><div class="kpi-label">Organic sessions</div></div><div class="kpi-value loading" id="kpi-sessions">—</div><div class="kpi-delta delta-neutral" id="d-sessions">loading…</div></div>
-        <div class="kpi-card c-blue"><div class="kpi-header"><div class="kpi-source">GSC</div><div class="kpi-label">Avg. position</div></div><div class="kpi-value loading" id="kpi-position">—</div><div class="kpi-delta delta-neutral" id="d-position">lower is better</div></div>
-        <div class="kpi-card c-teal"><div class="kpi-header"><div class="kpi-source">GSC</div><div class="kpi-label">Click-through rate</div></div><div class="kpi-value loading" id="kpi-ctr">—</div><div class="kpi-delta delta-neutral" id="d-ctr">loading…</div></div>
+        <div class="kpi-card c-green"><div class="kpi-header"><div class="kpi-source">GA4</div><div class="kpi-label">Organic sessions</div></div><div class="kpi-value loading" id="kpi-sessions">—</div><div class="kpi-delta delta-neutral" id="d-sessions">laddar…</div></div>
+        <div class="kpi-card c-blue"><div class="kpi-header"><div class="kpi-source">GSC</div><div class="kpi-label">Avg. position</div></div><div class="kpi-value loading" id="kpi-position">—</div><div class="kpi-delta delta-neutral" id="d-position">lägre är bättre</div></div>
+        <div class="kpi-card c-teal"><div class="kpi-header"><div class="kpi-source">GSC</div><div class="kpi-label">Click-through rate</div></div><div class="kpi-value loading" id="kpi-ctr">—</div><div class="kpi-delta delta-neutral" id="d-ctr">laddar…</div></div>
         <div class="kpi-card c-amber"><div class="kpi-header"><div class="kpi-source">PageSpeed</div><div class="kpi-label">Mobile speed score</div></div><div class="kpi-value loading" id="kpi-speed">—</div><div class="kpi-delta delta-neutral" id="d-speed">0–100</div></div>
-        <div class="kpi-card c-purple"><div class="kpi-header"><div class="kpi-source">GA4</div><div class="kpi-label">Bounce rate</div></div><div class="kpi-value loading" id="kpi-bounce">—</div><div class="kpi-delta delta-neutral" id="d-bounce">loading…</div></div>
-        <div class="kpi-card c-red"><div class="kpi-header"><div class="kpi-source">HubSpot</div><div class="kpi-label">New contacts (week)</div></div><div class="kpi-value loading" id="kpi-conv">—</div><div class="kpi-delta delta-neutral" id="d-conv">loading…</div></div>
+        <div class="kpi-card c-purple"><div class="kpi-header"><div class="kpi-source">GA4</div><div class="kpi-label">Bounce rate</div></div><div class="kpi-value loading" id="kpi-bounce">—</div><div class="kpi-delta delta-neutral" id="d-bounce">laddar…</div></div>
+        <div class="kpi-card c-red"><div class="kpi-header"><div class="kpi-source">HubSpot</div><div class="kpi-label">New contacts (week)</div></div><div class="kpi-value loading" id="kpi-conv">—</div><div class="kpi-delta delta-neutral" id="d-conv">laddar…</div></div>
       </div>
       <div class="chart-grid">
         <div class="chart-card full">
-          <div class="chart-header"><div><div class="chart-title">Weekly trend — organic sessions &amp; CTR</div><div class="chart-subtitle">Last 8 weeks, updated on each refresh.</div></div></div>
+          <div class="chart-header"><div><div class="chart-title">Weekly trend — organic sessions &amp; CTR</div><div class="chart-subtitle">Senaste 8 veckor, uppdateras vid varje uppdatering.</div></div></div>
           <div class="legend-row">
             <div class="legend-item"><div class="legend-dot" style="background:#FFB92A"></div>Organic sessions</div>
             <div class="legend-item"><div class="legend-dot" style="border:2px dashed #F45B80;background:transparent;border-radius:2px;"></div>CTR %</div>
@@ -421,43 +421,43 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <!-- SEO -->
     <div id="tab-seo" style="display:none;">
       <div class="metrics-section">
-        <div class="section-title">Search Console — last 7 days</div>
+        <div class="section-title">Search Console — senaste 7 dagarna</div>
         <div class="metric-table">
-          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right">This week</span><span style="text-align:right">Last week</span><span style="text-align:right">Change</span></div>
-          <div class="metric-row"><span class="metric-name">Impressions</span><span class="metric-desc">Times your pages appeared in search results</span><span class="metric-val" id="m-impressions">—</span><span class="metric-prev" id="mp-impressions">—</span><span class="metric-chg chg-neutral" id="mc-impressions">—</span></div>
-          <div class="metric-row"><span class="metric-name">Total clicks</span><span class="metric-desc">Clicks from Google search to your site</span><span class="metric-val" id="m-clicks">—</span><span class="metric-prev" id="mp-clicks">—</span><span class="metric-chg chg-neutral" id="mc-clicks">—</span></div>
-          <div class="metric-row"><span class="metric-name">Avg. position</span><span class="metric-desc">Mean ranking across all keywords (lower = better)</span><span class="metric-val" id="m-position">—</span><span class="metric-prev" id="mp-position">—</span><span class="metric-chg chg-neutral" id="mc-position">—</span></div>
-          <div class="metric-row"><span class="metric-name">CTR</span><span class="metric-desc">Clicks ÷ impressions — title &amp; description quality</span><span class="metric-val" id="m-ctr">—</span><span class="metric-prev" id="mp-ctr">—</span><span class="metric-chg chg-neutral" id="mc-ctr">—</span></div>
+          <div class="metric-row header"><span>Mätvärde</span><span>Vad det mäter</span><span style="text-align:right">Denna vecka</span><span style="text-align:right">Förra veckan</span><span style="text-align:right">Förändring</span></div>
+          <div class="metric-row"><span class="metric-name">Impressions</span><span class="metric-desc">Antal gånger dina sidor visades i sökresultaten</span><span class="metric-val" id="m-impressions">—</span><span class="metric-prev" id="mp-impressions">—</span><span class="metric-chg chg-neutral" id="mc-impressions">—</span></div>
+          <div class="metric-row"><span class="metric-name">Total clicks</span><span class="metric-desc">Klick från Google-sökning till din webbplats</span><span class="metric-val" id="m-clicks">—</span><span class="metric-prev" id="mp-clicks">—</span><span class="metric-chg chg-neutral" id="mc-clicks">—</span></div>
+          <div class="metric-row"><span class="metric-name">Avg. position</span><span class="metric-desc">Snittposition för alla sökord (lägre = bättre)</span><span class="metric-val" id="m-position">—</span><span class="metric-prev" id="mp-position">—</span><span class="metric-chg chg-neutral" id="mc-position">—</span></div>
+          <div class="metric-row"><span class="metric-name">CTR</span><span class="metric-desc">Klick ÷ visningar — kvalitet på titel &amp; beskrivning</span><span class="metric-val" id="m-ctr">—</span><span class="metric-prev" id="mp-ctr">—</span><span class="metric-chg chg-neutral" id="mc-ctr">—</span></div>
         </div>
       </div>
       <div class="metrics-section">
-        <div class="section-title">GA4 — organic acquisition</div>
+        <div class="section-title">GA4 — organisk trafik</div>
         <div class="metric-table">
-          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right">This week</span><span style="text-align:right">Last week</span><span style="text-align:right">Change</span></div>
-          <div class="metric-row"><span class="metric-name">Organic sessions</span><span class="metric-desc">Visits that arrived via unpaid search</span><span class="metric-val" id="m-sessions">—</span><span class="metric-prev" id="mp-sessions">—</span><span class="metric-chg chg-neutral" id="mc-sessions">—</span></div>
-          <div class="metric-row"><span class="metric-name">Organic users</span><span class="metric-desc">Unique visitors from organic search</span><span class="metric-val" id="m-users">—</span><span class="metric-prev" id="mp-users">—</span><span class="metric-chg chg-neutral" id="mc-users">—</span></div>
-          <div class="metric-row"><span class="metric-name">Engagement rate</span><span class="metric-desc">Sessions where user actively engaged</span><span class="metric-val" id="m-engage">—</span><span class="metric-prev" id="mp-engage">—</span><span class="metric-chg chg-neutral" id="mc-engage">—</span></div>
-          <div class="metric-row"><span class="metric-name">Avg. engagement time</span><span class="metric-desc">Time users actively used the page</span><span class="metric-val" id="m-engtime">—</span><span class="metric-prev" id="mp-engtime">—</span><span class="metric-chg chg-neutral" id="mc-engtime">—</span></div>
+          <div class="metric-row header"><span>Mätvärde</span><span>Vad det mäter</span><span style="text-align:right">Denna vecka</span><span style="text-align:right">Förra veckan</span><span style="text-align:right">Förändring</span></div>
+          <div class="metric-row"><span class="metric-name">Organic sessions</span><span class="metric-desc">Besök via obetald sökning</span><span class="metric-val" id="m-sessions">—</span><span class="metric-prev" id="mp-sessions">—</span><span class="metric-chg chg-neutral" id="mc-sessions">—</span></div>
+          <div class="metric-row"><span class="metric-name">Organic users</span><span class="metric-desc">Unika besökare från organisk sökning</span><span class="metric-val" id="m-users">—</span><span class="metric-prev" id="mp-users">—</span><span class="metric-chg chg-neutral" id="mc-users">—</span></div>
+          <div class="metric-row"><span class="metric-name">Engagement rate</span><span class="metric-desc">Sessioner med aktivt användarengagemang</span><span class="metric-val" id="m-engage">—</span><span class="metric-prev" id="mp-engage">—</span><span class="metric-chg chg-neutral" id="mc-engage">—</span></div>
+          <div class="metric-row"><span class="metric-name">Avg. engagement time</span><span class="metric-desc">Tid användare aktivt använde sidan</span><span class="metric-val" id="m-engtime">—</span><span class="metric-prev" id="mp-engtime">—</span><span class="metric-chg chg-neutral" id="mc-engtime">—</span></div>
         </div>
       </div>
       <div class="metrics-section">
-        <div class="section-title">Top organic pages — last 7 days</div>
+        <div class="section-title">Topporganiska sidor — senaste 7 dagarna</div>
         <div class="metric-table">
-          <div class="metric-row header" style="grid-template-columns:3fr 90px 90px 100px"><span>Page</span><span style="text-align:right">Sessions</span><span style="text-align:right">Bounce</span><span style="text-align:right">Avg. time</span></div>
-          <div id="top-pages-body"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">Loading…</div></div>
+          <div class="metric-row header" style="grid-template-columns:3fr 90px 90px 100px"><span>Sida</span><span style="text-align:right">Sessions</span><span style="text-align:right">Bounce</span><span style="text-align:right">Avg. time</span></div>
+          <div id="top-pages-body"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">Laddar…</div></div>
         </div>
       </div>
       <div class="metrics-section">
-        <div class="section-title">Top keywords — last 30 days</div>
+        <div class="section-title">Toppnyckelord — senaste 30 dagarna</div>
         <div class="metric-table">
           <div class="metric-row kw-row header">
-            <span>Keyword</span>
+            <span>Nyckelord</span>
             <span style="text-align:right">Clicks</span>
             <span style="text-align:right">Impressions</span>
             <span style="text-align:right">Position</span>
             <span style="text-align:right">CTR</span>
           </div>
-          <div id="keywords-body"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">Loading…</div></div>
+          <div id="keywords-body"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">Laddar…</div></div>
         </div>
       </div>
     </div>
@@ -465,34 +465,34 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <!-- PERFORMANCE -->
     <div id="tab-performance" style="display:none;">
       <div class="metrics-section">
-        <div class="section-title">HubSpot — new contacts</div>
+        <div class="section-title">HubSpot — nya kontakter</div>
         <div class="metric-table">
-          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right">This week</span><span style="text-align:right">Last week</span><span style="text-align:right">Change</span></div>
-          <div class="metric-row"><span class="metric-name">New contacts</span><span class="metric-desc">Total new contacts created (all sources)</span><span class="metric-val" id="m-contacts">—</span><span class="metric-prev" id="mp-contacts">—</span><span class="metric-chg chg-neutral" id="mc-contacts">—</span></div>
+          <div class="metric-row header"><span>Mätvärde</span><span>Vad det mäter</span><span style="text-align:right">Denna vecka</span><span style="text-align:right">Förra veckan</span><span style="text-align:right">Förändring</span></div>
+          <div class="metric-row"><span class="metric-name">New contacts</span><span class="metric-desc">Totalt nya kontakter skapade (alla källor)</span><span class="metric-val" id="m-contacts">—</span><span class="metric-prev" id="mp-contacts">—</span><span class="metric-chg chg-neutral" id="mc-contacts">—</span></div>
         </div>
       </div>
       <div class="metrics-section">
-        <div class="section-title">HubSpot — contacts by source (this week)</div>
+        <div class="section-title">HubSpot — kontakter per källa (denna vecka)</div>
         <div class="metric-table">
-          <div class="metric-row header" style="grid-template-columns:2fr 2fr 80px 80px"><span>Source</span><span>Description</span><span style="text-align:right">Contacts</span><span style="text-align:right">Share</span></div>
-          <div id="hs-sources-body"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">Loading…</div></div>
+          <div class="metric-row header" style="grid-template-columns:2fr 2fr 80px 80px"><span>Källa</span><span>Beskrivning</span><span style="text-align:right">Kontakter</span><span style="text-align:right">Andel</span></div>
+          <div id="hs-sources-body"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">Laddar…</div></div>
         </div>
       </div>
       <div class="metrics-section">
-        <div class="section-title">GA4 — engagement &amp; bounce</div>
+        <div class="section-title">GA4 — engagemang &amp; avvisning</div>
         <div class="metric-table">
-          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right">This week</span><span style="text-align:right">Last week</span><span style="text-align:right">Change</span></div>
-          <div class="metric-row"><span class="metric-name">Bounce rate</span><span class="metric-desc">Sessions with no interaction. Lower is better.</span><span class="metric-val" id="m-bounce">—</span><span class="metric-prev" id="mp-bounce">—</span><span class="metric-chg chg-neutral" id="mc-bounce">—</span></div>
-          <div class="metric-row"><span class="metric-name">Pages / session</span><span class="metric-desc">Average pages viewed per visit</span><span class="metric-val" id="m-pps">—</span><span class="metric-prev" id="mp-pps">—</span><span class="metric-chg chg-neutral" id="mc-pps">—</span></div>
-          <div class="metric-row"><span class="metric-name">Avg. session duration</span><span class="metric-desc">Mean time spent per visit</span><span class="metric-val" id="m-duration">—</span><span class="metric-prev" id="mp-duration">—</span><span class="metric-chg chg-neutral" id="mc-duration">—</span></div>
+          <div class="metric-row header"><span>Mätvärde</span><span>Vad det mäter</span><span style="text-align:right">Denna vecka</span><span style="text-align:right">Förra veckan</span><span style="text-align:right">Förändring</span></div>
+          <div class="metric-row"><span class="metric-name">Bounce rate</span><span class="metric-desc">Sessioner utan interaktion. Lägre är bättre.</span><span class="metric-val" id="m-bounce">—</span><span class="metric-prev" id="mp-bounce">—</span><span class="metric-chg chg-neutral" id="mc-bounce">—</span></div>
+          <div class="metric-row"><span class="metric-name">Pages / session</span><span class="metric-desc">Genomsnittliga sidor per besök</span><span class="metric-val" id="m-pps">—</span><span class="metric-prev" id="mp-pps">—</span><span class="metric-chg chg-neutral" id="mc-pps">—</span></div>
+          <div class="metric-row"><span class="metric-name">Avg. session duration</span><span class="metric-desc">Genomsnittlig tid per besök</span><span class="metric-val" id="m-duration">—</span><span class="metric-prev" id="mp-duration">—</span><span class="metric-chg chg-neutral" id="mc-duration">—</span></div>
         </div>
       </div>
     </div>
 
     <!-- CORE WEB VITALS -->
     <div id="tab-vitals" style="display:none;">
-      <p style="font-size:12px;color:var(--text3);margin-bottom:1.5rem;">Click any CWV card to see improvement tips.</p>
-      <div class="section-title" style="margin-bottom:.75rem;">PageSpeed scores</div>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:1.5rem;">Klicka på ett CWV-kort för att se förbättringstips.</p>
+      <div class="section-title" style="margin-bottom:.75rem;">PageSpeed-poäng</div>
       <div class="ps-grid">
         <div class="chart-card">
           <div class="chart-header"><div><div class="chart-title">Mobile</div><div class="chart-subtitle">Live from PageSpeed API</div></div><span class="source-badge badge-ps">PSI</span></div>
@@ -515,13 +515,13 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       </div>
 
       <div class="metrics-section" style="margin-bottom:1.5rem;">
-        <div class="section-title" style="margin-bottom:.75rem;">PageSpeed — top organic pages</div>
+        <div class="section-title" style="margin-bottom:.75rem;">PageSpeed — topporganiska sidor</div>
         <div class="metric-table">
-          <div class="metric-row header" style="grid-template-columns:3fr 70px 70px 70px 70px 80px"><span>Page</span><span style="text-align:right">Perf</span><span style="text-align:right">LCP</span><span style="text-align:right">CLS</span><span style="text-align:right">INP</span><span style="text-align:right">Status</span></div>
-          <div id="pages-psi-body"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">Load data to see per-page scores.</div></div>
+          <div class="metric-row header" style="grid-template-columns:3fr 70px 70px 70px 70px 80px"><span>Sida</span><span style="text-align:right">Perf</span><span style="text-align:right">LCP</span><span style="text-align:right">CLS</span><span style="text-align:right">INP</span><span style="text-align:right">Status</span></div>
+          <div id="pages-psi-body"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">Ladda data för att se sidspecifika poäng.</div></div>
         </div>
       </div>
-      <div class="section-title" style="margin-bottom:.75rem;">Core Web Vitals — mobile (click for improvement tips)</div>
+      <div class="section-title" style="margin-bottom:.75rem;">Core Web Vitals — mobil (klicka för förbättringstips)</div>
       <div class="cwv-strip">
         <div class="cwv-card" onclick="showCwvModal('lcp')"><div class="cwv-top"><span class="cwv-abbr">LCP</span><span class="vital-status" id="vs-lcp">—</span></div><div class="cwv-value" id="v-lcp">—</div><div class="cwv-name">Largest Contentful Paint</div><div class="cwv-target">Target: &lt; 2.5 s</div></div>
         <div class="cwv-card" onclick="showCwvModal('cls')"><div class="cwv-top"><span class="cwv-abbr">CLS</span><span class="vital-status" id="vs-cls">—</span></div><div class="cwv-value" id="v-cls">—</div><div class="cwv-name">Cumulative Layout Shift</div><div class="cwv-target">Target: &lt; 0.1</div></div>
@@ -535,30 +535,30 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <!-- GUIDE -->
     <div id="tab-guide" style="display:none;">
       <div class="guide-card">
-        <div class="guide-title">Weekly review rhythm</div>
-        <div class="guide-sub">Open this dashboard before your weekly check-in and click "Refresh data". Here's what each source gives you:</div>
+        <div class="guide-title">Veckogenomgång</div>
+        <div class="guide-sub">Öppna dashboarden inför din veckovis genomgång och klicka "Uppdatera data". Det här ger varje källa:</div>
         <div class="guide-steps">
-          <div class="guide-step"><div class="guide-step-num">01</div><div class="guide-step-title">Google Analytics 4 <span class="source-badge badge-ga">GA4</span></div><ul class="guide-step-list"><li>Organic sessions &amp; users</li><li>Bounce rate &amp; engagement rate</li><li>Pages per session</li><li>Avg. session duration</li><li>Traffic by channel breakdown</li></ul></div>
-          <div class="guide-step"><div class="guide-step-num">02</div><div class="guide-step-title">Google Search Console <span class="source-badge badge-gsc">GSC</span></div><ul class="guide-step-list"><li>Impressions in Google search</li><li>Total clicks from Google</li><li>Average ranking position</li><li>Click-through rate (CTR)</li></ul></div>
-          <div class="guide-step"><div class="guide-step-num">03</div><div class="guide-step-title">HubSpot <span class="source-badge badge-hs">Service Key</span></div><ul class="guide-step-list"><li>New contacts created this week</li><li>Week-over-week contact growth</li></ul></div>
-          <div class="guide-step"><div class="guide-step-num">04</div><div class="guide-step-title">PageSpeed Insights <span class="source-badge badge-ps">PSI</span></div><ul class="guide-step-list"><li>Mobile &amp; desktop speed score</li><li>LCP, CLS, INP (Core Web Vitals)</li><li>Accessibility &amp; SEO score</li></ul></div>
+          <div class="guide-step"><div class="guide-step-num">01</div><div class="guide-step-title">Google Analytics 4 <span class="source-badge badge-ga">GA4</span></div><ul class="guide-step-list"><li>Organiska sessioner &amp; användare</li><li>Bounce rate &amp; engagement rate</li><li>Sidor per session</li><li>Genomsnittlig sessionslängd</li><li>Trafik fördelat per kanal</li></ul></div>
+          <div class="guide-step"><div class="guide-step-num">02</div><div class="guide-step-title">Google Search Console <span class="source-badge badge-gsc">GSC</span></div><ul class="guide-step-list"><li>Visningar i Google-sökning</li><li>Totala klick från Google</li><li>Genomsnittlig rankingposition</li><li>Click-through rate (CTR)</li></ul></div>
+          <div class="guide-step"><div class="guide-step-num">03</div><div class="guide-step-title">HubSpot <span class="source-badge badge-hs">Service Key</span></div><ul class="guide-step-list"><li>Nya kontakter skapade denna vecka</li><li>Kontakttillväxt vecka för vecka</li></ul></div>
+          <div class="guide-step"><div class="guide-step-num">04</div><div class="guide-step-title">PageSpeed Insights <span class="source-badge badge-ps">PSI</span></div><ul class="guide-step-list"><li>Mobilhastighet &amp; datorhastighetspoäng</li><li>LCP, CLS, INP (Core Web Vitals)</li><li>Tillgänglighets- &amp; SEO-poäng</li></ul></div>
         </div>
       </div>
       <div class="guide-card">
-        <div class="guide-title">What "good" looks like</div>
-        <div class="guide-sub">Reference benchmarks for your weekly review.</div>
+        <div class="guide-title">Vad som är "bra"</div>
+        <div class="guide-sub">Referensvärden för din veckovis genomgång.</div>
         <div class="metric-table">
-          <div class="metric-row header"><span>Metric</span><span>Needs work</span><span style="text-align:right">Good</span><span style="text-align:right">Excellent</span><span style="text-align:right">Planima</span></div>
-          <div class="metric-row"><span class="metric-name">Avg. position</span><span class="metric-desc" style="color:#be185d">Above 30</span><span class="metric-val">Below 20</span><span class="metric-prev" style="color:#15803d">Below 10</span><span style="text-align:right" id="bs-position"><span class="bench-score bs-wait">—</span></span></div>
-          <div class="metric-row"><span class="metric-name">CTR</span><span class="metric-desc" style="color:#be185d">Below 1%</span><span class="metric-val">2–3%</span><span class="metric-prev" style="color:#15803d">5%+</span><span style="text-align:right" id="bs-ctr"><span class="bench-score bs-wait">—</span></span></div>
-          <div class="metric-row"><span class="metric-name">Mobile speed</span><span class="metric-desc" style="color:#be185d">Below 50</span><span class="metric-val">60–74</span><span class="metric-prev" style="color:#15803d">75+</span><span style="text-align:right" id="bs-speed"><span class="bench-score bs-wait">—</span></span></div>
-          <div class="metric-row"><span class="metric-name">LCP</span><span class="metric-desc" style="color:#be185d">Over 4 s</span><span class="metric-val">2.5–4 s</span><span class="metric-prev" style="color:#15803d">Under 2.5 s</span><span style="text-align:right" id="bs-lcp"><span class="bench-score bs-wait">—</span></span></div>
-          <div class="metric-row"><span class="metric-name">CLS</span><span class="metric-desc" style="color:#be185d">Over 0.25</span><span class="metric-val">0.1–0.25</span><span class="metric-prev" style="color:#15803d">Under 0.1</span><span style="text-align:right" id="bs-cls"><span class="bench-score bs-wait">—</span></span></div>
-          <div class="metric-row"><span class="metric-name">Bounce rate</span><span class="metric-desc" style="color:#be185d">Above 70%</span><span class="metric-val">40–60%</span><span class="metric-prev" style="color:#15803d">Below 40%</span><span style="text-align:right" id="bs-bounce"><span class="bench-score bs-wait">—</span></span></div>
+          <div class="metric-row header"><span>Mätvärde</span><span>Behöver förbättras</span><span style="text-align:right">Bra</span><span style="text-align:right">Utmärkt</span><span style="text-align:right">Planima</span></div>
+          <div class="metric-row"><span class="metric-name">Avg. position</span><span class="metric-desc" style="color:#be185d">Över 30</span><span class="metric-val">Under 20</span><span class="metric-prev" style="color:#15803d">Under 10</span><span style="text-align:right" id="bs-position"><span class="bench-score bs-wait">—</span></span></div>
+          <div class="metric-row"><span class="metric-name">CTR</span><span class="metric-desc" style="color:#be185d">Under 1%</span><span class="metric-val">2–3%</span><span class="metric-prev" style="color:#15803d">5%+</span><span style="text-align:right" id="bs-ctr"><span class="bench-score bs-wait">—</span></span></div>
+          <div class="metric-row"><span class="metric-name">Mobile speed</span><span class="metric-desc" style="color:#be185d">Under 50</span><span class="metric-val">60–74</span><span class="metric-prev" style="color:#15803d">75+</span><span style="text-align:right" id="bs-speed"><span class="bench-score bs-wait">—</span></span></div>
+          <div class="metric-row"><span class="metric-name">LCP</span><span class="metric-desc" style="color:#be185d">Över 4 s</span><span class="metric-val">2.5–4 s</span><span class="metric-prev" style="color:#15803d">Under 2.5 s</span><span style="text-align:right" id="bs-lcp"><span class="bench-score bs-wait">—</span></span></div>
+          <div class="metric-row"><span class="metric-name">CLS</span><span class="metric-desc" style="color:#be185d">Över 0.25</span><span class="metric-val">0.1–0.25</span><span class="metric-prev" style="color:#15803d">Under 0.1</span><span style="text-align:right" id="bs-cls"><span class="bench-score bs-wait">—</span></span></div>
+          <div class="metric-row"><span class="metric-name">Bounce rate</span><span class="metric-desc" style="color:#be185d">Över 70%</span><span class="metric-val">40–60%</span><span class="metric-prev" style="color:#15803d">Under 40%</span><span style="text-align:right" id="bs-bounce"><span class="bench-score bs-wait">—</span></span></div>
         </div>
       </div>
       <div style="text-align:center;padding:1rem 0;">
-        <button class="btn-ghost" onclick="openSettings()">&#9881; Update API credentials</button>
+        <button class="btn-ghost" onclick="openSettings()">&#9881; Uppdatera API-uppgifter</button>
       </div>
     </div><!-- /tab-guide -->
 
@@ -566,9 +566,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <div id="tab-intelligence" style="display:none;">
       <div id="intel-empty" class="intel-empty">
         <div class="intel-empty-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor" style="color:var(--text3)"><path fill-rule="evenodd" d="M9 4.5a.75.75 0 0 1 .721.544l.813 2.846a3.75 3.75 0 0 0 2.576 2.576l2.846.813a.75.75 0 0 1 0 1.442l-2.846.813a3.75 3.75 0 0 0-2.576 2.576l-.813 2.846a.75.75 0 0 1-1.442 0l-.813-2.846a3.75 3.75 0 0 0-2.576-2.576l-2.846-.813a.75.75 0 0 1 0-1.442l2.846-.813A3.75 3.75 0 0 0 7.466 7.89l.813-2.846A.75.75 0 0 1 9 4.5ZM18 1.5a.75.75 0 0 1 .728.568l.258 1.036c.236.94.97 1.674 1.91 1.91l1.036.258a.75.75 0 0 1 0 1.456l-1.036.258c-.94.236-1.674.97-1.91 1.91l-.258 1.036a.75.75 0 0 1-1.456 0l-.258-1.036a2.625 2.625 0 0 0-1.91-1.91l-1.036-.258a.75.75 0 0 1 0-1.456l1.036-.258a2.625 2.625 0 0 0 1.91-1.91l.258-1.036A.75.75 0 0 1 18 1.5ZM16.5 15a.75.75 0 0 1 .712.513l.394 1.183c.15.447.5.799.948.948l1.183.395a.75.75 0 0 1 0 1.422l-1.183.395c-.447.15-.799.5-.948.948l-.395 1.183a.75.75 0 0 1-1.422 0l-.395-1.183a1.5 1.5 0 0 0-.948-.948l-1.183-.395a.75.75 0 0 1 0-1.422l1.183-.395c.447-.15.799-.5.948-.948l.395-1.183A.75.75 0 0 1 16.5 15Z" clip-rule="evenodd"/></svg></div>
-        <div class="intel-empty-title">No data to analyze yet</div>
-        <div class="intel-empty-sub">Load data first, then come back here for your intelligence report.</div>
-        <button class="btn-primary" style="margin-top:8px;" onclick="refreshAll()">↻ Load data</button>
+        <div class="intel-empty-title">Ingen data att analysera ännu</div>
+        <div class="intel-empty-sub">Ladda data först, kom sedan tillbaka hit för din Intelligence Report.</div>
+        <button class="btn-primary" style="margin-top:8px;" onclick="refreshAll()">↻ Ladda data</button>
       </div>
       <div id="intel-content" style="display:none;">
         <div class="intel-header">
@@ -579,10 +579,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
               <div class="intel-time" id="intel-time">—</div>
             </div>
           </div>
-          <button class="btn-sm btn-refresh" onclick="generateIntelligence()">↻ Re-analyze</button>
+          <button class="btn-sm btn-refresh" onclick="generateIntelligence()">↻ Analysera igen</button>
         </div>
         <div class="intel-summary-card intel-animate" id="intel-summary-card">
-          <div class="intel-summary-label">Overall assessment</div>
+          <div class="intel-summary-label">Övergripande bedömning</div>
           <div class="intel-summary-text" id="intel-summary-text">—</div>
         </div>
         <div class="intel-grid">
@@ -605,7 +605,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <button class="modal-close" onclick="closeCwvModal()">&#10005;</button>
     </div>
     <div class="modal-metric" id="modal-metric">—</div>
-    <div class="modal-tips-title">How to improve</div>
+    <div class="modal-tips-title">Hur du förbättrar</div>
     <div id="modal-tips"></div>
   </div>
 </div>
@@ -623,7 +623,7 @@ function saveData(d){localStorage.setItem(DATA_KEY,JSON.stringify(d))}
 let googleAccessToken=null,tokenExpiresAt=0;
 function googleSignIn(){
   const cfg=getConfig();
-  if(!cfg.oauth){notify('Add your OAuth Client ID in Settings first.','error');openSettings();return;}
+  if(!cfg.oauth){notify('Lägg till ditt OAuth Client ID i Inställningar först.','error');openSettings();return;}
   const scopes='https://www.googleapis.com/auth/analytics.readonly https://www.googleapis.com/auth/webmasters.readonly';
   const redirectUri=window.location.href.split('?')[0].split('#')[0];
   const p=new URLSearchParams({client_id:cfg.oauth,redirect_uri:redirectUri,response_type:'token',scope:scopes,include_granted_scopes:'true'});
@@ -652,14 +652,14 @@ function isGoogleAuthed(){return!!(googleAccessToken&&Date.now()<tokenExpiresAt)
 function updateGoogleBtn(){
   const btn=document.getElementById('btn-google'),lbl=document.getElementById('google-lbl');
   if(!btn)return;
-  if(isGoogleAuthed()){btn.className='btn-sm btn-google signed-in';lbl.textContent='✓ Google connected';}
+  if(isGoogleAuthed()){btn.className='btn-sm btn-google signed-in';lbl.textContent='✓ Google ansluten';}
   else{btn.className='btn-sm btn-google';lbl.textContent='Sign in with Google';}
 }
 
 // SETUP
 function saveConfig(){
   const cfg={oauth:document.getElementById('cfg-oauth').value.trim(),ga4:document.getElementById('cfg-ga4').value.trim(),gsc:document.getElementById('cfg-gsc').value.trim(),psi:document.getElementById('cfg-psi').value.trim(),hs:document.getElementById('cfg-hs').value.trim(),worker:document.getElementById('cfg-worker').value.trim(),demo:false};
-  if(!cfg.oauth&&!cfg.ga4&&!cfg.gsc&&!cfg.hs){notify('Fill in at least one data source, or use demo data.','error');return;}
+  if(!cfg.oauth&&!cfg.ga4&&!cfg.gsc&&!cfg.hs){notify('Fyll i minst en datakälla, eller använd demodata.','error');return;}
   saveConfigToStorage(cfg);startDashboard();
 }
 function useDemoData(){saveConfigToStorage({demo:true});startDashboard();loadDemoData();}
@@ -743,7 +743,7 @@ function setKpiDelta(id,cur,prev,lowerBetter=false){
   if(pct===null)return;
   const better=lowerBetter?pct<0:pct>0;
   const arrow=pct>0?'↑':'↓';
-  el.textContent=arrow+' '+Math.abs(Math.round(pct))+'% vs last week';
+  el.textContent=arrow+' '+Math.abs(Math.round(pct))+'% vs förra veckan';
   el.className='kpi-delta '+(better?'delta-up':'delta-down');
 }
 
@@ -777,7 +777,7 @@ async function fetchGA4Week(cfg,startDate,endDate){
   const body={dateRanges:[{startDate,endDate}],dimensions:[{name:'sessionDefaultChannelGroup'}],metrics:[{name:'sessions'},{name:'totalUsers'},{name:'bounceRate'},{name:'engagementRate'},{name:'averageSessionDuration'},{name:'screenPageViewsPerSession'}]};
   try{
     const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+googleAccessToken},body:JSON.stringify(body)});
-    if(r.status===401){setStatus('ga4',false,'GA4: session expired — sign in again');googleAccessToken=null;updateGoogleBtn();return null;}
+    if(r.status===401){setStatus('ga4',false,'GA4: session utgången — logga in igen');googleAccessToken=null;updateGoogleBtn();return null;}
     if(!r.ok){console.error('GA4',r.status);return null;}
     return await r.json();
   }catch(e){console.error('GA4',e);return null;}
@@ -803,7 +803,7 @@ async function fetchGSCWeek(cfg,startDate,endDate){
   const url='https://www.googleapis.com/webmasters/v3/sites/'+encodeURIComponent(cfg.gsc)+'/searchAnalytics/query';
   try{
     const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+googleAccessToken},body:JSON.stringify({startDate,endDate,dimensions:['date'],rowLimit:28})});
-    if(r.status===401){setStatus('gsc',false,'GSC: session expired — sign in again');return null;}
+    if(r.status===401){setStatus('gsc',false,'GSC: session utgången — logga in igen');return null;}
     if(!r.ok)return null;
     return await r.json();
   }catch(e){console.error('GSC',e);return null;}
@@ -893,7 +893,7 @@ function renderTopPages(data){
   const el=document.getElementById('top-pages-body');
   if(!el)return;
   if(!data||!data.rows||!data.rows.length){
-    el.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">No page data available.</div>';
+    el.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">Ingen siddata tillgänglig.</div>';
     return;
   }
   el.innerHTML=data.rows.map(row=>{
@@ -942,7 +942,7 @@ function renderHubSpotSources(data){
   const el=document.getElementById('hs-sources-body');
   if(!el)return;
   if(!data||!data.results||!data.results.length){
-    el.innerHTML='<div style="padding:1.25rem;text-align:center;color:var(--text3);font-size:13px;">No contact data this week.</div>';
+    el.innerHTML='<div style="padding:1.25rem;text-align:center;color:var(--text3);font-size:13px;">Ingen kontaktdata denna vecka.</div>';
     return;
   }
   const counts={};
@@ -955,13 +955,13 @@ function renderHubSpotSources(data){
   el.innerHTML=sorted.map(([src,n])=>{
     const pct=Math.round((n/total)*100);
     const label=SOURCE_LABELS[src]||src.replace(/_/g,' ').toLowerCase();
-    const desc=src==='ORGANIC_SEARCH'?'Arrived via unpaid Google search':
-      src==='DIRECT_TRAFFIC'?'Typed URL directly or no referrer':
-      src==='REFERRALS'?'Clicked a link on another website':
-      src==='SOCIAL_MEDIA'?'From organic social post':
-      src==='EMAIL_MARKETING'?'Clicked through from an email':
-      src==='PAID_SEARCH'?'From Google Ads or paid search':
-      src==='PAID_SOCIAL'?'From paid social ad':'—';
+    const desc=src==='ORGANIC_SEARCH'?'Kom via obetald Google-sökning':
+      src==='DIRECT_TRAFFIC'?'Skrev URL direkt eller utan referens':
+      src==='REFERRALS'?'Klickade på en länk på en annan webbplats':
+      src==='SOCIAL_MEDIA'?'Från organiskt inlägg i sociala medier':
+      src==='EMAIL_MARKETING'?'Klickade via ett e-postutskick':
+      src==='PAID_SEARCH'?'Från Google Ads eller betald sökning':
+      src==='PAID_SOCIAL'?'Från betald annons i sociala medier':'—';
     return `<div class="metric-row" style="grid-template-columns:2fr 2fr 80px 80px">
       <span class="metric-name">${label}</span>
       <span class="metric-desc">${desc}</span>
@@ -989,7 +989,7 @@ function renderPagesPSI(results, pagesData){
   const el=document.getElementById('pages-psi-body');
   if(!el)return;
   if(!results||!results.length){
-    el.innerHTML='<div style="padding:1.25rem;text-align:center;color:var(--text3);font-size:13px;">No page PSI data.</div>';
+    el.innerHTML='<div style="padding:1.25rem;text-align:center;color:var(--text3);font-size:13px;">Ingen sidspecifik PSI-data.</div>';
     return;
   }
   el.innerHTML=results.map((item,i)=>{
@@ -1008,7 +1008,7 @@ function renderPagesPSI(results, pagesData){
     const good=perf>=75&&lcpN<2500&&clsN<0.1;
     const ok=perf>=50&&lcpN<4000&&clsN<0.25;
     const statusCls=good?'status-good':ok?'status-needs':'status-poor';
-    const statusLbl=good?'Good':ok?'Needs work':'Poor';
+    const statusLbl=good?'Bra':ok?'Behöver arbete':'Dålig';
     const path=item.url.replace(/^https?:\/\/[^/]+/,'');
     const short=path.length>40?path.slice(0,39)+'…':path||'/';
     const perfColor=perf>=75?'#15803d':perf>=50?'#92580a':'#be185d';
@@ -1039,7 +1039,7 @@ async function fetchGSCKeywords(cfg){
 function renderKeywords(data){
   const el=document.getElementById('keywords-body');
   if(!el)return;
-  if(!data||!data.rows||!data.rows.length){el.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">No keyword data available — sign in with Google to load.</div>';return;}
+  if(!data||!data.rows||!data.rows.length){el.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">Ingen nyckelorddata — logga in med Google för att ladda.</div>';return;}
   el.innerHTML=data.rows.map(r=>{
     const kw=r.keys[0];
     const isBrand=BRAND_KW.has(kw.toLowerCase());
@@ -1097,7 +1097,7 @@ function processPSI(data){
 // API: HubSpot — routed through Cloudflare Worker proxy (bypasses CORS)
 async function fetchHubSpot(cfg){
   if(!cfg.hs)return null;
-  if(!cfg.worker){setStatus('hs',false,'HubSpot: add Worker URL in Settings');return null;}
+  if(!cfg.worker){setStatus('hs',false,'HubSpot: lägg till Worker URL i Inställningar');return null;}
   const now=new Date(),weekAgo=new Date(now-7*24*3600000),twoWeeks=new Date(now-14*24*3600000);
   const mkBody=(after,before)=>JSON.stringify({filterGroups:[{filters:[{propertyName:'createdate',operator:'GTE',value:after.getTime()},{propertyName:'createdate',operator:'LTE',value:before.getTime()}]}],properties:['createdate'],limit:1});
   const headers={'X-HS-Token':cfg.hs,'Content-Type':'application/json'};
@@ -1110,13 +1110,13 @@ async function fetchHubSpot(cfg){
     if(!r1.ok){
       const err=await r1.json().catch(()=>({}));
       console.error('HubSpot',r1.status,err);
-      setStatus('hs',false,r1.status===401?'HubSpot: invalid token':'HubSpot: worker error '+r1.status);
+      setStatus('hs',false,r1.status===401?'HubSpot: ogiltigt token':'HubSpot: worker-fel '+r1.status);
       return null;
     }
     const d1=await r1.json(),d2=r2.ok?await r2.json():null;
-    setStatus('hs',true,'HubSpot connected');
+    setStatus('hs',true,'HubSpot ansluten');
     return{current:d1&&d1.total!=null?d1.total:0,previous:d2&&d2.total!=null?d2.total:0};
-  }catch(e){console.error('HubSpot',e);setStatus('hs',false,'HubSpot: connection failed');return null;}
+  }catch(e){console.error('HubSpot',e);setStatus('hs',false,'HubSpot: anslutning misslyckades');return null;}
 }
 
 // RENDER
@@ -1127,7 +1127,7 @@ function setGauge(circleId,textId,score){
 }
 const CWV_T={lcp:[2500,4000],cls:[0.1,0.25],inp:[200,500],fcp:[1800,3000],tbt:[200,600],si:[3400,5800]};
 function cwvStatus(key,num){if(num===null||num===undefined)return'needs';const t=CWV_T[key];return num<=t[0]?'good':num<=t[1]?'needs':'poor';}
-const CWV_LBL={good:'Good',needs:'Needs work',poor:'Poor'};
+const CWV_LBL={good:'Bra',needs:'Behöver arbete',poor:'Dålig'};
 const CWV_CLS={good:'status-good',needs:'status-needs',poor:'status-poor'};
 
 function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,kwRaw){
@@ -1140,7 +1140,7 @@ function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,kwRaw){
     if(sp)setKpiDelta('sessions',s,sp);
     if(ga4prev)setKpiDelta('bounce',ga4cur.bounce,ga4prev.bounce,true);
     else document.getElementById('d-bounce').textContent='engagement: '+fmtPct(ga4cur.engage*100);
-    setStatus('ga4',true,'GA4 connected');
+    setStatus('ga4',true,'GA4 ansluten');
     channelChart.data.labels=Object.keys(ga4cur.channels);
     channelChart.data.datasets[0].data=Object.values(ga4cur.channels);
     channelChart.update();
@@ -1158,7 +1158,7 @@ function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,kwRaw){
     document.getElementById('kpi-ctr').textContent=fmtPct(gsccur.ctr);
     document.getElementById('kpi-ctr').className='kpi-value';
     if(gscprev){setKpiDelta('position',gsccur.position,gscprev.position,true);setKpiDelta('ctr',gsccur.ctr,gscprev.ctr);}
-    setStatus('gsc',true,'Search Console connected');
+    setStatus('gsc',true,'Search Console ansluten');
     setMetric('impressions',fmt(gsccur.impressions),gscprev?fmt(gscprev.impressions):null);
     setMetric('clicks',fmt(gsccur.clicks),gscprev?fmt(gscprev.clicks):null);
     setMetric('position',fmtPos(gsccur.position),gscprev?fmtPos(gscprev.position):null,true);
@@ -1176,10 +1176,10 @@ function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,kwRaw){
     document.getElementById('kpi-speed').textContent=m.performance;
     document.getElementById('kpi-speed').className='kpi-value';
     const cls=m.performance>=75?'delta-up':m.performance>=50?'delta-neutral':'delta-down';
-    const lbl=m.performance>=75?'Good score':m.performance>=50?'Needs improvement':'Urgent: fix needed';
+    const lbl=m.performance>=75?'Bra poäng':m.performance>=50?'Behöver förbättras':'Kritiskt: kräver åtgärd';
     document.getElementById('d-speed').textContent=lbl;
     document.getElementById('d-speed').className='kpi-delta '+cls;
-    setStatus('ps',true,'PageSpeed connected');
+    setStatus('ps',true,'PageSpeed ansluten');
     setGauge('g-perf-m','gt-perf-m',m.performance);setGauge('g-acc-m','gt-acc-m',m.accessibility);setGauge('g-bp-m','gt-bp-m',m.bestPractices);setGauge('g-seo-m','gt-seo-m',m.seo);
     if(d){setGauge('g-perf-d','gt-perf-d',d.performance);setGauge('g-acc-d','gt-acc-d',d.accessibility);setGauge('g-bp-d','gt-bp-d',d.bestPractices);setGauge('g-seo-d','gt-seo-d',d.seo);}
     [['lcp',m.lcpNum,m.lcp],['cls',m.clsNum,m.cls],['inp',m.inpNum,m.inp],['fcp',m.fcpNum,m.fcp],['tbt',m.tbtNum,m.tbt],['si',m.siNum,m.si]].forEach(([key,num,val])=>{
@@ -1195,7 +1195,7 @@ function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,kwRaw){
     setMetric('contacts',fmt(hs.current),fmt(hs.previous));
   }
   // trend chart is rebuilt by refreshAll after API fetch; no-op here for demo/direct calls
-  document.getElementById('last-updated').textContent='Updated: '+new Date().toLocaleTimeString();
+  document.getElementById('last-updated').textContent='Uppdaterad: '+new Date().toLocaleTimeString();
   updateBenchmarks(gsccur, psi, ga4cur);
   lastIntelData={gsccur,gscprev,psi,ga4cur,ga4prev,kwRaw:kwRaw||null};
   generateIntelligence();
@@ -1222,9 +1222,9 @@ function generateIntelligence(){
     if(lowerBetter)return pct<0?'improving':'declining';
     return pct>0?'improving':'declining';
   }
-  function trendTxt(t){return{improving:'↑ improving',declining:'↓ declining',stable:'→ stable'}[t]||'—';}
+  function trendTxt(t){return{improving:'↑ förbättras',declining:'↓ försämras',stable:'→ stabilt'}[t]||'—';}
   function statusCls(good,ok){return good?'is-strong':ok?'is-developing':'is-attention';}
-  function statusLbl(good,ok){return good?'Strong':ok?'Developing':'Needs attention';}
+  function statusLbl(good,ok){return good?'Starkt':ok?'Under uppbyggnad':'Kräver uppmärksamhet';}
   function finding(dot,text){return`<div class="intel-finding"><div class="intel-finding-dot ${dot}"></div><div>${text}</div></div>`;}
 
   // ── SEO section ──────────────────────────────────────────
@@ -1245,13 +1245,13 @@ function generateIntelligence(){
     const clicks=gsccur.clicks.toLocaleString(), imp=gsccur.impressions.toLocaleString();
 
     let prose='';
-    if(posGood)prose=`Your average position of ${pos} puts you firmly on the first page of Google results. `;
-    else if(posOk)prose=`An average position of ${pos} means you appear on the second page for most queries — closing in on the first page. `;
-    else prose=`An average position of ${pos} indicates limited first-page visibility. Targeting your top-20 keywords for on-page improvements could move the needle quickly. `;
+    if(posGood)prose=`En snittposition på ${pos} placerar dig tydligt på första sidan i Google. `;
+    else if(posOk)prose=`En snittposition på ${pos} innebär att du syns på andra sidan för de flesta sökord — nära att ta sig upp på första sidan. `;
+    else prose=`En snittposition på ${pos} tyder på begränsad synlighet på första sidan. Att optimera dina topp-20-sidor på sidan (on-page) kan ge snabba resultat. `;
 
-    if(ctrGood)prose+=`A CTR of ${ctr} is excellent, suggesting your meta titles and descriptions resonate strongly with searchers.`;
-    else if(ctrOk)prose+=`A CTR of ${ctr} is in line with B2B benchmarks. Testing stronger meta titles for high-impression pages could lift it further.`;
-    else prose+=`A CTR of ${ctr} signals room for improvement — review meta titles on your highest-impression pages.`;
+    if(ctrGood)prose+=`En CTR på ${ctr} är utmärkt och visar att dina metarubriker och beskrivningar tilltalar sökarna.`;
+    else if(ctrOk)prose+=`En CTR på ${ctr} är i linje med B2B-riktmärken. Att testa starkare metarubriker på sidor med hög visningsvolym kan lyfta den ytterligare.`;
+    else prose+=`En CTR på ${ctr} visar att det finns utrymme för förbättring — se över metarubrikerna på dina sidor med flest visningar.`;
 
     seoHtml+=`<div class="intel-prose">${prose}</div><div class="intel-findings">`;
     seoHtml+=finding(posGood?'ifd-good':posOk?'ifd-warn':'ifd-bad',`Avg. position <strong>${pos}</strong> — ${trendTxt(posTrend)}`);
@@ -1263,7 +1263,7 @@ function generateIntelligence(){
     }
     seoHtml+='</div>';
   } else {
-    seoHtml+='<div class="intel-prose" style="color:var(--text3);">No Search Console data loaded. Sign in with Google to see SEO analysis.</div>';
+    seoHtml+='<div class="intel-prose" style="color:var(--text3);">Ingen Search Console-data laddad. Logga in med Google för att se SEO-analys.</div>';
   }
   document.getElementById('ic-seo').innerHTML=seoHtml;
 
@@ -1286,13 +1286,13 @@ function generateIntelligence(){
     if(weeks.length>=3){
       const last=weeks[weeks.length-1].sessions,first=weeks[weeks.length-3].sessions;
       const chg=Math.round(((last-first)/first)*100);
-      wTrend=chg>0?` Traffic is up ${chg}% over the last 3 weeks.`:chg<-3?` Traffic has dipped ${Math.abs(chg)}% over the last 3 weeks — worth investigating.`:'';
+      wTrend=chg>0?` Trafiken har ökat med ${chg}% de senaste 3 veckorna.`:chg<-3?` Trafiken har sjunkit med ${Math.abs(chg)}% de senaste 3 veckorna — värt att undersöka.`:'';
     }
 
     let prose='';
-    if(bounceGood)prose=`Visitors are engaging well — a bounce rate of ${bounce} and engagement rate of ${eng} indicate high content relevance.${wTrend}`;
-    else if(bounceOk)prose=`Engagement is reasonable with a ${bounce} bounce rate. Average session duration of ${dur} shows visitors spend quality time on site.${wTrend}`;
-    else prose=`A ${bounce} bounce rate suggests visitors may not be finding what they expect. Aligning landing page content with top search queries could help.${wTrend}`;
+    if(bounceGood)prose=`Besökarna engagerar sig väl — en bounce rate på ${bounce} och engagement rate på ${eng} tyder på hög innehållsrelevans.${wTrend}`;
+    else if(bounceOk)prose=`Engagemanget är rimligt med en bounce rate på ${bounce}. Genomsnittlig sessionslängd på ${dur} visar att besökarna spenderar kvalitetstid på webbplatsen.${wTrend}`;
+    else prose=`En bounce rate på ${bounce} tyder på att besökarna kanske inte hittar det de söker. Att anpassa landningssidornas innehåll till de viktigaste sökordsfrågorna kan hjälpa.${wTrend}`;
 
     perfHtml+=`<div class="intel-prose">${prose}</div><div class="intel-findings">`;
     perfHtml+=finding(bounceGood?'ifd-good':bounceOk?'ifd-warn':'ifd-bad',`Bounce rate <strong>${bounce}</strong> — ${trendTxt(bounceTrend)}`);
@@ -1301,7 +1301,7 @@ function generateIntelligence(){
     perfHtml+=finding((sessTrend==='improving'?'ifd-good':sessTrend==='declining'?'ifd-bad':'ifd-warn'),`Organic sessions <strong>${sessions}</strong> — ${trendTxt(sessTrend)}`);
     perfHtml+='</div>';
   } else {
-    perfHtml+='<div class="intel-prose" style="color:var(--text3);">No GA4 data loaded. Sign in with Google to see performance analysis.</div>';
+    perfHtml+='<div class="intel-prose" style="color:var(--text3);">Ingen GA4-data laddad. Logga in med Google för att se prestandaanalys.</div>';
   }
   document.getElementById('ic-performance').innerHTML=perfHtml;
 
@@ -1325,11 +1325,11 @@ function generateIntelligence(){
     })[0];
 
     let prose='';
-    if(cwvGood)prose=`Mobile speed score of ${mScore} is solid. ${passing} of 3 Core Web Vitals pass the "good" threshold.`;
-    else if(cwvOk)prose=`Mobile speed score of ${mScore} is acceptable but below the 75+ target. ${passing} of 3 Core Web Vitals meet the "good" threshold — there is room to improve.`;
-    else prose=`Mobile speed score of ${mScore} is below the recommended 60 threshold. This may impact rankings and user experience.`;
+    if(cwvGood)prose=`Mobile speed score på ${mScore} är starkt. ${passing} av 3 Core Web Vitals klarar gränsvärdet "bra".`;
+    else if(cwvOk)prose=`Mobile speed score på ${mScore} är godkänt men under målsättningen 75+. ${passing} av 3 Core Web Vitals klarar gränsvärdet "bra" — det finns utrymme för förbättring.`;
+    else prose=`Mobile speed score på ${mScore} är under det rekommenderade gränsvärdet 60. Det kan påverka rankingar och användarupplevelse.`;
 
-    if(worst)prose+=` The biggest opportunity is <strong>${worst.key}</strong> at ${worst.val} — addressing this will have the most impact on your CWV score.`;
+    if(worst)prose+=` Den största möjligheten är <strong>${worst.key}</strong> på ${worst.val} — att åtgärda detta ger störst effekt på ditt CWV-resultat.`;
 
     cwvHtml+=`<div class="intel-prose">${prose}</div><div class="intel-findings">`;
     cwvHtml+=finding(cwvGood?'ifd-good':cwvOk?'ifd-warn':'ifd-bad',`Mobile speed <strong>${mScore}</strong> / 100 (desktop: ${psi.desktop?psi.desktop.performance:'-'})`);
@@ -1340,29 +1340,29 @@ function generateIntelligence(){
     });
     cwvHtml+='</div>';
   } else {
-    cwvHtml+='<div class="intel-prose" style="color:var(--text3);">No PageSpeed data loaded. Add your PSI API key in Settings.</div>';
+    cwvHtml+='<div class="intel-prose" style="color:var(--text3);">Ingen PageSpeed-data laddad. Lägg till din PSI API-nyckel i Inställningar.</div>';
   }
   document.getElementById('ic-cwv').innerHTML=cwvHtml;
 
   // ── Priority actions ──────────────────────────────────────
   const actions=[];
   if(gsccur&&gsccur.position>10&&gsccur.position<=25)
-    actions.push({head:'Push positions 11–20 onto page one',detail:'Identify your highest-impression keywords ranking 11–20 and update their pages: improve headings, add internal links, and expand thin content.'});
+    actions.push({head:'Flytta positioner 11–20 till första sidan',detail:'Identifiera dina sökord med flest visningar på position 11–20 och uppdatera sidorna: förbättra rubriker, lägg till interna länkar och utöka tunt innehåll.'});
   if(gsccur&&gsccur.ctr<2)
-    actions.push({head:'Rewrite meta titles for high-impression pages',detail:'A CTR under 2% suggests weak titles. Test benefit-led, question-based, or number-driven formats on your top 5 pages by impression.'});
+    actions.push({head:'Skriv om metarubriker för sidor med hög visningsvolym',detail:'En CTR under 2% tyder på svaga rubriker. Testa nyttoledda, frågabaserade eller sifferbaserade format på dina 5 bästa sidor sett till visningar.'});
   if(psi&&psi.mobile&&psi.mobile.performance<75){
     const worst2=psi.mobile.lcpNum>4000?'LCP':psi.mobile.inpNum>500?'INP':psi.mobile.clsNum>0.25?'CLS':'mobile speed';
-    actions.push({head:`Fix ${worst2} — your biggest technical bottleneck`,detail:'Open this dashboard\'s Core Web Vitals tab and click the failing metric for a prioritized fix list.'});
+    actions.push({head:`Åtgärda ${worst2} — din största tekniska flaskhals`,detail:'Öppna fliken Core Web Vitals i dashboarden och klicka på det mätvärde som inte når målet för en prioriterad åtgärdslista.'});
   }
   if(ga4cur&&ga4cur.bounce>0.6)
-    actions.push({head:'Reduce bounce rate on top landing pages',detail:'Match page content more closely to search intent. Add a clear above-the-fold CTA and ensure the page loads fast on mobile.'});
+    actions.push({head:'Minska bounce rate på topplandningssidor',detail:'Anpassa sidans innehåll till sökavsikten. Lägg till en tydlig CTA ovanför ditt "fold" och se till att sidan laddar snabbt på mobil.'});
   if(gsccur&&gsccur.ctr>=2&&gsccur&&gsccur.position>15)
-    actions.push({head:'Build internal links to ranking pages',detail:'Pages ranking 15–25 often just need more internal link authority. Add links from your homepage and high-traffic blog posts.'});
+    actions.push({head:'Bygg interna länkar till rankande sidor',detail:'Sidor som rankar på 15–25 behöver ofta bara mer intern länkauktoritet. Lägg till länkar från din startsida och dina mest besökta blogginlägg.'});
   if(actions.length===0)
-    actions.push({head:'Maintain current momentum',detail:'All key metrics are in a healthy range. Focus on publishing new content targeting keywords in positions 11–20 to capture more organic traffic.'});
+    actions.push({head:'Behåll nuvarande momentum',detail:'Alla viktiga mätvärden är i ett hälsosamt läge. Fokusera på att publicera nytt innehåll riktat mot sökord på position 11–20 för att fånga mer organisk trafik.'});
 
   window._actions=actions.slice(0,3);
-  let actHtml='<div class="intel-actions-title">'+icoActions+'Top priority actions</div><div class="intel-action-list">';
+  let actHtml='<div class="intel-actions-title">'+icoActions+'Prioriterade åtgärder</div><div class="intel-action-list">';
   window._actions.forEach((a,i)=>{
     actHtml+=`<div class="intel-action" onclick="openActionModal(${i})"><div class="intel-action-num">${i+1}</div><div class="intel-action-text"><strong>${a.head}</strong><span>${a.detail}</span></div><div class="intel-action-arrow">›</div></div>`;
   });
@@ -1373,12 +1373,12 @@ function generateIntelligence(){
   const scores=[seoGood?2:seoOk?1:0, perfGood?2:perfOk?1:0, cwvGood?2:cwvOk?1:0];
   const total=scores.reduce((a,b)=>a+b,0);
   let overallTxt='';
-  if(total>=5)overallTxt=`Planima's web presence is performing strongly across all three areas. SEO visibility, user engagement, and technical performance are all at or above benchmark. The main opportunity is compounding this momentum by pushing more mid-page keywords into the top 10.`;
-  else if(total>=3)overallTxt=`Planima shows solid fundamentals with ${scores.filter(s=>s===2).length===1?'one area':'some areas'} performing well and clear opportunities for improvement. Prioritizing the actions below should meaningfully lift organic traffic and user engagement over the next 4–8 weeks.`;
-  else overallTxt=`There are significant growth opportunities across SEO, performance, and/or technical quality. Addressing the priority actions below — especially the technical bottlenecks — will have the highest compound impact on rankings and conversion.`;
+  if(total>=5)overallTxt=`Planimas webbnärvaro presterar starkt inom alla tre områden. SEO-synlighet, användarengagemang och teknisk prestanda är alla på eller över riktmärket. Den främsta möjligheten är att bygga vidare på detta momentum och flytta fler mittsidesnyckelord in i topp 10.`;
+  else if(total>=3)overallTxt=`Planima visar stabila grunder med ${scores.filter(s=>s===2).length===1?'ett område':'vissa områden'} som presterar bra och tydliga förbättringsmöjligheter. Att prioritera åtgärderna nedan bör märkbart lyfta organisk trafik och användarengagemang under de kommande 4–8 veckorna.`;
+  else overallTxt=`Det finns betydande tillväxtmöjligheter inom SEO, prestanda och/eller teknisk kvalitet. Att ta itu med prioriterade åtgärder nedan — särskilt de tekniska flaskhalsarna — ger störst sammansatt effekt på rankingar och konvertering.`;
 
   document.getElementById('intel-summary-text').textContent=overallTxt;
-  document.getElementById('intel-time').textContent='Analyzed '+new Date().toLocaleTimeString();
+  document.getElementById('intel-time').textContent='Analyserat '+new Date().toLocaleTimeString();
 
   // stagger animations
   ['intel-summary-card','ic-seo','ic-performance','ic-cwv','ic-actions'].forEach((id,i)=>{
@@ -1438,10 +1438,10 @@ async function refreshAll(){
   const cfg=getConfig();
   if(cfg.demo){loadDemoData();return;}
   document.getElementById('spin').style.display='block';
-  document.getElementById('refresh-lbl').textContent='Fetching…';
+  document.getElementById('refresh-lbl').textContent='Hämtar…';
   const endDate=isoDate(new Date()),startDate=isoDate(daysAgo(7)),prevEnd=isoDate(daysAgo(7)),prevStart=isoDate(daysAgo(14));
-  if(cfg.oauth&&!isGoogleAuthed()){setStatus('ga4',false,'GA4: click "Sign in with Google"');setStatus('gsc',false,'GSC: click "Sign in with Google"');}
-  notify('Fetching live data…','info');
+  if(cfg.oauth&&!isGoogleAuthed()){setStatus('ga4',false,'GA4: klicka "Sign in with Google"');setStatus('gsc',false,'GSC: klicka "Sign in with Google"');}
+  notify('Hämtar livedata…','info');
   // Phase 1: fast parallel fetch of all main data
   const [ga4Raw,ga4PrevRaw,gscRaw,gscPrevRaw,psiRaw,hsRaw,kwRaw,ga4TrendRaw,gscTrendRaw,topPagesRaw,hsSrcRaw]=await Promise.all([
     fetchGA4Week(cfg,startDate,endDate),fetchGA4Week(cfg,prevStart,prevEnd),
@@ -1452,8 +1452,8 @@ async function refreshAll(){
     fetchHubSpotSources(cfg,startDate)
   ]);
   const ga4cur=ga4Raw?processGA4Rows(ga4Raw):null,ga4prev=ga4PrevRaw?processGA4Rows(ga4PrevRaw):null,gsccur=gscRaw?processGSCRows(gscRaw):null,gscprev=gscPrevRaw?processGSCRows(gscPrevRaw):null,psi=psiRaw?processPSI(psiRaw):null;
-  if(!ga4cur&&!gsccur&&!psi&&hsRaw===null)notify('Could not connect to any API. Check credentials in Settings.','error');
-  else notify('Data refreshed!','success');
+  if(!ga4cur&&!gsccur&&!psi&&hsRaw===null)notify('Kunde inte ansluta till något API. Kontrollera uppgifterna i Inställningar.','error');
+  else notify('Data uppdaterad!','success');
 
   // Build merged weekly trend
   let trendWeeks=null;
@@ -1475,13 +1475,13 @@ async function refreshAll(){
 
   // Phase 2: PSI on top 3 pages (sequential after we know which pages)
   if(topPagesRaw&&topPagesRaw.rows&&topPagesRaw.rows.length&&cfg.psi){
-    notify('Fetching per-page PageSpeed scores…','info');
+    notify('Hämtar sidspecifika PageSpeed-poäng…','info');
     const pagesPsiRaw=await fetchPagesPSI(cfg,topPagesRaw);
     renderPagesPSI(pagesPsiRaw,topPagesRaw);
   }
 
   document.getElementById('spin').style.display='none';
-  document.getElementById('refresh-lbl').textContent='↻ Refresh data';
+  document.getElementById('refresh-lbl').textContent='↻ Uppdatera data';
 }
 
 // DEMO DATA
@@ -1492,7 +1492,7 @@ function loadDemoData(){
   const gscprev={clicks:1180,impressions:36800,position:15.2,ctr:2.96};
   const psi={mobile:{performance:68,accessibility:91,bestPractices:87,seo:94,lcp:'2.8 s',cls:'0.08',inp:'180 ms',fcp:'1.6 s',tbt:'240 ms',si:'3.9 s',lcpNum:2800,clsNum:0.08,inpNum:180,fcpNum:1600,tbtNum:240,siNum:3900},desktop:{performance:88,accessibility:94,bestPractices:92,seo:97,lcp:'1.1 s',cls:'0.02',inp:'60 ms',fcp:'0.7 s',tbt:'80 ms',si:'1.4 s',lcpNum:1100,clsNum:0.02,inpNum:60,fcpNum:700,tbtNum:80,siNum:1400}};
   const hs={current:48,previous:39};
-  setStatus('ga4',true,'GA4 (demo)');setStatus('gsc',true,'Search Console (demo)');setStatus('ps',true,'PageSpeed (demo)');setStatus('hs',true,'HubSpot (demo)');
+  setStatus('ga4',true,'GA4 (demo)');setStatus('gsc',true,'Search Console (demo)');setStatus('ps',true,'PageSpeed (demo)');setStatus('hs',true,'HubSpot (demo)');  // status labels intentionally kept as-is in demo mode
   const demoKeywords={rows:[
     {keys:['underhållsplan fastighet'],clicks:312,impressions:8400,position:6.2,ctr:0.037},
     {keys:['planima'],clicks:284,impressions:3100,position:1.4,ctr:0.092},
@@ -1538,17 +1538,17 @@ function loadDemoData(){
     {url:'https://planima.se/blog/underhallsplan-brf',data:{lighthouseResult:{categories:{performance:{score:.44}},audits:{'largest-contentful-paint':{displayValue:'4.8 s',numericValue:4800},'cumulative-layout-shift':{displayValue:'0.19',numericValue:0.19},'interaction-to-next-paint':{displayValue:'380 ms',numericValue:380}}}}},
   ],{rows:[{metricValues:[{value:'892'}]},{metricValues:[{value:'541'}]},{metricValues:[{value:'412'}]}]});
 
-  notify('Demo data loaded. Add API keys in Settings for live data.','info');
+  notify('Demodata laddat. Lägg till API-nycklar i Inställningar för livedata.','info');
 }
 
 // CWV MODAL
 const CWV_TIPS={
-  lcp:{title:'LCP — Largest Contentful Paint',subtitle:'How fast your largest element loads',metric:'Good: < 2.5 s  ·  Needs work: 2.5–4 s  ·  Poor: > 4 s',tips:[{head:'Optimise images',body:'Use WebP/AVIF format, add loading="lazy", and set explicit width/height attributes.'},{head:'Preload the hero image',body:'Add <link rel="preload" as="image" href="hero.webp"> in the head to load it earlier.'},{head:'Reduce server response time',body:'Aim for TTFB under 600 ms. Use a CDN, caching headers, and efficient server-side rendering.'},{head:'Remove render-blocking resources',body:'Defer non-critical JS and inline critical CSS so the browser can paint sooner.'}]},
-  cls:{title:'CLS — Cumulative Layout Shift',subtitle:'Visual stability — elements jumping after load',metric:'Good: < 0.1  ·  Needs work: 0.1–0.25  ·  Poor: > 0.25',tips:[{head:'Set dimensions on images & videos',body:'Always add width and height attributes so the browser reserves space before files load.'},{head:'Reserve space for ads & embeds',body:'Use a CSS aspect-ratio container so third-party content does not push layout down.'},{head:'Avoid injecting content above the fold',body:"Don't add banners that push main content down after initial paint."},{head:'Use CSS transforms for animations',body:'Animate with transform and opacity only — these do not cause layout recalculations.'}]},
-  inp:{title:'INP — Interaction to Next Paint',subtitle:'How fast the page responds to clicks/taps',metric:'Good: < 200 ms  ·  Needs work: 200–500 ms  ·  Poor: > 500 ms',tips:[{head:'Break up long JavaScript tasks',body:'Any task over 50 ms blocks the main thread. Split heavy work with setTimeout or the Scheduler API.'},{head:'Reduce third-party scripts',body:'Chat widgets, analytics, and tag managers add main-thread work. Audit and remove what you do not need.'},{head:'Use web workers for heavy compute',body:'Move expensive calculations off the main thread so interactions stay responsive.'},{head:'Debounce input handlers',body:'Scroll and input events fire very fast. Debounce your handlers to reduce main-thread pressure.'}]},
-  fcp:{title:'FCP — First Contentful Paint',subtitle:'When the first text or image appears on screen',metric:'Good: < 1.8 s  ·  Needs work: 1.8–3 s  ·  Poor: > 3 s',tips:[{head:'Eliminate render-blocking resources',body:'Move non-critical CSS to async and defer JS. Preload critical fonts.'},{head:'Reduce server response time',body:'Every millisecond before HTML arrives delays FCP. Use caching, a CDN, and efficient server code.'},{head:'Inline critical CSS',body:'Extract CSS for above-the-fold content and inline it in head to skip a network round-trip.'},{head:'Preconnect to critical origins',body:'Add link rel="preconnect" for fonts.googleapis.com and other early-needed origins.'}]},
-  tbt:{title:'TBT — Total Blocking Time',subtitle:'Time the main thread was blocked between FCP and TTI',metric:'Good: < 200 ms  ·  Needs work: 200–600 ms  ·  Poor: > 600 ms',tips:[{head:'Reduce JavaScript bundle size',body:'Code-split, tree-shake, and lazy-load non-critical modules. Use Bundle Analyzer to find large imports.'},{head:'Audit third-party scripts',body:'Third-party JS is the #1 cause of high TBT. Load tag manager and chat scripts with async or defer.'},{head:'Use Lighthouse to find long tasks',body:'The "Avoid long main-thread tasks" audit lists the culprits. Prioritise tasks over 150 ms.'},{head:'Minimise main-thread work',body:'Move everything you can to a Web Worker. Compress images server-side to avoid client-side decode work.'}]},
-  si:{title:'SI — Speed Index',subtitle:'How quickly content is visually populated',metric:'Good: < 3.4 s  ·  Needs work: 3.4–5.8 s  ·  Poor: > 5.8 s',tips:[{head:'Improve FCP and LCP first',body:'Speed Index is a composite — fixing FCP and LCP will directly reduce it.'},{head:'Reduce above-the-fold render cost',body:'Minimise CSS complexity of the first viewport. Avoid layout-heavy components near the top.'},{head:'Load web fonts efficiently',body:'Use font-display: swap and preload critical fonts so text appears before the font file loads.'},{head:'Avoid large layout changes early on',body:'Any element causing a repaint after initial paint increases Speed Index. Keep the above-fold DOM simple.'}]}
+  lcp:{title:'LCP — Largest Contentful Paint',subtitle:'Hur snabbt ditt största element laddar',metric:'Bra: < 2.5 s  ·  Behöver arbete: 2.5–4 s  ·  Dålig: > 4 s',tips:[{head:'Optimera bilder',body:'Använd WebP/AVIF-format, lägg till loading="lazy" och ange explicita width/height-attribut.'},{head:'Preloada hero-bilden',body:'Lägg till <link rel="preload" as="image" href="hero.webp"> i head för att ladda den tidigare.'},{head:'Minska serverns svarstid',body:'Sträva efter TTFB under 600 ms. Använd CDN, cache-headers och effektiv server-rendering.'},{head:'Ta bort render-blockerande resurser',body:'Defer:a icke-kritisk JS och inline:a kritisk CSS så att webbläsaren kan rendera snabbare.'}]},
+  cls:{title:'CLS — Cumulative Layout Shift',subtitle:'Visuell stabilitet — element som hoppar efter laddning',metric:'Bra: < 0.1  ·  Behöver arbete: 0.1–0.25  ·  Dålig: > 0.25',tips:[{head:'Ange mått på bilder & video',body:'Lägg alltid till width och height-attribut så att webbläsaren reserverar utrymme innan filer laddas.'},{head:'Reservera utrymme för annonser & embeds',body:'Använd en CSS aspect-ratio-container så att tredjepartsinnehåll inte trycks ner layouten.'},{head:'Undvik att injicera innehåll ovanför fold',body:'Lägg inte till banners som trycks ner huvudinnehållet efter initial rendering.'},{head:'Använd CSS transforms för animationer',body:'Animera enbart med transform och opacity — dessa orsakar inga layout-omberäkningar.'}]},
+  inp:{title:'INP — Interaction to Next Paint',subtitle:'Hur snabbt sidan svarar på klick/tryck',metric:'Bra: < 200 ms  ·  Behöver arbete: 200–500 ms  ·  Dålig: > 500 ms',tips:[{head:'Dela upp långa JavaScript-tasks',body:'Alla tasks över 50 ms blockerar main thread. Dela upp tungt arbete med setTimeout eller Scheduler API.'},{head:'Minska tredjepartsskript',body:'Chat-widgets, analytics och tag managers lägger till main-thread-arbete. Granska och ta bort det du inte behöver.'},{head:'Använd web workers för tung beräkning',body:'Flytta dyra beräkningar bort från main thread så att interaktioner förblir responsiva.'},{head:'Debounca input handlers',body:'Scroll- och input-händelser triggas väldigt snabbt. Debounca dina handlers för att minska main-thread-trycket.'}]},
+  fcp:{title:'FCP — First Contentful Paint',subtitle:'När den första texten eller bilden visas på skärmen',metric:'Bra: < 1.8 s  ·  Behöver arbete: 1.8–3 s  ·  Dålig: > 3 s',tips:[{head:'Eliminera render-blockerande resurser',body:'Flytta icke-kritisk CSS till async och defer:a JS. Preloada kritiska teckensnitt.'},{head:'Minska serverns svarstid',body:'Varje millisekund innan HTML anländer fördröjer FCP. Använd caching, CDN och effektiv serverkod.'},{head:'Inline:a kritisk CSS',body:'Extrahera CSS för above-the-fold-innehåll och inline:a det i head för att hoppa över en nätverksroundtrip.'},{head:'Preconnect till kritiska origins',body:'Lägg till link rel="preconnect" för fonts.googleapis.com och andra origins som behövs tidigt.'}]},
+  tbt:{title:'TBT — Total Blocking Time',subtitle:'Tid som main thread var blockerad mellan FCP och TTI',metric:'Bra: < 200 ms  ·  Behöver arbete: 200–600 ms  ·  Dålig: > 600 ms',tips:[{head:'Minska JavaScript bundle-storlek',body:'Code-split:a, tree-shake:a och lazy-load:a icke-kritiska moduler. Använd Bundle Analyzer för att hitta stora importer.'},{head:'Granska tredjepartsskript',body:'Tredjepartsskript är den vanligaste orsaken till hög TBT. Ladda tag manager och chat-skript med async eller defer.'},{head:'Använd Lighthouse för att hitta långa tasks',body:'Auditen "Avoid long main-thread tasks" listar bovarna. Prioritera tasks över 150 ms.'},{head:'Minimera main-thread-arbete',body:'Flytta allt du kan till en Web Worker. Komprimera bilder server-side för att undvika client-side decode-arbete.'}]},
+  si:{title:'SI — Speed Index',subtitle:'Hur snabbt innehållet visuellt fylls i',metric:'Bra: < 3.4 s  ·  Behöver arbete: 3.4–5.8 s  ·  Dålig: > 5.8 s',tips:[{head:'Förbättra FCP och LCP först',body:'Speed Index är ett sammansatt mått — att åtgärda FCP och LCP minskar det direkt.'},{head:'Minska renderingskostnaden ovanför fold',body:'Minimera CSS-komplexiteten i det första viewporten. Undvik layouttunga komponenter högt upp.'},{head:'Ladda webbteckensnitt effektivt',body:'Använd font-display: swap och preloada kritiska teckensnitt så att text visas innan fontfilen laddas.'},{head:'Undvik stora layoutförändringar tidigt',body:'Alla element som orsakar en repaint efter initial rendering ökar Speed Index. Håll above-fold-DOM enkelt.'}]}
 };
 function showCwvModal(key){
   const tip=CWV_TIPS[key];if(!tip)return;
@@ -1572,7 +1572,7 @@ window.addEventListener('load',()=>{
   ['oauth','ga4','gsc','psi','hs'].forEach(k=>{const el=document.getElementById('cfg-'+k);if(el&&cfg[k])el.value=cfg[k];});
   if(cfg.oauth||cfg.ga4||cfg.gsc||cfg.hs||cfg.demo){
     startDashboard();
-    if(wasCallback){updateGoogleBtn();notify('Google connected! Fetching data…','success');setTimeout(refreshAll,500);}
+    if(wasCallback){updateGoogleBtn();notify('Google ansluten! Hämtar data…','success');setTimeout(refreshAll,500);}
   }
 });
 
@@ -1622,45 +1622,45 @@ function openActionModal(idx){
 
   if(key==='positions'){
     const pos=gsccur?gsccur.position.toFixed(1):'?';
-    why=`Avg. position is ${pos} — keywords just below page one.`;
+    why=`Avg. position är ${pos} — sökord precis under första sidan.`;
     const kws=kwRaw&&kwRaw.rows?kwRaw.rows.filter(r=>r.position>10&&r.position<=20).sort((a,b)=>b.impressions-a.impressions).slice(0,5):[];
-    const kwTable=kws.length?section('Your keywords in positions 11–20',dataTable(
-      [{label:'Keyword',w:'3fr'},{label:'Position',w:'80px',style:'text-align:right'},{label:'Impressions',w:'90px',style:'text-align:right'}],
+    const kwTable=kws.length?section('Dina sökord på position 11–20',dataTable(
+      [{label:'Nyckelord',w:'3fr'},{label:'Position',w:'80px',style:'text-align:right'},{label:'Impressions',w:'90px',style:'text-align:right'}],
       kws.map(r=>[r.keys[0],r.position.toFixed(1),r.impressions.toLocaleString()])
     )):'';
-    body=kwTable+section('Steps',steps([
-      '<strong>Find the page</strong> — search each keyword in Google and verify your page is ranking (not a competitor).',
-      '<strong>Improve the title tag & H1</strong> — make sure the exact keyword appears at the start. Aim for under 60 characters.',
-      '<strong>Expand thin content</strong> — if the page is under ~600 words, add a FAQ section or case study answering the search intent.',
-      '<strong>Add internal links</strong> — link to the page from your 3 highest-traffic pages using the keyword as anchor text.',
-      '<strong>Monitor for 4 weeks</strong> — check GSC weekly. Expect movement within 3–6 weeks of publishing changes.'
-    ]))+section('Resources',resources([
-      {url:'https://search.google.com/search-console',label:'Google Search Console — track position changes'},
-      {url:'https://ahrefs.com/blog/on-page-seo/',label:'Ahrefs — on-page SEO guide'}
+    body=kwTable+section('Steg',steps([
+      '<strong>Hitta sidan</strong> — sök på varje nyckelord i Google och verifiera att din sida rankar (inte en konkurrent).',
+      '<strong>Förbättra title tag & H1</strong> — se till att det exakta nyckelordet finns i början. Sträva efter under 60 tecken.',
+      '<strong>Bygg ut tunt innehåll</strong> — om sidan är under ~600 ord, lägg till en FAQ-sektion eller ett case study som svarar på sökavsikten.',
+      '<strong>Lägg till interna länkar</strong> — länka till sidan från dina 3 mest besökta sidor med nyckelordet som ankartexten.',
+      '<strong>Följ upp i 4 veckor</strong> — kontrollera GSC varje vecka. Förvänta dig rörelse inom 3–6 veckor efter publicerade ändringar.'
+    ]))+section('Resurser',resources([
+      {url:'https://search.google.com/search-console',label:'Google Search Console — följ positionsförändringar'},
+      {url:'https://ahrefs.com/blog/on-page-seo/',label:'Ahrefs — on-page SEO-guide'}
     ]));
   } else if(key==='ctr'){
     const ctr=gsccur?gsccur.ctr.toFixed(2)+'%':'?';
-    why=`CTR is ${ctr} — titles likely need stronger hooks.`;
+    why=`CTR är ${ctr} — rubrikerna behöver troligtvis starkare krokar.`;
     const kws=kwRaw&&kwRaw.rows?kwRaw.rows.sort((a,b)=>b.impressions-a.impressions).slice(0,5):[];
-    const kwTable=kws.length?section('Highest-impression pages to rewrite first',dataTable(
-      [{label:'Keyword',w:'3fr'},{label:'CTR',w:'70px',style:'text-align:right'},{label:'Impressions',w:'90px',style:'text-align:right'}],
+    const kwTable=kws.length?section('Sidor med flest visningar att skriva om',dataTable(
+      [{label:'Nyckelord',w:'3fr'},{label:'CTR',w:'70px',style:'text-align:right'},{label:'Impressions',w:'90px',style:'text-align:right'}],
       kws.map(r=>[r.keys[0],(r.ctr*100).toFixed(1)+'%',r.impressions.toLocaleString()])
     )):'';
-    body=kwTable+section('Steps',steps([
-      '<strong>Identify pages with CTR below 2%</strong> and high impressions — these have the most upside.',
-      '<strong>Rewrite the title tag</strong> — lead with the benefit, add a number, or pose a question. E.g. "Underhållsplan för fastigheter — spara tid med Planima".',
-      '<strong>Improve the meta description</strong> — reinforce the CTA in 140–155 characters.',
-      '<strong>A/B test two variants</strong> — update and wait 4 weeks, compare CTR before/after in GSC.',
-      '<strong>Check featured-snippet opportunity</strong> — if a question keyword has 0% CTR you may be losing a snippet position.'
-    ]))+section('Resources',resources([
+    body=kwTable+section('Steg',steps([
+      '<strong>Identifiera sidor med CTR under 2%</strong> och hög visningsvolym — dessa har störst potential.',
+      '<strong>Skriv om title tag</strong> — börja med nyttan, lägg till ett nummer eller ställ en fråga. T.ex. "Underhållsplan för fastigheter — spara tid med Planima".',
+      '<strong>Förbättra meta description</strong> — förstärk CTA:n på 140–155 tecken.',
+      '<strong>A/B-testa två varianter</strong> — uppdatera och vänta 4 veckor, jämför CTR före/efter i GSC.',
+      '<strong>Kolla featured snippet-möjlighet</strong> — om ett frågenyckelord har 0% CTR kan du förlora en snippet-position.'
+    ]))+section('Resurser',resources([
       {url:'https://moz.com/learn/seo/title-tag',label:'Moz — title tag best practices'},
-      {url:'https://search.google.com/search-console',label:'GSC — compare CTR before & after'}
+      {url:'https://search.google.com/search-console',label:'GSC — jämför CTR före & efter'}
     ]));
   } else if(key==='cwv'){
     const metric=a.head.includes('LCP')?'LCP':a.head.includes('INP')?'INP':a.head.includes('CLS')?'CLS':'speed';
     const val=psi&&psi.mobile?
       (metric==='LCP'?psi.mobile.lcp:metric==='INP'?psi.mobile.inp:metric==='CLS'?psi.mobile.cls:psi.mobile.performance+'/100'):'?';
-    why=`Mobile ${metric} is ${val} — outside the "good" threshold.`;
+    why=`Mobil ${metric} är ${val} — utanför gränsvärdet "bra".`;
     const fixes={
       LCP:['<strong>Preload your LCP image</strong> — add <code>&lt;link rel="preload" as="image" href="hero.jpg"&gt;</code> in &lt;head&gt;.',
            '<strong>Use next-gen image formats</strong> — convert hero images to WebP or AVIF. Typical saving: 30–50%.',
@@ -1683,43 +1683,43 @@ function openActionModal(idx){
              '<strong>Reduce third-party scripts</strong> — audit tag manager for unused tags.',
              '<strong>Upgrade hosting or use a CDN</strong> — a slow TTFB pulls down every metric.']
     };
-    body=section('Steps',steps(fixes[metric]||fixes.speed))+section('Resources',resources([
-      {url:'https://pagespeed.web.dev/',label:'PageSpeed Insights — run a fresh audit'},
-      {url:'https://web.dev/articles/'+metric.toLowerCase(),label:'web.dev — '+metric+' deep dive'}
+    body=section('Steg',steps(fixes[metric]||fixes.speed))+section('Resurser',resources([
+      {url:'https://pagespeed.web.dev/',label:'PageSpeed Insights — kör en ny analys'},
+      {url:'https://web.dev/articles/'+metric.toLowerCase(),label:'web.dev — '+metric+' djupdykning'}
     ]));
   } else if(key==='bounce'){
     const br=ga4cur?(ga4cur.bounce*100).toFixed(0)+'%':'?';
-    why=`Bounce rate is ${br} — visitors aren't finding what they came for.`;
-    body=section('Steps',steps([
-      '<strong>Match content to search intent</strong> — check the top 3 Google results for your main keywords. Does your page answer the same question?',
-      '<strong>Add a clear above-the-fold CTA</strong> — visitors should know within 3 seconds what action to take.',
-      '<strong>Improve page load speed</strong> — every extra second of load time increases bounce rate by ~10%.',
-      '<strong>Add internal links and related content</strong> — give visitors a reason to explore further.',
-      '<strong>Check mobile UX</strong> — test your top landing pages on a real mobile device. Is text readable? Are buttons tappable?'
-    ]))+section('Resources',resources([
-      {url:'https://analytics.google.com/',label:'GA4 — see bounce rate by landing page'},
-      {url:'https://web.dev/articles/cls',label:'web.dev — Core Web Vitals & user experience'}
+    why=`Bounce rate är ${br} — besökarna hittar inte det de söker.`;
+    body=section('Steg',steps([
+      '<strong>Matcha innehållet med sökavsikten</strong> — kolla de 3 bästa Google-resultaten för dina viktigaste sökord. Svarar din sida på samma fråga?',
+      '<strong>Lägg till en tydlig CTA ovanför "fold"</strong> — besökare ska veta inom 3 sekunder vilken åtgärd de ska ta.',
+      '<strong>Förbättra sidladdningshastigheten</strong> — varje extra sekund laddningstid ökar bounce rate med ~10%.',
+      '<strong>Lägg till interna länkar och relaterat innehåll</strong> — ge besökare anledning att utforska vidare.',
+      '<strong>Kontrollera mobil UX</strong> — testa dina topplandningssidor på en riktig mobil. Är texten läsbar? Är knappar tillräckligt stora?'
+    ]))+section('Resurser',resources([
+      {url:'https://analytics.google.com/',label:'GA4 — se bounce rate per landningssida'},
+      {url:'https://web.dev/articles/cls',label:'web.dev — Core Web Vitals & användarupplevelse'}
     ]));
   } else if(key==='internal-links'){
-    why='Pages ranking 15–25 often just need more internal link authority.';
-    body=section('Steps',steps([
-      '<strong>Find your ranking pages</strong> — in GSC, filter by position 15–25 and sort by impressions.',
-      '<strong>Identify your highest-traffic pages</strong> — in GA4, find the top 5 pages by organic sessions.',
-      '<strong>Add contextual links</strong> — edit those high-traffic pages to include a natural link to each ranking page using the target keyword as anchor text.',
-      '<strong>Link from your homepage</strong> — add a "Popular guides" or "Featured tools" section with direct links.',
-      '<strong>Audit with a crawler</strong> — use Screaming Frog or Ahrefs Site Audit to find orphan pages with no inbound internal links.'
-    ]))+section('Resources',resources([
-      {url:'https://ahrefs.com/blog/internal-links-for-seo/',label:'Ahrefs — internal linking guide'},
-      {url:'https://search.google.com/search-console',label:'GSC — find pages ranking 15–25'}
+    why='Sidor på position 15–25 behöver ofta bara mer intern länkauktoritet.';
+    body=section('Steg',steps([
+      '<strong>Hitta dina rankande sidor</strong> — i GSC, filtrera på position 15–25 och sortera efter visningar.',
+      '<strong>Identifiera dina mest besökta sidor</strong> — i GA4, hitta topp 5 sidor efter organiska sessioner.',
+      '<strong>Lägg till kontextuella länkar</strong> — redigera de mest besökta sidorna för att inkludera en naturlig länk till varje rankande sida med målnyckelordet som ankartext.',
+      '<strong>Länka från startsidan</strong> — lägg till en "Populära guider"- eller "Utvalda verktyg"-sektion med direktlänkar.',
+      '<strong>Analysera med en crawler</strong> — använd Screaming Frog eller Ahrefs Site Audit för att hitta orphan-sidor utan interna inkommande länkar.'
+    ]))+section('Resurser',resources([
+      {url:'https://ahrefs.com/blog/internal-links-for-seo/',label:'Ahrefs — guide till interna länkar'},
+      {url:'https://search.google.com/search-console',label:'GSC — hitta sidor på position 15–25'}
     ]));
   } else {
-    why='Keep building on what\'s working.';
-    body=section('Steps',steps([
-      '<strong>Publish new content</strong> — target 2–3 keywords per month in positions 11–20.',
-      '<strong>Update existing top pages</strong> — refresh date, add new stats, expand FAQs.',
-      '<strong>Build more backlinks</strong> — reach out to industry publications for guest posts or link placements.',
-      '<strong>Track progress weekly</strong> — use this dashboard every Monday to spot regressions early.',
-      '<strong>Run a quarterly technical audit</strong> — use PageSpeed Insights and GSC Coverage report.'
+    why='Fortsätt bygga på det som fungerar.';
+    body=section('Steg',steps([
+      '<strong>Publicera nytt innehåll</strong> — rikta dig mot 2–3 nyckelord per månad på position 11–20.',
+      '<strong>Uppdatera befintliga topsidor</strong> — uppdatera datum, lägg till nya statistik, utöka FAQs.',
+      '<strong>Bygg fler backlinks</strong> — kontakta branschpublikationer för gästinlägg eller länkplaceringar.',
+      '<strong>Följ upp veckovis</strong> — använd den här dashboarden varje måndag för att tidigt upptäcka regressioner.',
+      '<strong>Kör ett kvartalsmässigt tekniskt audit</strong> — använd PageSpeed Insights och GSC Coverage-rapport.'
     ]));
   }
 
