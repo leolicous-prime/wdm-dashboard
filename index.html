@@ -670,8 +670,8 @@ async function fetchPageSpeed(cfg){
   const url=cfg.gsc.replace(/\/$/,'');
   try{
     const [mob,desk]=await Promise.all([
-      fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url='+encodeURIComponent(url)+'&strategy=mobile&key='+cfg.psi).then(r=>r.json()),
-      fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url='+encodeURIComponent(url)+'&strategy=desktop&key='+cfg.psi).then(r=>r.json())
+      fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url='+encodeURIComponent(url)+'&strategy=mobile&key='+cfg.psi+'&category=performance&category=accessibility&category=best-practices&category=seo').then(r=>r.json()),
+      fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url='+encodeURIComponent(url)+'&strategy=desktop&key='+cfg.psi+'&category=performance&category=accessibility&category=best-practices&category=seo').then(r=>r.json())
     ]);
     return{mobile:mob,desktop:desk};
   }catch(e){console.error('PSI',e);return null;}
