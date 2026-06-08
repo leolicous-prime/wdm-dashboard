@@ -689,7 +689,12 @@ function startDashboard(){
   if(impClickChart){impClickChart.destroy();impClickChart=null;}
   initCharts();
   updateTableHeaders();
-  if(!cfg.demo)refreshAll();else loadDemoData();
+  if(cfg.demo){loadDemoData();}
+  else{
+    const cached=loadRangeData(currentRange);
+    if(cached){renderFromCache(cached);}
+    else{showEmptyState();}
+  }
 }
 
 // TABS
@@ -762,6 +767,29 @@ function setKpiDelta(id,cur,prev,lowerBetter=false){
 function isoDate(d){return d.toISOString().split('T')[0];}
 function daysAgo(n){const d=new Date();d.setDate(d.getDate()-n);return d;}
 
+// CACHE
+const CACHE_PFX='wdm_live_';
+function saveRangeData(range,payload){
+  try{localStorage.setItem(CACHE_PFX+range,JSON.stringify({ts:Date.now(),payload}));}catch(e){console.warn('Cache write failed',e);}
+}
+function loadRangeData(range){
+  try{const raw=localStorage.getItem(CACHE_PFX+range);return raw?JSON.parse(raw):null;}catch(e){return null;}
+}
+function renderFromCache(cached){
+  if(!cached)return false;
+  const {ga4cur,ga4prev,gsccur,gscprev,psi,hsRaw,kwRaw}=cached.payload;
+  renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hsRaw,kwRaw);
+  renderKeywords(kwRaw);
+  const d=new Date(cached.ts);
+  const ago=Math.round((Date.now()-cached.ts)/60000);
+  const agoStr=ago<1?'just now':ago<60?ago+'m ago':Math.round(ago/60)+'h ago';
+  document.getElementById('last-updated').textContent='Cached '+agoStr+' ('+d.toLocaleDateString()+' '+d.toLocaleTimeString()+')';
+  return true;
+}
+function showEmptyState(){
+  document.getElementById('last-updated').textContent='No data — click Refresh to load';
+}
+
 // DATE RANGE
 let currentRange='week';
 function getDateRange(range){
@@ -809,7 +837,9 @@ function setDateRange(range){
   updateTableHeaders();
   const cfg=getConfig();
   if(cfg.demo){loadDemoData();return;}
-  refreshAll();
+  const cached=loadRangeData(range);
+  if(cached){renderFromCache(cached);}
+  else{showEmptyState();}
 }
 function getWeekNum(d){const j=new Date(d.getFullYear(),0,1);return Math.ceil(((d-j)/86400000+j.getDay()+1)/7);}
 
@@ -1056,7 +1086,6 @@ function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,kwRaw){
     }
   }
   rebuildTrendChart();
-  document.getElementById('last-updated').textContent='Updated: '+new Date().toLocaleTimeString();
   updateBenchmarks(gsccur, psi, ga4cur);
   lastIntelData={gsccur,gscprev,psi,ga4cur,ga4prev,kwRaw:kwRaw||null};
   generateIntelligence();
@@ -1307,9 +1336,13 @@ async function refreshAll(){
   const [ga4Raw,ga4PrevRaw,gscRaw,gscPrevRaw,psiRaw,hsRaw,kwRaw]=await Promise.all([fetchGA4Week(cfg,startDate,endDate),fetchGA4Week(cfg,prevStart,prevEnd),fetchGSCWeek(cfg,startDate,endDate),fetchGSCWeek(cfg,prevStart,prevEnd),fetchPageSpeed(cfg),fetchHubSpot(cfg),fetchGSCKeywords(cfg)]);
   const ga4cur=ga4Raw?processGA4Rows(ga4Raw):null,ga4prev=ga4PrevRaw?processGA4Rows(ga4PrevRaw):null,gsccur=gscRaw?processGSCRows(gscRaw):null,gscprev=gscPrevRaw?processGSCRows(gscPrevRaw):null,psi=psiRaw?processPSI(psiRaw):null;
   if(!ga4cur&&!gsccur&&!psi&&hsRaw===null)notify('Could not connect to any API. Check credentials in Settings.','error');
-  else notify('Data refreshed!','success');
+  else{
+    notify('Data refreshed!','success');
+    saveRangeData(currentRange,{ga4cur,ga4prev,gsccur,gscprev,psi,hsRaw,kwRaw});
+  }
   renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hsRaw,kwRaw);
   renderKeywords(kwRaw);
+  document.getElementById('last-updated').textContent='Live: '+new Date().toLocaleTimeString();
   document.getElementById('spin').style.display='none';
   document.getElementById('refresh-lbl').textContent='↻ Refresh data';
 }
