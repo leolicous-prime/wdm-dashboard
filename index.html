@@ -230,11 +230,34 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .intel-actions-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1.5rem;}
 .intel-actions-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:7px;}
 .intel-action-list{display:flex;flex-direction:column;gap:8px;}
-.intel-action{display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);}
+.intel-action{display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:border-color .15s,background .15s;}
+.intel-action:hover{border-color:var(--border2);background:var(--bg2);}
 .intel-action-num{width:20px;height:20px;border-radius:50%;background:var(--primary);color:#1a1712;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
-.intel-action-text{font-size:13px;color:var(--text);line-height:1.5;}
+.intel-action-text{flex:1;font-size:13px;color:var(--text);line-height:1.5;}
 .intel-action-text strong{font-weight:600;}
 .intel-action-text span{display:block;font-size:11px;color:var(--text3);margin-top:2px;}
+.intel-action-arrow{font-size:14px;color:var(--text3);align-self:center;flex-shrink:0;transition:transform .15s;}
+.intel-action:hover .intel-action-arrow{transform:translateX(3px);color:var(--text2);}
+/* ACTION GUIDE MODAL */
+.action-modal-box{background:var(--bg2);border-radius:var(--radius-lg);padding:0;max-width:600px;width:100%;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.18);}
+.action-modal-header{padding:1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;background:linear-gradient(135deg,rgba(255,185,42,.07),rgba(244,91,128,.04));}
+.action-modal-num{width:28px;height:28px;border-radius:50%;background:var(--primary);color:#1a1712;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.action-modal-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.action-modal-why{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;}
+.action-modal-body{padding:1.5rem;overflow-y:auto;display:flex;flex-direction:column;gap:1.25rem;}
+.action-section-label{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;}
+.action-data-table{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.action-data-row{display:grid;align-items:center;padding:8px 12px;border-bottom:1px solid var(--border);font-size:12px;gap:8px;}
+.action-data-row:last-child{border-bottom:none;}
+.action-data-row.header{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;background:var(--bg3);}
+.action-steps{display:flex;flex-direction:column;gap:8px;}
+.action-step{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);}
+.action-step-num{width:18px;height:18px;border-radius:50%;background:var(--bg2);border:1px solid var(--border2);font-size:10px;font-weight:600;color:var(--text2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.action-step-body{font-size:12px;color:var(--text);line-height:1.55;}
+.action-step-body strong{font-weight:600;}
+.action-resource{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);font-size:12px;color:var(--text2);text-decoration:none;}
+.action-resource:hover{border-color:var(--border2);color:var(--text);}
+.action-resources{display:flex;flex-direction:column;gap:6px;}
 .intel-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem 2rem;text-align:center;gap:12px;}
 .intel-empty-icon{font-size:36px;opacity:.4;}
 .intel-empty-title{font-size:16px;font-weight:500;color:var(--text);}
@@ -1117,9 +1140,10 @@ function generateIntelligence(){
   if(actions.length===0)
     actions.push({head:'Maintain current momentum',detail:'All key metrics are in a healthy range. Focus on publishing new content targeting keywords in positions 11–20 to capture more organic traffic.'});
 
+  window._actions=actions.slice(0,3);
   let actHtml='<div class="intel-actions-title">'+icoActions+'Top priority actions</div><div class="intel-action-list">';
-  actions.slice(0,3).forEach((a,i)=>{
-    actHtml+=`<div class="intel-action"><div class="intel-action-num">${i+1}</div><div class="intel-action-text"><strong>${a.head}</strong><span>${a.detail}</span></div></div>`;
+  window._actions.forEach((a,i)=>{
+    actHtml+=`<div class="intel-action" onclick="openActionModal(${i})"><div class="intel-action-num">${i+1}</div><div class="intel-action-text"><strong>${a.head}</strong><span>${a.detail}</span></div><div class="intel-action-arrow">›</div></div>`;
   });
   actHtml+='</div>';
   document.getElementById('ic-actions').innerHTML=actHtml;
@@ -1269,7 +1293,176 @@ window.addEventListener('load',()=>{
     if(wasCallback){updateGoogleBtn();notify('Google connected! Fetching data…','success');setTimeout(refreshAll,500);}
   }
 });
+
+// ACTION GUIDE MODAL
+function closeActionModal(e){
+  if(e&&e.target!==document.getElementById('action-modal'))return;
+  document.getElementById('action-modal').classList.remove('open');
+}
+function openActionModal(idx){
+  const a=window._actions&&window._actions[idx];
+  if(!a)return;
+  const d=lastIntelData||{};
+  const {gsccur,psi,ga4cur,kwRaw}=d;
+
+  document.getElementById('am-num').textContent=idx+1;
+  document.getElementById('am-title').textContent=a.head;
+
+  function dataTable(cols,rows){
+    const colStyle=cols.map(c=>c.w||'1fr').join(' ');
+    let h=`<div class="action-data-table"><div class="action-data-row header" style="grid-template-columns:${colStyle}">`;
+    h+=cols.map(c=>`<span>${c.label}</span>`).join('');h+='</div>';
+    rows.forEach(r=>{
+      h+=`<div class="action-data-row" style="grid-template-columns:${colStyle}">`;
+      h+=r.map((cell,i)=>`<span style="${cols[i]&&cols[i].style||''}">${cell}</span>`).join('');
+      h+='</div>';
+    });
+    return h+'</div>';
+  }
+  function steps(arr){
+    return '<div class="action-steps">'+arr.map((s,i)=>`<div class="action-step"><div class="action-step-num">${i+1}</div><div class="action-step-body">${s}</div></div>`).join('')+'</div>';
+  }
+  function resources(arr){
+    return '<div class="action-resources">'+arr.map(r=>`<a class="action-resource" href="${r.url}" target="_blank" rel="noopener">↗ ${r.label}</a>`).join('')+'</div>';
+  }
+  function section(label,content){
+    return`<div><div class="action-section-label">${label}</div>${content}</div>`;
+  }
+
+  const key=a.key||
+    (a.head.toLowerCase().includes('position')?'positions':
+     a.head.toLowerCase().includes('ctr')||a.head.toLowerCase().includes('title')?'ctr':
+     a.head.toLowerCase().includes('lcp')||a.head.toLowerCase().includes('inp')||a.head.toLowerCase().includes('cls')||a.head.toLowerCase().includes('bottleneck')?'cwv':
+     a.head.toLowerCase().includes('bounce')?'bounce':
+     a.head.toLowerCase().includes('internal')?'internal-links':'generic');
+
+  let why='',body='';
+
+  if(key==='positions'){
+    const pos=gsccur?gsccur.position.toFixed(1):'?';
+    why=`Avg. position is ${pos} — keywords just below page one.`;
+    const kws=kwRaw&&kwRaw.rows?kwRaw.rows.filter(r=>r.position>10&&r.position<=20).sort((a,b)=>b.impressions-a.impressions).slice(0,5):[];
+    const kwTable=kws.length?section('Your keywords in positions 11–20',dataTable(
+      [{label:'Keyword',w:'3fr'},{label:'Position',w:'80px',style:'text-align:right'},{label:'Impressions',w:'90px',style:'text-align:right'}],
+      kws.map(r=>[r.keys[0],r.position.toFixed(1),r.impressions.toLocaleString()])
+    )):'';
+    body=kwTable+section('Steps',steps([
+      '<strong>Find the page</strong> — search each keyword in Google and verify your page is ranking (not a competitor).',
+      '<strong>Improve the title tag & H1</strong> — make sure the exact keyword appears at the start. Aim for under 60 characters.',
+      '<strong>Expand thin content</strong> — if the page is under ~600 words, add a FAQ section or case study answering the search intent.',
+      '<strong>Add internal links</strong> — link to the page from your 3 highest-traffic pages using the keyword as anchor text.',
+      '<strong>Monitor for 4 weeks</strong> — check GSC weekly. Expect movement within 3–6 weeks of publishing changes.'
+    ]))+section('Resources',resources([
+      {url:'https://search.google.com/search-console',label:'Google Search Console — track position changes'},
+      {url:'https://ahrefs.com/blog/on-page-seo/',label:'Ahrefs — on-page SEO guide'}
+    ]));
+  } else if(key==='ctr'){
+    const ctr=gsccur?gsccur.ctr.toFixed(2)+'%':'?';
+    why=`CTR is ${ctr} — titles likely need stronger hooks.`;
+    const kws=kwRaw&&kwRaw.rows?kwRaw.rows.sort((a,b)=>b.impressions-a.impressions).slice(0,5):[];
+    const kwTable=kws.length?section('Highest-impression pages to rewrite first',dataTable(
+      [{label:'Keyword',w:'3fr'},{label:'CTR',w:'70px',style:'text-align:right'},{label:'Impressions',w:'90px',style:'text-align:right'}],
+      kws.map(r=>[r.keys[0],(r.ctr*100).toFixed(1)+'%',r.impressions.toLocaleString()])
+    )):'';
+    body=kwTable+section('Steps',steps([
+      '<strong>Identify pages with CTR below 2%</strong> and high impressions — these have the most upside.',
+      '<strong>Rewrite the title tag</strong> — lead with the benefit, add a number, or pose a question. E.g. "Underhållsplan för fastigheter — spara tid med Planima".',
+      '<strong>Improve the meta description</strong> — reinforce the CTA in 140–155 characters.',
+      '<strong>A/B test two variants</strong> — update and wait 4 weeks, compare CTR before/after in GSC.',
+      '<strong>Check featured-snippet opportunity</strong> — if a question keyword has 0% CTR you may be losing a snippet position.'
+    ]))+section('Resources',resources([
+      {url:'https://moz.com/learn/seo/title-tag',label:'Moz — title tag best practices'},
+      {url:'https://search.google.com/search-console',label:'GSC — compare CTR before & after'}
+    ]));
+  } else if(key==='cwv'){
+    const metric=a.head.includes('LCP')?'LCP':a.head.includes('INP')?'INP':a.head.includes('CLS')?'CLS':'speed';
+    const val=psi&&psi.mobile?
+      (metric==='LCP'?psi.mobile.lcp:metric==='INP'?psi.mobile.inp:metric==='CLS'?psi.mobile.cls:psi.mobile.performance+'/100'):'?';
+    why=`Mobile ${metric} is ${val} — outside the "good" threshold.`;
+    const fixes={
+      LCP:['<strong>Preload your LCP image</strong> — add <code>&lt;link rel="preload" as="image" href="hero.jpg"&gt;</code> in &lt;head&gt;.',
+           '<strong>Use next-gen image formats</strong> — convert hero images to WebP or AVIF. Typical saving: 30–50%.',
+           '<strong>Remove render-blocking resources</strong> — defer non-critical JS and inline critical CSS.',
+           '<strong>Use a CDN</strong> — serve static assets from a CDN edge node close to Swedish visitors.',
+           '<strong>Enable server-side caching</strong> — stale-while-revalidate or full-page cache reduces TTFB, which directly improves LCP.'],
+      INP:['<strong>Reduce JavaScript execution time</strong> — profile in Chrome DevTools → Performance. Look for long tasks (>50 ms).',
+           '<strong>Break up long tasks</strong> — use <code>setTimeout</code> or <code>scheduler.yield()</code> to yield to the main thread.',
+           '<strong>Lazy-load non-critical JS</strong> — defer analytics, chat widgets, and third-party scripts.',
+           '<strong>Avoid layout thrash</strong> — batch DOM reads before writes to avoid forced reflow.',
+           '<strong>Test with real user data</strong> — use Chrome UX Report in PageSpeed Insights to see field INP.'],
+      CLS:['<strong>Set width/height on all images and videos</strong> — prevents layout shifts as media loads.',
+           '<strong>Avoid inserting content above existing content</strong> — banners and cookie bars should use reserved space.',
+           '<strong>Use CSS transform for animations</strong> — avoid animating margin, top, or width.',
+           '<strong>Preload custom fonts</strong> — add <code>font-display: optional</code> or preload WOFF2 files to avoid FOUT.',
+           '<strong>Test with Cumulative Layout Shift debugger</strong> — run PageSpeed Insights and click "CLS" to see which elements shift.'],
+      speed:['<strong>Optimise images</strong> — compress and convert to WebP/AVIF.',
+             '<strong>Minify CSS and JS</strong> — remove comments and whitespace; use a build tool.',
+             '<strong>Enable Gzip/Brotli compression</strong> — check your server config.',
+             '<strong>Reduce third-party scripts</strong> — audit tag manager for unused tags.',
+             '<strong>Upgrade hosting or use a CDN</strong> — a slow TTFB pulls down every metric.']
+    };
+    body=section('Steps',steps(fixes[metric]||fixes.speed))+section('Resources',resources([
+      {url:'https://pagespeed.web.dev/',label:'PageSpeed Insights — run a fresh audit'},
+      {url:'https://web.dev/articles/'+metric.toLowerCase(),label:'web.dev — '+metric+' deep dive'}
+    ]));
+  } else if(key==='bounce'){
+    const br=ga4cur?(ga4cur.bounce*100).toFixed(0)+'%':'?';
+    why=`Bounce rate is ${br} — visitors aren't finding what they came for.`;
+    body=section('Steps',steps([
+      '<strong>Match content to search intent</strong> — check the top 3 Google results for your main keywords. Does your page answer the same question?',
+      '<strong>Add a clear above-the-fold CTA</strong> — visitors should know within 3 seconds what action to take.',
+      '<strong>Improve page load speed</strong> — every extra second of load time increases bounce rate by ~10%.',
+      '<strong>Add internal links and related content</strong> — give visitors a reason to explore further.',
+      '<strong>Check mobile UX</strong> — test your top landing pages on a real mobile device. Is text readable? Are buttons tappable?'
+    ]))+section('Resources',resources([
+      {url:'https://analytics.google.com/',label:'GA4 — see bounce rate by landing page'},
+      {url:'https://web.dev/articles/cls',label:'web.dev — Core Web Vitals & user experience'}
+    ]));
+  } else if(key==='internal-links'){
+    why='Pages ranking 15–25 often just need more internal link authority.';
+    body=section('Steps',steps([
+      '<strong>Find your ranking pages</strong> — in GSC, filter by position 15–25 and sort by impressions.',
+      '<strong>Identify your highest-traffic pages</strong> — in GA4, find the top 5 pages by organic sessions.',
+      '<strong>Add contextual links</strong> — edit those high-traffic pages to include a natural link to each ranking page using the target keyword as anchor text.',
+      '<strong>Link from your homepage</strong> — add a "Popular guides" or "Featured tools" section with direct links.',
+      '<strong>Audit with a crawler</strong> — use Screaming Frog or Ahrefs Site Audit to find orphan pages with no inbound internal links.'
+    ]))+section('Resources',resources([
+      {url:'https://ahrefs.com/blog/internal-links-for-seo/',label:'Ahrefs — internal linking guide'},
+      {url:'https://search.google.com/search-console',label:'GSC — find pages ranking 15–25'}
+    ]));
+  } else {
+    why='Keep building on what\'s working.';
+    body=section('Steps',steps([
+      '<strong>Publish new content</strong> — target 2–3 keywords per month in positions 11–20.',
+      '<strong>Update existing top pages</strong> — refresh date, add new stats, expand FAQs.',
+      '<strong>Build more backlinks</strong> — reach out to industry publications for guest posts or link placements.',
+      '<strong>Track progress weekly</strong> — use this dashboard every Monday to spot regressions early.',
+      '<strong>Run a quarterly technical audit</strong> — use PageSpeed Insights and GSC Coverage report.'
+    ]));
+  }
+
+  document.getElementById('am-why').textContent=why;
+  document.getElementById('am-body').innerHTML=body;
+  document.getElementById('action-modal').classList.add('open');
+}
 </script>
+
+<!-- ACTION GUIDE MODAL -->
+<div class="modal-overlay" id="action-modal" onclick="closeActionModal(event)">
+  <div class="action-modal-box">
+    <div class="action-modal-header">
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div class="action-modal-num" id="am-num">1</div>
+        <div>
+          <div class="action-modal-title" id="am-title">—</div>
+          <div class="action-modal-why" id="am-why">—</div>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeActionModal()">&#10005;</button>
+    </div>
+    <div class="action-modal-body" id="am-body"></div>
+  </div>
+</div>
 </body>
 </html>
 
