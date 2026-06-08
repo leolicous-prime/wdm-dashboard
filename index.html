@@ -73,7 +73,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .tab-btn.active{background:var(--bg2);color:var(--text);font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.08);}
 
 /* STATUS */
-.status-bar{display:flex;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap;}
+.status-bar{display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap;}
+.date-filter-bar{display:flex;align-items:center;gap:6px;margin-bottom:1.5rem;flex-wrap:wrap;}
+.date-filter-label{font-size:11px;color:var(--text3);margin-right:2px;}
+.df-btn{font-size:12px;padding:5px 14px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+.df-btn:hover{background:var(--bg3);color:var(--text);}
+.df-btn.active{background:var(--primary);border-color:var(--primary);color:#1a1712;font-weight:600;}
 .status-pill{display:flex;align-items:center;gap:6px;font-size:11px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;color:var(--text2);}
 .status-dot{width:7px;height:7px;border-radius:50%;}
 .dot-green{background:var(--green);box-shadow:0 0 6px rgba(22,163,74,.4);}
@@ -375,6 +380,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <div class="status-pill"><div class="status-dot dot-gray" id="dot-ps"></div><span id="lbl-ps">PageSpeed not connected</span></div>
     </div>
 
+    <div class="date-filter-bar">
+      <span class="date-filter-label">Period</span>
+      <button class="df-btn active" id="df-week" onclick="setDateRange('week')">This week</button>
+      <button class="df-btn" id="df-lastweek" onclick="setDateRange('lastweek')">Last week</button>
+      <button class="df-btn" id="df-month" onclick="setDateRange('month')">This month</button>
+      <button class="df-btn" id="df-lastmonth" onclick="setDateRange('lastmonth')">Last month</button>
+    </div>
+
     <div class="tabs">
       <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
       <button class="tab-btn" onclick="showTab('seo')">SEO</button>
@@ -423,7 +436,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <div class="metrics-section">
         <div class="section-title">Search Console — last 7 days</div>
         <div class="metric-table">
-          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right">This week</span><span style="text-align:right">Last week</span><span style="text-align:right">Change</span></div>
+          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right" class="col-current">This week</span><span style="text-align:right" class="col-prev">Last week</span><span style="text-align:right">Change</span></div>
           <div class="metric-row"><span class="metric-name">Impressions</span><span class="metric-desc">Times your pages appeared in search results</span><span class="metric-val" id="m-impressions">—</span><span class="metric-prev" id="mp-impressions">—</span><span class="metric-chg chg-neutral" id="mc-impressions">—</span></div>
           <div class="metric-row"><span class="metric-name">Total clicks</span><span class="metric-desc">Clicks from Google search to your site</span><span class="metric-val" id="m-clicks">—</span><span class="metric-prev" id="mp-clicks">—</span><span class="metric-chg chg-neutral" id="mc-clicks">—</span></div>
           <div class="metric-row"><span class="metric-name">Avg. position</span><span class="metric-desc">Mean ranking across all keywords (lower = better)</span><span class="metric-val" id="m-position">—</span><span class="metric-prev" id="mp-position">—</span><span class="metric-chg chg-neutral" id="mc-position">—</span></div>
@@ -433,7 +446,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <div class="metrics-section">
         <div class="section-title">GA4 — organic acquisition</div>
         <div class="metric-table">
-          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right">This week</span><span style="text-align:right">Last week</span><span style="text-align:right">Change</span></div>
+          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right" class="col-current">This week</span><span style="text-align:right" class="col-prev">Last week</span><span style="text-align:right">Change</span></div>
           <div class="metric-row"><span class="metric-name">Organic sessions</span><span class="metric-desc">Visits that arrived via unpaid search</span><span class="metric-val" id="m-sessions">—</span><span class="metric-prev" id="mp-sessions">—</span><span class="metric-chg chg-neutral" id="mc-sessions">—</span></div>
           <div class="metric-row"><span class="metric-name">Organic users</span><span class="metric-desc">Unique visitors from organic search</span><span class="metric-val" id="m-users">—</span><span class="metric-prev" id="mp-users">—</span><span class="metric-chg chg-neutral" id="mc-users">—</span></div>
           <div class="metric-row"><span class="metric-name">Engagement rate</span><span class="metric-desc">Sessions where user actively engaged</span><span class="metric-val" id="m-engage">—</span><span class="metric-prev" id="mp-engage">—</span><span class="metric-chg chg-neutral" id="mc-engage">—</span></div>
@@ -460,14 +473,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <div class="metrics-section">
         <div class="section-title">HubSpot — new contacts</div>
         <div class="metric-table">
-          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right">This week</span><span style="text-align:right">Last week</span><span style="text-align:right">Change</span></div>
+          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right" class="col-current">This week</span><span style="text-align:right" class="col-prev">Last week</span><span style="text-align:right">Change</span></div>
           <div class="metric-row"><span class="metric-name">New contacts</span><span class="metric-desc">Total new contacts created (all sources)</span><span class="metric-val" id="m-contacts">—</span><span class="metric-prev" id="mp-contacts">—</span><span class="metric-chg chg-neutral" id="mc-contacts">—</span></div>
         </div>
       </div>
       <div class="metrics-section">
         <div class="section-title">GA4 — engagement &amp; bounce</div>
         <div class="metric-table">
-          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right">This week</span><span style="text-align:right">Last week</span><span style="text-align:right">Change</span></div>
+          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right" class="col-current">This week</span><span style="text-align:right" class="col-prev">Last week</span><span style="text-align:right">Change</span></div>
           <div class="metric-row"><span class="metric-name">Bounce rate</span><span class="metric-desc">Sessions with no interaction. Lower is better.</span><span class="metric-val" id="m-bounce">—</span><span class="metric-prev" id="mp-bounce">—</span><span class="metric-chg chg-neutral" id="mc-bounce">—</span></div>
           <div class="metric-row"><span class="metric-name">Pages / session</span><span class="metric-desc">Average pages viewed per visit</span><span class="metric-val" id="m-pps">—</span><span class="metric-prev" id="mp-pps">—</span><span class="metric-chg chg-neutral" id="mc-pps">—</span></div>
           <div class="metric-row"><span class="metric-name">Avg. session duration</span><span class="metric-desc">Mean time spent per visit</span><span class="metric-val" id="m-duration">—</span><span class="metric-prev" id="mp-duration">—</span><span class="metric-chg chg-neutral" id="mc-duration">—</span></div>
@@ -675,6 +688,7 @@ function startDashboard(){
   if(channelChart){channelChart.destroy();channelChart=null;}
   if(impClickChart){impClickChart.destroy();impClickChart=null;}
   initCharts();
+  updateTableHeaders();
   if(!cfg.demo)refreshAll();else loadDemoData();
 }
 
@@ -739,13 +753,64 @@ function setKpiDelta(id,cur,prev,lowerBetter=false){
   if(pct===null)return;
   const better=lowerBetter?pct<0:pct>0;
   const arrow=pct>0?'↑':'↓';
-  el.textContent=arrow+' '+Math.abs(Math.round(pct))+'% vs last week';
+  const vsLabel={week:'vs prev. week',lastweek:'vs week before',month:'vs last month',lastmonth:'vs month before'}[currentRange]||'vs prev. period';
+  el.textContent=arrow+' '+Math.abs(Math.round(pct))+'% '+vsLabel;
   el.className='kpi-delta '+(better?'delta-up':'delta-down');
 }
 
 // DATE HELPERS
 function isoDate(d){return d.toISOString().split('T')[0];}
 function daysAgo(n){const d=new Date();d.setDate(d.getDate()-n);return d;}
+
+// DATE RANGE
+let currentRange='week';
+function getDateRange(range){
+  const today=new Date();
+  let start,end,prevStart,prevEnd;
+  if(range==='week'){
+    end=isoDate(today);start=isoDate(daysAgo(6));
+    prevEnd=isoDate(daysAgo(7));prevStart=isoDate(daysAgo(13));
+  } else if(range==='lastweek'){
+    end=isoDate(daysAgo(7));start=isoDate(daysAgo(13));
+    prevEnd=isoDate(daysAgo(14));prevStart=isoDate(daysAgo(20));
+  } else if(range==='month'){
+    const s=new Date(today.getFullYear(),today.getMonth(),1);
+    end=isoDate(today);start=isoDate(s);
+    const ps=new Date(today.getFullYear(),today.getMonth()-1,1);
+    const pe=new Date(today.getFullYear(),today.getMonth(),0);
+    prevStart=isoDate(ps);prevEnd=isoDate(pe);
+  } else if(range==='lastmonth'){
+    const s=new Date(today.getFullYear(),today.getMonth()-1,1);
+    const e=new Date(today.getFullYear(),today.getMonth(),0);
+    end=isoDate(e);start=isoDate(s);
+    const ps=new Date(today.getFullYear(),today.getMonth()-2,1);
+    const pe=new Date(today.getFullYear(),today.getMonth()-1,0);
+    prevStart=isoDate(ps);prevEnd=isoDate(pe);
+  }
+  return{start,end,prevStart,prevEnd};
+}
+const RANGE_LABELS={
+  week:  {cur:'This week',  prev:'Last week'},
+  lastweek:{cur:'Last week', prev:'Week before'},
+  month: {cur:'This month', prev:'Last month'},
+  lastmonth:{cur:'Last month',prev:'Month before'},
+};
+function updateTableHeaders(){
+  const l=RANGE_LABELS[currentRange]||RANGE_LABELS.week;
+  document.querySelectorAll('.col-current').forEach(el=>el.textContent=l.cur);
+  document.querySelectorAll('.col-prev').forEach(el=>el.textContent=l.prev);
+}
+function setDateRange(range){
+  currentRange=range;
+  ['week','lastweek','month','lastmonth'].forEach(r=>{
+    const el=document.getElementById('df-'+r);
+    if(el)el.classList.toggle('active',r===range);
+  });
+  updateTableHeaders();
+  const cfg=getConfig();
+  if(cfg.demo){loadDemoData();return;}
+  refreshAll();
+}
 function getWeekNum(d){const j=new Date(d.getFullYear(),0,1);return Math.ceil(((d-j)/86400000+j.getDay()+1)/7);}
 
 // CHARTS
@@ -1236,7 +1301,7 @@ async function refreshAll(){
   if(cfg.demo){loadDemoData();return;}
   document.getElementById('spin').style.display='block';
   document.getElementById('refresh-lbl').textContent='Fetching…';
-  const endDate=isoDate(new Date()),startDate=isoDate(daysAgo(7)),prevEnd=isoDate(daysAgo(7)),prevStart=isoDate(daysAgo(14));
+  const {start:startDate,end:endDate,prevStart,prevEnd}=getDateRange(currentRange);
   if(cfg.oauth&&!isGoogleAuthed()){setStatus('ga4',false,'GA4: click "Sign in with Google"');setStatus('gsc',false,'GSC: click "Sign in with Google"');}
   notify('Fetching live data…','info');
   const [ga4Raw,ga4PrevRaw,gscRaw,gscPrevRaw,psiRaw,hsRaw,kwRaw]=await Promise.all([fetchGA4Week(cfg,startDate,endDate),fetchGA4Week(cfg,prevStart,prevEnd),fetchGSCWeek(cfg,startDate,endDate),fetchGSCWeek(cfg,prevStart,prevEnd),fetchPageSpeed(cfg),fetchHubSpot(cfg),fetchGSCKeywords(cfg)]);
