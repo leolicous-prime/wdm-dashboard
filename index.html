@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WDM Dashboard – Leo | Planima</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --purple: #7c3aed;
+      --blue:   #2563eb;
+      --green:  #16a34a;
+      --amber:  #d97706;
+      --red:    #dc2626;
+      --border: #e4e4e7;
+      --bg:     #f4f4f5;
+      --card:   #ffffff;
+      --text:   #18181b;
+      --muted:  #71717a;
+      --faint:  #a1a1aa;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+
+    /* ── Setup Overlay ── */
+    #setup-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+      display: flex; align-items: center; justify-content: center; z-index: 100;
+    }
+    #setup-overlay.hidden { display: none; }
+    .setup-box {
+      background: white; border-radius: 14px; padding: 32px 36px;
+      width: 480px; max-width: 95vw; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .setup-box h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .setup-box p  { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+    .setup-group  { margin-bottom: 16px; }
+    .setup-group label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 5px; }
+    .setup-group input {
+      width: 100%; border: 1px solid var(--border); border-radius: 7px;
+      padding: 9px 12px; font-size: 13px; outline: none;
+      transition: border-color 0.15s;
+    }
+    .setup-group input:focus { border-color: var(--purple); }
+    .setup-group .hint { font-size: 11px; color: var(--faint); margin-top: 4px; }
+    .btn-primary {
+      width: 100%; background: var(--purple); color: white;
+      border: none; border-radius: 8px; padding: 11px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-primary:hover { background: #6d28d9; }
+    .divider-or { text-align: center; color: var(--faint); font-size: 12px; margin: 14px 0; position: relative; }
+    .divider-or::before, .divider-or::after {
+      content: ''; position: absolute; top: 50%; width: 42%;
+      height: 1px; background: var(--border);
+    }
+    .divider-or::before { left: 0; } .divider-or::after { right: 0; }
+
+    /* ── Header ── */
+    .header {
+      background: white; border-bottom: 1px solid var(--border);
+      padding: 13px 24px; display: flex; justify-content: space-between;
+      align-items: center; position: sticky; top: 0; z-index: 10;
+    }
+    .header-left h1 { font-size: 16px; font-weight: 700; }
+    .header-left h1 span { font-weight: 400; color: var(--muted); }
+    .header-meta { font-size: 12px; color: var(--faint); margin-top: 2px; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .btn-sm {
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 6px 14px; font-size: 12px; cursor: pointer;
+      color: var(--muted); background: none; transition: background 0.15s;
+    }
+    .btn-sm:hover { background: var(--bg); }
+    .btn-sm.google { display: flex; align-items: center; gap: 6px; }
+    .google-dot { width: 8px; height: 8px; border-radius: 50%; background: #ea4335; }
+    .authed .google-dot { background: #34a853; }
+
+    /* ── Layout ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 24px 20px; }
+    .section-label {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.07em; color: var(--faint); margin-bottom: 10px;
+    }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .mb { margin-bottom: 22px; }
+
+    /* ── Cards ── */
+    .card { background: var(--card); border-radius: 10px; border: 1px solid var(--border); padding: 18px 20px; }
+    .card.ap { border-left: 4px solid var(--purple); }
+    .card.ab { border-left: 4px solid var(--blue); }
+    .card.ag { border-left: 4px solid var(--green); }
+
+    .m-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+    .m-value { font-size: 30px; font-weight: 700; line-height: 1.1; }
+    .m-sub   { font-size: 12px; color: var(--faint); margin-top: 5px; }
+
+    .badge { display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 100px; margin-top: 8px; }
+    .b-green  { background: #dcfce7; color: #15803d; }
+    .b-amber  { background: #fef3c7; color: #92400e; }
+    .b-red    { background: #fee2e2; color: #b91c1c; }
+    .b-grey   { background: #f1f5f9; color: #64748b; }
+    .tag { font-size: 10px; padding: 1px 5px; border-radius: 3px; background: #f1f5f9; color: #64748b; margin-left: 4px; font-weight: 500; }
+
+    /* ── Chart ── */
+    .chart-wrap { position: relative; height: 175px; margin-top: 12px; }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 12px; }
+    thead th { background: #fafafa; font-size: 11px; font-weight: 600; color: var(--muted); text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+    tbody td { padding: 8px 10px; border-bottom: 1px solid #f4f4f5; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #fafafa; }
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+    /* ── Misc ── */
+    .loading-txt { font-size: 12px; color: var(--faint); padding: 20px 0; text-align: center; }
+    .warn-banner {
+      background: #fefce8; border: 1px solid #fde68a; border-radius: 8px;
+      padding: 10px 14px; font-size: 12px; color: #78350f; margin-bottom: 16px;
+    }
+
+    @media (max-width: 720px) { .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; } .grid-2 { grid-template-columns: 1fr; } }
+    @media (max-width: 480px) { .grid-3, .grid-4, .grid-2 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- ── Setup Overlay ── -->
+<div id="setup-overlay">
+  <div class="setup-box">
+    <h2>Konfigurera Dashboard</h2>
+    <p>Fyll i dina API-nycklar. Sparas lokalt i din webbläsare.</p>
+
+    <div class="setup-group">
+      <label>Google OAuth Client ID</label>
+      <input type="text" id="cfg-oauth" placeholder="802672552111-....apps.googleusercontent.com">
+      <div class="hint">Från Google Cloud Console → OAuth 2.0 Client IDs</div>
+    </div>
+    <div class="setup-group">
+      <label>GA4 Property ID</label>
+      <input type="text" id="cfg-ga4" placeholder="298509938">
+    </div>
+    <div class="setup-group">
+      <label>Site URL (Search Console)</label>
+      <input type="text" id="cfg-gsc" placeholder="https://planima.se/">
+    </div>
+    <div class="setup-group">
+      <label>PageSpeed API Key</label>
+      <input type="text" id="cfg-psi" placeholder="AIza...">
+      <div class="hint">Från Google Cloud Console → API Keys</div>
+    </div>
+    <div class="setup-group">
+      <label>HubSpot Private App Token</label>
+      <input type="text" id="cfg-hs" placeholder="pat-eu1-...">
+      <div class="hint">HubSpot → Settings → Integrations → Private Apps</div>
+    </div>
+
+    <button class="btn-primary" onclick="saveConfig()">Spara och öppna dashboard</button>
+  </div>
+</div>
+
+<!-- ── Header ── -->
+<div class="header">
+  <div class="header-left">
+    <h1>WDM Dashboard <span>— Leo</span></h1>
+    <div class="header-meta">planima.se &nbsp;·&nbsp; <span id="last-updated">–</span></div>
+  </div>
+  <div class="header-right">
+    <button class="btn-sm google" id="google-btn" onclick="triggerGoogleAuth()">
+      <span class="google-dot"></span>
+      <span id="google-label">Anslut Google</span>
+    </button>
+    <button class="btn-sm" onclick="openSetup()">⚙ Inställningar</button>
+    <button class="btn-sm" onclick="loadAll()">↻ Uppdatera</button>
+  </div>
+</div>
+
+<!-- ── Dashboard ── -->
+<div class="container">
+
+  <div id="no-google-warn" class="warn-banner hidden">
+    ⚠ Google inte anslutet – GA4 och Search Console-data saknas. Klicka "Anslut Google" i menyraden.
+  </div>
+
+  <!-- North Star -->
+  <div class="section-label">⭐ North Star</div>
+  <div class="grid-3 mb">
+    <div class="card ap">
+      <div class="m-label">Visitor → Lead Conversion Rate</div>
+      <div class="m-value" id="ns-rate">–</div>
+      <div class="m-sub">Sessioner → nya HubSpot-kontakter (30 dagar)</div>
+      <div id="ns-badge"></div>
+    </div>
+    <div class="card">
+      <div class="m-label">Sessioner <span class="tag">GA4</span></div>
+      <div class="m-value" id="ns-sessions">–</div>
+      <div class="m-sub">Senaste 30 dagar</div>
+    </div>
+    <div class="card">
+      <div class="m-label">Nya leads <span class="tag">HubSpot</span></div>
+      <div class="m-value" id="ns-leads">–</div>
+      <div class="m-sub">Senaste 30 dagar</div>
+    </div>
+  </div>
+
+  <!-- Primary KPIs -->
+  <div class="section-label">📊 Primära KPI:er</div>
+  <div class="grid-4 mb">
+    <div class="card ab">
+      <div class="m-label">Non-brand klick <span class="tag">GSC</span></div>
+      <div class="m-value" id="kpi-nonbrand">–</div>
+      <div class="m-sub" id="kpi-nonbrand-sub">Exkl. varumärkessökningar</div>
+    </div>
+    <div class="card ab">
+      <div class="m-label">High-intent conv. rate <span class="tag">GA4</span></div>
+      <div class="m-value" id="kpi-hiconv">–</div>
+      <div class="m-sub">Demo, pris, lösning, kampanj</div>
+    </div>
+    <div class="card ab">
+      <div class="m-label">Organiska klick <span class="tag">GSC</span></div>
+      <div class="m-value" id="kpi-org-clicks">–</div>
+      <div class="m-sub" id="kpi-org-impressions">– impressions</div>
+    </div>
+    <div class="card ab">
+      <div class="m-label">Core Web Vitals <span class="tag">PSI</span></div>
+      <div class="m-value" id="kpi-cwv" style="font-size:20px;">–</div>
+      <div class="m-sub" id="kpi-cwv-sub">LCP · INP · CLS</div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="grid-2 mb">
+    <div class="card">
+      <div class="m-label">Organiska klick – veckotrend <span class="tag">GSC</span></div>
+      <div class="chart-wrap"><canvas id="gsc-chart"></canvas></div>
+      <div id="gsc-loading" class="loading-txt">Anslut Google för att ladda data</div>
+    </div>
+    <div class="card">
+      <div class="m-label">Nya HubSpot-kontakter – veckotrend <span class="tag">HubSpot</span></div>
+      <div class="chart-wrap"><canvas id="hs-chart"></canvas></div>
+      <div id="hs-loading" class="loading-txt">Laddar...</div>
+    </div>
+  </div>
+
+  <!-- Top Keywords -->
+  <div class="card mb">
+    <div class="m-label">Top keywords – senaste 30 dagar <span class="tag">GSC</span></div>
+    <div id="kw-loading" class="loading-txt">Anslut Google för att ladda keywords</div>
+    <div id="kw-table-wrap"></div>
+  </div>
+
+  <!-- Guardrails -->
+  <div class="section-label">🛡 Guardrails</div>
+  <div class="grid-3">
+    <div class="card">
+      <div class="m-label">Snitt organisk position <span class="tag">GSC</span></div>
+      <div class="m-value" id="guard-pos">–</div>
+      <div class="m-sub">Alla organiska queries</div>
+    </div>
+    <div class="card">
+      <div class="m-label">Snitt CTR <span class="tag">GSC</span></div>
+      <div class="m-value" id="guard-ctr">–</div>
+      <div class="m-sub">Organiska resultat</div>
+    </div>
+    <div class="card">
+      <div class="m-label">Form submit rate <span class="tag">GA4</span></div>
+      <div class="m-value" id="guard-form">–</div>
+      <div class="m-sub">Formulärinskick / sessioner</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Config (localStorage) ──
+const DEFAULTS = {
+  oauth:  '802672552111-k0ek9p0cg02ncee70oesgcl8ese5mecg.apps.googleusercontent.com',
+  ga4:    '298509938',
+  gsc:    'https://planima.se/',
+  psi:    'AIzaSyAOoPh4RA-UOHEqJCyoO9rQ-htqX8fxxok',
+  hs:     'pat-na1-83afaa55-b890-4651-87de-e639d8164aff'
+};
+const BRAND = new Set(['planima','planima ab','planima underhållsplan','planima.se','planima crm']);
+const HI_INTENT_PATHS = ['/demo','/pris','/losning','/kampanj','/jamfor'];
+
+let CFG = {};
+let gToken = null;
+let gscChart = null, hsChart = null;
+
+function loadConfig() {
+  const saved = JSON.parse(localStorage.getItem('wdm_cfg') || '{}');
+  CFG = { ...DEFAULTS, ...saved };
+}
+
+function saveConfig() {
+  CFG = {
+    oauth: document.getElementById('cfg-oauth').value.trim() || DEFAULTS.oauth,
+    ga4:   document.getElementById('cfg-ga4').value.trim()   || DEFAULTS.ga4,
+    gsc:   document.getElementById('cfg-gsc').value.trim()   || DEFAULTS.gsc,
+    psi:   document.getElementById('cfg-psi').value.trim()   || DEFAULTS.psi,
+    hs:    document.getElementById('cfg-hs').value.trim()
+  };
+  localStorage.setItem('wdm_cfg', JSON.stringify(CFG));
+  document.getElementById('setup-overlay').classList.add('hidden');
+  init();
+}
+
+function openSetup() {
+  loadConfig();
+  document.getElementById('cfg-oauth').value = CFG.oauth;
+  document.getElementById('cfg-ga4').value   = CFG.ga4;
+  document.getElementById('cfg-gsc').value   = CFG.gsc;
+  document.getElementById('cfg-psi').value   = CFG.psi;
+  document.getElementById('cfg-hs').value    = CFG.hs;
+  document.getElementById('setup-overlay').classList.remove('hidden');
+}
+
+// ── Helpers ──
+const pad = n => String(n).padStart(2,'0');
+function isoDate(d) { return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+function daysAgo(n) { const d=new Date(); d.setDate(d.getDate()-n); return isoDate(d); }
+const TODAY = isoDate(new Date());
+
+function fmt(n) {
+  if (n===undefined||n===null||n==='') return '–';
+  return Number(n).toLocaleString('sv-SE');
+}
+function fmtPct(n, decimals=1) {
+  if (n===undefined||n===null) return '–';
+  return Number(n).toFixed(decimals)+'%';
+}
+function badge(val, good, ok) {
+  if (val===null||val===undefined) return '';
+  if (val>=good) return '<span class="badge b-green">↑ Bra</span>';
+  if (val>=ok)   return '<span class="badge b-amber">→ OK</span>';
+  return '<span class="badge b-red">↓ Under mål</span>';
+}
+
+// ── Google OAuth (Token flow via GIS) ──
+function triggerGoogleAuth() {
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id: CFG.oauth,
+    scope: 'https://www.googleapis.com/auth/analytics.readonly https://www.googleapis.com/auth/webmasters.readonly',
+    callback: (resp) => {
+      if (resp.error) { alert('Google-auth misslyckades: ' + resp.error); return; }
+      gToken = resp.access_token;
+      document.getElementById('google-btn').classList.add('authed');
+      document.getElementById('google-label').textContent = 'Google anslutet';
+      document.getElementById('no-google-warn').classList.add('hidden');
+      loadGoogleData();
+    }
+  });
+  client.requestAccessToken();
+}
+
+async function gFetch(url, method='GET', body=null) {
+  if (!gToken) return null;
+  const opts = {
+    method,
+    headers: { 'Authorization': `Bearer ${gToken}`, 'Content-Type': 'application/json' }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(url, opts);
+  if (!res.ok) { console.error('gFetch error', res.status, url); return null; }
+  return res.json();
+}
+
+// ── GA4 ──
+async function loadGA4() {
+  if (!gToken) return null;
+  const propId = CFG.ga4;
+  const url = `https://analyticsdata.googleapis.com/v1beta/properties/${propId}:runReport`;
+
+  // Sessions + events last 30 days
+  const body = {
+    dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+    metrics: [
+      { name: 'sessions' },
+      { name: 'eventCount' }
+    ],
+    dimensionFilter: undefined
+  };
+
+  const data = await gFetch(url, 'POST', body);
+  if (!data?.rows) return null;
+
+  const row   = data.rows[0]?.metricValues || [];
+  const sessions = parseInt(row[0]?.value || 0);
+  document.getElementById('ns-sessions').textContent = fmt(sessions);
+
+  // High-intent pages
+  const hiBody = {
+    dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+    metrics: [{ name: 'sessions' }, { name: 'conversions' }],
+    dimensions: [{ name: 'pagePath' }],
+    dimensionFilter: {
+      orGroup: {
+        expressions: HI_INTENT_PATHS.map(p => ({
+          filter: { fieldName: 'pagePath', stringFilter: { matchType: 'CONTAINS', value: p } }
+        }))
+      }
+    }
+  };
+  const hiData = await gFetch(url, 'POST', hiBody);
+  if (hiData?.rows) {
+    const hiSess = hiData.rows.reduce((s,r)=>s+parseInt(r.metricValues[0]?.value||0),0);
+    const hiConv = hiData.rows.reduce((s,r)=>s+parseInt(r.metricValues[1]?.value||0),0);
+    const hiRate = hiSess > 0 ? (hiConv/hiSess*100).toFixed(1) : 0;
+    document.getElementById('kpi-hiconv').textContent = fmtPct(hiRate);
+  }
+
+  // Form submit rate (using form_submit event)
+  const formBody = {
+    dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+    metrics: [{ name: 'eventCount' }, { name: 'sessions' }],
+    dimensionFilter: { filter: { fieldName: 'eventName', stringFilter: { value: 'form_submit' } } }
+  };
+  const formData = await gFetch(url, 'POST', { ...formBody, dimensions: [{ name: 'eventName' }] });
+  if (formData?.rows) {
+    const submits = parseInt(formData.rows[0]?.metricValues[0]?.value||0);
+    const fRate = sessions > 0 ? (submits/sessions*100).toFixed(2) : 0;
+    document.getElementById('guard-form').textContent = fmtPct(fRate);
+  }
+
+  return sessions;
+}
+
+// ── Search Console ──
+async function loadGSC() {
+  if (!gToken) return;
+
+  const siteUrl = encodeURIComponent(CFG.gsc);
+  const base    = `https://searchconsole.googleapis.com/webmasters/v3/sites/${siteUrl}/searchAnalytics/query`;
+
+  // Overall last 30 days
+  const overall = await gFetch(base, 'POST', {
+    startDate: daysAgo(30), endDate: daysAgo(3),
+    dimensions: [], rowLimit: 1
+  });
+
+  if (overall?.rows?.length) {
+    const r = overall.rows[0];
+    document.getElementById('kpi-org-clicks').textContent    = fmt(r.clicks);
+    document.getElementById('kpi-org-impressions').textContent = fmt(r.impressions) + ' impressions';
+    document.getElementById('guard-ctr').textContent = fmtPct((r.ctr||0)*100);
+    document.getElementById('guard-pos').textContent = (r.position||0).toFixed(1);
+  }
+
+  // Weekly trend
+  const weekly = await gFetch(base, 'POST', {
+    startDate: daysAgo(90), endDate: daysAgo(3),
+    dimensions: ['date'], rowLimit: 90
+  });
+
+  if (weekly?.rows) {
+    // Aggregate by week
+    const weekMap = {};
+    weekly.rows.forEach(r => {
+      const d    = new Date(r.keys[0]);
+      const mon  = new Date(d); mon.setDate(d.getDate() - d.getDay() + 1);
+      const key  = isoDate(mon);
+      weekMap[key] = (weekMap[key]||0) + r.clicks;
+    });
+    const weeks  = Object.keys(weekMap).sort();
+    const clicks = weeks.map(w => weekMap[w]);
+
+    document.getElementById('gsc-loading').style.display = 'none';
+    const ctx = document.getElementById('gsc-chart').getContext('2d');
+    if (gscChart) gscChart.destroy();
+    gscChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: weeks.map(w=>w.slice(5)),
+        datasets: [{ label: 'Klick', data: clicks, borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,0.07)', fill: true, tension: 0.35, pointRadius: 3 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, grid: { color: '#f0f0f0' }, ticks: { font: { size: 11 } } },
+          x: { grid: { display: false }, ticks: { font: { size: 10 }, maxTicksLimit: 10, maxRotation: 40 } }
+        }
+      }
+    });
+  }
+
+  // Keywords
+  const kwRes = await gFetch(base, 'POST', {
+    startDate: daysAgo(30), endDate: daysAgo(3),
+    dimensions: ['query'], rowLimit: 20,
+    dimensionFilterGroups: []
+  });
+
+  if (kwRes?.rows) {
+    document.getElementById('kw-loading').style.display = 'none';
+
+    const kws       = kwRes.rows;
+    const totalClicks = kws.reduce((s,r)=>s+r.clicks,0);
+    const nonBrand    = kws.filter(r=>!BRAND.has(r.keys[0].toLowerCase()));
+    const nbClicks    = nonBrand.reduce((s,r)=>s+r.clicks,0);
+
+    document.getElementById('kpi-nonbrand').textContent     = fmt(nbClicks);
+    document.getElementById('kpi-nonbrand-sub').textContent = `av ${fmt(totalClicks)} totala klick`;
+
+    const wrap = document.getElementById('kw-table-wrap');
+    wrap.innerHTML = `
+      <table>
+        <thead><tr>
+          <th>Keyword</th>
+          <th class="num">Klick</th>
+          <th class="num">Impressions</th>
+          <th class="num">CTR</th>
+          <th class="num">Position</th>
+        </tr></thead>
+        <tbody>
+          ${kws.map(r=>`<tr>
+            <td>${r.keys[0]}</td>
+            <td class="num">${fmt(r.clicks)}</td>
+            <td class="num">${fmt(r.impressions)}</td>
+            <td class="num">${fmtPct((r.ctr||0)*100)}</td>
+            <td class="num">${(r.position||0).toFixed(1)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  return overall?.rows?.[0]?.clicks || null;
+}
+
+// ── PageSpeed ──
+async function loadPageSpeed() {
+  if (!CFG.psi) return;
+  try {
+    const url  = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent('https://planima.se')}&strategy=mobile&key=${CFG.psi}`;
+    const res  = await fetch(url);
+    const data = await res.json();
+
+    const score  = data?.lighthouseResult?.categories?.performance?.score;
+    const audits = data?.lighthouseResult?.audits || {};
+    const lcp    = audits['largest-contentful-paint']?.displayValue   || '–';
+    const cls    = audits['cumulative-layout-shift']?.displayValue    || '–';
+    const inp    = audits['interaction-to-next-paint']?.displayValue   || audits['total-blocking-time']?.displayValue || '–';
+
+    if (score !== undefined) {
+      const pct = Math.round(score * 100);
+      const el  = document.getElementById('kpi-cwv');
+      el.textContent = `${pct}/100`;
+      el.style.color = pct>=90 ? 'var(--green)' : pct>=50 ? 'var(--amber)' : 'var(--red)';
+      document.getElementById('kpi-cwv-sub').textContent = `LCP: ${lcp} · CLS: ${cls} · INP: ${inp}`;
+    }
+  } catch(e) {
+    document.getElementById('kpi-cwv').textContent = 'Fel';
+    console.error('PSI:', e);
+  }
+}
+
+// ── HubSpot ──
+async function loadHubSpot() {
+  if (!CFG.hs) {
+    document.getElementById('hs-loading').textContent = 'HubSpot-token saknas – konfigurera i ⚙ Inställningar';
+    return null;
+  }
+
+  const headers = { 'Authorization': `Bearer ${CFG.hs}`, 'Content-Type': 'application/json' };
+
+  try {
+    // Count last 30 days via search
+    const cutoff = new Date(); cutoff.setDate(cutoff.getDate()-30);
+    const searchBody = {
+      filterGroups: [{
+        filters: [{ propertyName: 'createdate', operator: 'GTE', value: cutoff.getTime().toString() }]
+      }],
+      properties: ['createdate'],
+      limit: 1
+    };
+    const res30 = await fetch('https://api.hubspot.com/crm/v3/objects/contacts/search', {
+      method: 'POST', headers, body: JSON.stringify(searchBody)
+    });
+    const data30 = await res30.json();
+    const count  = data30?.total || 0;
+    document.getElementById('ns-leads').textContent = fmt(count);
+
+    // Weekly trend (last 12 weeks via recent contacts)
+    const weeks = {};
+    for (let i=0; i<12; i++) {
+      const d = new Date(); d.setDate(d.getDate() - i*7);
+      const mon = new Date(d); mon.setDate(d.getDate() - ((d.getDay()+6)%7));
+      const key = isoDate(mon);
+      weeks[key] = 0;
+    }
+
+    const trendBody = {
+      filterGroups: [{
+        filters: [{ propertyName: 'createdate', operator: 'GTE', value: (new Date(Date.now()-84*86400000)).getTime().toString() }]
+      }],
+      properties: ['createdate'],
+      limit: 100
+    };
+    const resTrend = await fetch('https://api.hubspot.com/crm/v3/objects/contacts/search', {
+      method: 'POST', headers, body: JSON.stringify(trendBody)
+    });
+    const dataTrend = await resTrend.json();
+
+    (dataTrend?.results||[]).forEach(c => {
+      const d   = new Date(c.properties.createdate);
+      const mon = new Date(d); mon.setDate(d.getDate() - ((d.getDay()+6)%7));
+      const key = isoDate(mon);
+      if (key in weeks) weeks[key]++;
+    });
+
+    const labels = Object.keys(weeks).sort();
+    const counts = labels.map(k=>weeks[k]);
+
+    document.getElementById('hs-loading').style.display = 'none';
+    const ctx = document.getElementById('hs-chart').getContext('2d');
+    if (hsChart) hsChart.destroy();
+    hsChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels.map(l=>l.slice(5)),
+        datasets: [{ label: 'Nya kontakter', data: counts, backgroundColor: 'rgba(37,99,235,0.75)', borderRadius: 4, borderSkipped: false }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, grid: { color: '#f0f0f0' }, ticks: { font: { size: 11 } } },
+          x: { grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 40 } }
+        }
+      }
+    });
+
+    return count;
+  } catch(e) {
+    console.error('HubSpot:', e);
+    document.getElementById('hs-loading').textContent = 'Kunde inte nå HubSpot – kontrollera token och CORS';
+    return null;
+  }
+}
+
+// ── Google data (called after auth) ──
+async function loadGoogleData() {
+  await Promise.allSettled([loadGA4(), loadGSC()]);
+  // Recalc North Star
+  const sessEl = document.getElementById('ns-sessions').textContent;
+  const leadEl = document.getElementById('ns-leads').textContent;
+  calcNorthStar(sessEl, leadEl);
+  updateTimestamp();
+}
+
+function calcNorthStar(sessionsStr, leadsStr) {
+  const s = parseInt((sessionsStr||'').replace(/\s/g,''));
+  const l = parseInt((leadsStr||'').replace(/\s/g,''));
+  if (!s || !l || s===0) return;
+  const rate = (l/s*100).toFixed(2);
+  document.getElementById('ns-rate').textContent = rate + '%';
+  document.getElementById('ns-badge').innerHTML  = badge(parseFloat(rate), 2, 1);
+}
+
+function updateTimestamp() {
+  const now = new Date();
+  document.getElementById('last-updated').textContent =
+    `Uppdaterad ${now.toLocaleString('sv-SE',{dateStyle:'short',timeStyle:'short'})}`;
+}
+
+async function loadAll() {
+  document.getElementById('last-updated').textContent = 'Hämtar...';
+  await Promise.allSettled([
+    loadGA4(),
+    loadGSC(),
+    loadHubSpot(),
+    loadPageSpeed()
+  ]);
+  const sessEl = document.getElementById('ns-sessions').textContent;
+  const leadEl = document.getElementById('ns-leads').textContent;
+  calcNorthStar(sessEl, leadEl);
+  updateTimestamp();
+}
+
+// ── Init ──
+function init() {
+  loadConfig();
+  if (!CFG.hs && !CFG.oauth) {
+    openSetup(); return;
+  }
+  // Show Google warning if not yet authed
+  document.getElementById('no-google-warn').classList.remove('hidden');
+  // Load non-Google data immediately
+  loadHubSpot();
+  loadPageSpeed();
+  updateTimestamp();
+}
+
+window.addEventListener('load', () => {
+  loadConfig();
+  // If HubSpot token exists, hide setup and run
+  if (localStorage.getItem('wdm_cfg')) {
+    document.getElementById('setup-overlay').classList.add('hidden');
+    init();
+  }
+  // Pre-fill setup form
+  document.getElementById('cfg-oauth').value = CFG.oauth;
+  document.getElementById('cfg-ga4').value   = CFG.ga4;
+  document.getElementById('cfg-gsc').value   = CFG.gsc;
+  document.getElementById('cfg-psi').value   = CFG.psi;
+  document.getElementById('cfg-hs').value    = CFG.hs || '';
+});
+</script>
+</body>
+</html>
