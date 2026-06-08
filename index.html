@@ -257,6 +257,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
           <div class="field-label">HubSpot Service Key Token</div>
           <input class="field-input" id="cfg-hs" type="text" placeholder="pat-na1-..."/>
         </div>
+        <div class="field-row">
+          <div class="field-label">Cloudflare Worker URL <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3)">(required for HubSpot — see Guide tab)</span></div>
+          <input class="field-input" id="cfg-worker" type="text" placeholder="https://wdm-hs-proxy.YOUR_NAME.workers.dev"/>
+        </div>
       </div>
     </div>
 
@@ -522,14 +526,14 @@ function updateGoogleBtn(){
 
 // SETUP
 function saveConfig(){
-  const cfg={oauth:document.getElementById('cfg-oauth').value.trim(),ga4:document.getElementById('cfg-ga4').value.trim(),gsc:document.getElementById('cfg-gsc').value.trim(),psi:document.getElementById('cfg-psi').value.trim(),hs:document.getElementById('cfg-hs').value.trim(),demo:false};
+  const cfg={oauth:document.getElementById('cfg-oauth').value.trim(),ga4:document.getElementById('cfg-ga4').value.trim(),gsc:document.getElementById('cfg-gsc').value.trim(),psi:document.getElementById('cfg-psi').value.trim(),hs:document.getElementById('cfg-hs').value.trim(),worker:document.getElementById('cfg-worker').value.trim(),demo:false};
   if(!cfg.oauth&&!cfg.ga4&&!cfg.gsc&&!cfg.hs){notify('Fill in at least one data source, or use demo data.','error');return;}
   saveConfigToStorage(cfg);startDashboard();
 }
 function useDemoData(){saveConfigToStorage({demo:true});startDashboard();loadDemoData();}
 function openSettings(){
   const cfg=getConfig();
-  ['oauth','ga4','gsc','psi','hs'].forEach(k=>{const el=document.getElementById('cfg-'+k);if(el)el.value=cfg[k]||'';});
+  ['oauth','ga4','gsc','psi','hs','worker'].forEach(k=>{const el=document.getElementById('cfg-'+k);if(el)el.value=cfg[k]||'';});
   document.getElementById('dashboard').style.display='none';
   document.getElementById('setup-screen').style.display='flex';
 }
@@ -748,13 +752,14 @@ function processPSI(data){
   return{mobile:extract(data.mobile),desktop:extract(data.desktop)};
 }
 
-// API: HubSpot — uses api.hubapi.com (CORS-friendly)
+// API: HubSpot — routed through Cloudflare Worker proxy (bypasses CORS)
 async function fetchHubSpot(cfg){
   if(!cfg.hs)return null;
+  if(!cfg.worker){setStatus('hs',false,'HubSpot: add Worker URL in Settings');return null;}
   const now=new Date(),weekAgo=new Date(now-7*24*3600000),twoWeeks=new Date(now-14*24*3600000);
   const mkBody=(after,before)=>JSON.stringify({filterGroups:[{filters:[{propertyName:'createdate',operator:'GTE',value:after.getTime()},{propertyName:'createdate',operator:'LTE',value:before.getTime()}]}],properties:['createdate'],limit:1});
-  const headers={'Authorization':'Bearer '+cfg.hs,'Content-Type':'application/json'};
-  const endpoint='https://api.hubapi.com/crm/v3/objects/contacts/search';
+  const headers={'X-HS-Token':cfg.hs,'Content-Type':'application/json'};
+  const endpoint=cfg.worker.replace(/\/$/,'');
   try{
     const [r1,r2]=await Promise.all([
       fetch(endpoint,{method:'POST',headers,body:mkBody(weekAgo,now)}),
@@ -763,7 +768,7 @@ async function fetchHubSpot(cfg){
     if(!r1.ok){
       const err=await r1.json().catch(()=>({}));
       console.error('HubSpot',r1.status,err);
-      setStatus('hs',false,r1.status===401?'HubSpot: invalid token':'HubSpot: connection failed');
+      setStatus('hs',false,r1.status===401?'HubSpot: invalid token':'HubSpot: worker error '+r1.status);
       return null;
     }
     const d1=await r1.json(),d2=r2.ok?await r2.json():null;
