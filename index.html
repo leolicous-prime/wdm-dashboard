@@ -743,7 +743,7 @@ function setKpiDelta(id,cur,prev,lowerBetter=false){
   const pct=pctChange(cur,prev);
   if(pct===null)return;
   const better=lowerBetter?pct<0:pct>0;
-  const arrow=pct>0?'↑':'↓';
+  const arrow=better?'↑':'↓';
   el.textContent=arrow+' '+Math.abs(Math.round(pct))+'% vs prev. week';
   el.className='kpi-delta '+(better?'delta-up':'delta-down');
 }
