@@ -121,6 +121,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .metric-row:last-child{border-bottom:none;}
 .metric-row.header{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;padding:10px 16px;background:var(--bg3);}
 .metric-name{font-weight:500;color:var(--text);}
+.bench-score{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-family:'DM Mono',monospace;font-weight:500;padding:3px 9px;border-radius:20px;white-space:nowrap;}
+.bench-score.bs-good{background:rgba(22,163,74,.1);color:#15803d;border:1px solid rgba(22,163,74,.2);}
+.bench-score.bs-ok{background:rgba(255,185,42,.12);color:#92600a;border:1px solid rgba(255,185,42,.3);}
+.bench-score.bs-bad{background:rgba(244,91,128,.1);color:#be185d;border:1px solid rgba(244,91,128,.2);}
+.bench-score.bs-wait{background:var(--bg3);color:var(--text3);border:1px solid var(--border);}
 .metric-desc{color:var(--text2);font-size:12px;}
 .metric-val{font-family:'DM Mono',monospace;color:var(--text);text-align:right;}
 .metric-prev{font-family:'DM Mono',monospace;color:var(--text3);text-align:right;}
@@ -449,13 +454,13 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
         <div class="guide-title">What "good" looks like</div>
         <div class="guide-sub">Reference benchmarks for your weekly review.</div>
         <div class="metric-table">
-          <div class="metric-row header"><span>Metric</span><span>Needs work</span><span style="text-align:right">Good</span><span style="text-align:right">Excellent</span><span></span></div>
-          <div class="metric-row"><span class="metric-name">Avg. position</span><span class="metric-desc" style="color:#be185d">Above 30</span><span class="metric-val">Below 20</span><span class="metric-prev" style="color:#15803d">Below 10</span><span></span></div>
-          <div class="metric-row"><span class="metric-name">CTR</span><span class="metric-desc" style="color:#be185d">Below 1%</span><span class="metric-val">2–3%</span><span class="metric-prev" style="color:#15803d">5%+</span><span></span></div>
-          <div class="metric-row"><span class="metric-name">Mobile speed</span><span class="metric-desc" style="color:#be185d">Below 50</span><span class="metric-val">60–74</span><span class="metric-prev" style="color:#15803d">75+</span><span></span></div>
-          <div class="metric-row"><span class="metric-name">LCP</span><span class="metric-desc" style="color:#be185d">Over 4 s</span><span class="metric-val">2.5–4 s</span><span class="metric-prev" style="color:#15803d">Under 2.5 s</span><span></span></div>
-          <div class="metric-row"><span class="metric-name">CLS</span><span class="metric-desc" style="color:#be185d">Over 0.25</span><span class="metric-val">0.1–0.25</span><span class="metric-prev" style="color:#15803d">Under 0.1</span><span></span></div>
-          <div class="metric-row"><span class="metric-name">Bounce rate</span><span class="metric-desc" style="color:#be185d">Above 70%</span><span class="metric-val">40–60%</span><span class="metric-prev" style="color:#15803d">Below 40%</span><span></span></div>
+          <div class="metric-row header"><span>Metric</span><span>Needs work</span><span style="text-align:right">Good</span><span style="text-align:right">Excellent</span><span style="text-align:right">Planima</span></div>
+          <div class="metric-row"><span class="metric-name">Avg. position</span><span class="metric-desc" style="color:#be185d">Above 30</span><span class="metric-val">Below 20</span><span class="metric-prev" style="color:#15803d">Below 10</span><span style="text-align:right" id="bs-position"><span class="bench-score bs-wait">—</span></span></div>
+          <div class="metric-row"><span class="metric-name">CTR</span><span class="metric-desc" style="color:#be185d">Below 1%</span><span class="metric-val">2–3%</span><span class="metric-prev" style="color:#15803d">5%+</span><span style="text-align:right" id="bs-ctr"><span class="bench-score bs-wait">—</span></span></div>
+          <div class="metric-row"><span class="metric-name">Mobile speed</span><span class="metric-desc" style="color:#be185d">Below 50</span><span class="metric-val">60–74</span><span class="metric-prev" style="color:#15803d">75+</span><span style="text-align:right" id="bs-speed"><span class="bench-score bs-wait">—</span></span></div>
+          <div class="metric-row"><span class="metric-name">LCP</span><span class="metric-desc" style="color:#be185d">Over 4 s</span><span class="metric-val">2.5–4 s</span><span class="metric-prev" style="color:#15803d">Under 2.5 s</span><span style="text-align:right" id="bs-lcp"><span class="bench-score bs-wait">—</span></span></div>
+          <div class="metric-row"><span class="metric-name">CLS</span><span class="metric-desc" style="color:#be185d">Over 0.25</span><span class="metric-val">0.1–0.25</span><span class="metric-prev" style="color:#15803d">Under 0.1</span><span style="text-align:right" id="bs-cls"><span class="bench-score bs-wait">—</span></span></div>
+          <div class="metric-row"><span class="metric-name">Bounce rate</span><span class="metric-desc" style="color:#be185d">Above 70%</span><span class="metric-val">40–60%</span><span class="metric-prev" style="color:#15803d">Below 40%</span><span style="text-align:right" id="bs-bounce"><span class="bench-score bs-wait">—</span></span></div>
         </div>
       </div>
       <div style="text-align:center;padding:1rem 0;">
@@ -863,6 +868,53 @@ function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs){
   }
   rebuildTrendChart();
   document.getElementById('last-updated').textContent='Updated: '+new Date().toLocaleTimeString();
+  updateBenchmarks(gsccur, psi, ga4cur);
+}
+
+// BENCHMARK COLUMN
+function updateBenchmarks(gsccur, psi, ga4cur){
+  function setBench(id, value, label, cls){
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.innerHTML='<span class="bench-score '+cls+'">'+label+'</span>';
+  }
+  // Avg. position (lower = better)
+  if(gsccur&&gsccur.position!=null){
+    const v=gsccur.position;
+    const cls=v<=10?'bs-good':v<=20?'bs-ok':'bs-bad';
+    setBench('bs-position', v, v.toFixed(1), cls);
+  }
+  // CTR (higher = better, gsccur.ctr is already a %)
+  if(gsccur&&gsccur.ctr!=null){
+    const v=gsccur.ctr;
+    const cls=v>=5?'bs-good':v>=2?'bs-ok':'bs-bad';
+    setBench('bs-ctr', v, v.toFixed(1)+'%', cls);
+  }
+  // Mobile speed score (higher = better)
+  if(psi&&psi.mobile){
+    const v=psi.mobile.performance;
+    const cls=v>=75?'bs-good':v>=60?'bs-ok':'bs-bad';
+    setBench('bs-speed', v, v.toString(), cls);
+  }
+  // LCP in ms (lower = better)
+  if(psi&&psi.mobile&&psi.mobile.lcpNum!=null){
+    const v=psi.mobile.lcpNum;
+    const cls=v<2500?'bs-good':v<=4000?'bs-ok':'bs-bad';
+    const label=psi.mobile.lcp||((v/1000).toFixed(1)+' s');
+    setBench('bs-lcp', v, label, cls);
+  }
+  // CLS (lower = better)
+  if(psi&&psi.mobile&&psi.mobile.clsNum!=null){
+    const v=psi.mobile.clsNum;
+    const cls=v<0.1?'bs-good':v<=0.25?'bs-ok':'bs-bad';
+    setBench('bs-cls', v, psi.mobile.cls||v.toFixed(2), cls);
+  }
+  // Bounce rate (lower = better, ga4cur.bounce is 0–1)
+  if(ga4cur&&ga4cur.bounce!=null){
+    const v=ga4cur.bounce*100;
+    const cls=v<40?'bs-good':v<=70?'bs-ok':'bs-bad';
+    setBench('bs-bounce', v, v.toFixed(0)+'%', cls);
+  }
 }
 
 // REFRESH
