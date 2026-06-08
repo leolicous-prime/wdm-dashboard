@@ -739,11 +739,13 @@ function initCharts(){
   channelChart=new Chart(document.getElementById('channelChart'),{type:'doughnut',data:{labels:['Organic','Direct','Referral','Social','Other'],datasets:[{data:[0,0,0,0,0],backgroundColor:['#FFB92A','#F45B80','#8b5cf6','#0d9488','#c7bfa0'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#5a5545',font:{size:11},boxWidth:10,padding:12}}}}});
   impClickChart=new Chart(document.getElementById('impClickChart'),{type:'bar',data:{labels:[],datasets:[{label:'Impressions',data:[],backgroundColor:'rgba(139,92,246,.3)',borderColor:'#8b5cf6',borderWidth:1},{label:'Clicks',data:[],backgroundColor:'rgba(244,91,128,.3)',borderColor:'#F45B80',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{color:tc,font:{size:11}},grid:{color:gc}},x:{ticks:{color:tc,font:{size:11},autoSkip:true,maxRotation:30}}}}});
 }
-function rebuildTrendChart(){
-  const d=getData();if(!d.weeks.length)return;
-  trendChart.data.labels=d.weeks.map(w=>w.label);
-  trendChart.data.datasets[0].data=d.weeks.map(w=>w.sessions);
-  trendChart.data.datasets[1].data=d.weeks.map(w=>w.ctr);
+function rebuildTrendChart(weeks){
+  // weeks: [{label, sessions, ctr}] — prefer live data, fall back to stored
+  const data=weeks&&weeks.length?weeks:getData().weeks;
+  if(!data.length)return;
+  trendChart.data.labels=data.map(w=>w.label);
+  trendChart.data.datasets[0].data=data.map(w=>w.sessions);
+  trendChart.data.datasets[1].data=data.map(w=>w.ctr!=null?w.ctr:null);
   trendChart.update();
 }
 
@@ -792,6 +794,60 @@ function processGSCRows(data){
   agg.ctr=agg.count?(agg.totalCtr/agg.count)*100:0;
   agg.dailyRows=data.rows;
   return agg;
+}
+
+// API: GA4 weekly trend (last 8 weeks, organic only)
+async function fetchGA4Trend(cfg){
+  if(!cfg.ga4||!isGoogleAuthed())return null;
+  const url='https://analyticsdata.googleapis.com/v1beta/properties/'+cfg.ga4+':runReport';
+  const body={
+    dateRanges:[{startDate:isoDate(daysAgo(55)),endDate:isoDate(new Date())}],
+    dimensions:[{name:'yearWeek'},{name:'sessionDefaultChannelGroup'}],
+    metrics:[{name:'sessions'}],
+    orderBys:[{dimension:{dimensionName:'yearWeek'}}]
+  };
+  try{
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+googleAccessToken},body:JSON.stringify(body)});
+    if(!r.ok)return null;
+    return await r.json();
+  }catch(e){console.error('GA4 trend',e);return null;}
+}
+function processGA4Trend(data){
+  if(!data||!data.rows)return null;
+  const map={};
+  data.rows.forEach(row=>{
+    const wk=row.dimensionValues[0].value; // YYYYWW
+    const ch=row.dimensionValues[1].value;
+    const s=parseFloat(row.metricValues[0].value);
+    if(ch.toLowerCase().includes('organic')){map[wk]=(map[wk]||0)+s;}
+  });
+  return Object.entries(map).sort((a,b)=>a[0].localeCompare(b[0])).slice(-8)
+    .map(([yw,sessions])=>({label:'W'+yw.slice(-2),sessions:Math.round(sessions)}));
+}
+
+// API: GSC weekly trend (last 8 weeks, daily→weekly aggregation)
+async function fetchGSCTrend(cfg){
+  if(!cfg.gsc||!isGoogleAuthed())return null;
+  const url='https://www.googleapis.com/webmasters/v3/sites/'+encodeURIComponent(cfg.gsc)+'/searchAnalytics/query';
+  try{
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+googleAccessToken},body:JSON.stringify({startDate:isoDate(daysAgo(55)),endDate:isoDate(new Date()),dimensions:['date'],rowLimit:56})});
+    if(!r.ok)return null;
+    return await r.json();
+  }catch(e){console.error('GSC trend',e);return null;}
+}
+function processGSCTrend(data){
+  if(!data||!data.rows)return null;
+  const map={};
+  data.rows.forEach(row=>{
+    const d=new Date(row.keys[0]);
+    const wk=getWeekNum(d);
+    const key=d.getFullYear()+'W'+String(wk).padStart(2,'0');
+    if(!map[key])map[key]={clicks:0,impressions:0,ctrSum:0,count:0};
+    map[key].clicks+=row.clicks;map[key].impressions+=row.impressions;
+    map[key].ctrSum+=row.ctr;map[key].count++;
+  });
+  return Object.entries(map).sort((a,b)=>a[0].localeCompare(b[0])).slice(-8)
+    .map(([key,v])=>({label:'W'+key.split('W')[1],ctr:v.count?parseFloat(((v.ctrSum/v.count)*100).toFixed(2)):0}));
 }
 
 // API: GSC Keywords (30 days)
@@ -964,16 +1020,7 @@ function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,kwRaw){
     setKpiDelta('conv',hs.current,hs.previous);
     setMetric('contacts',fmt(hs.current),fmt(hs.previous));
   }
-  if(ga4cur&&gsccur){
-    const s=ga4cur.organicSessions||ga4cur.sessions,ctr=gsccur.ctr||0,wk='W'+getWeekNum(new Date());
-    const stored=getData();
-    if(!stored.weeks.find(w=>w.label===wk)){
-      stored.weeks.push({label:wk,sessions:Math.round(s),ctr:parseFloat(ctr.toFixed(2))});
-      if(stored.weeks.length>12)stored.weeks.shift();
-      saveData(stored);
-    }
-  }
-  rebuildTrendChart();
+  // trend chart is rebuilt by refreshAll after API fetch; no-op here for demo/direct calls
   document.getElementById('last-updated').textContent='Updated: '+new Date().toLocaleTimeString();
   updateBenchmarks(gsccur, psi, ga4cur);
   lastIntelData={gsccur,gscprev,psi,ga4cur,ga4prev,kwRaw:kwRaw||null};
@@ -1221,12 +1268,34 @@ async function refreshAll(){
   const endDate=isoDate(new Date()),startDate=isoDate(daysAgo(7)),prevEnd=isoDate(daysAgo(7)),prevStart=isoDate(daysAgo(14));
   if(cfg.oauth&&!isGoogleAuthed()){setStatus('ga4',false,'GA4: click "Sign in with Google"');setStatus('gsc',false,'GSC: click "Sign in with Google"');}
   notify('Fetching live data…','info');
-  const [ga4Raw,ga4PrevRaw,gscRaw,gscPrevRaw,psiRaw,hsRaw,kwRaw]=await Promise.all([fetchGA4Week(cfg,startDate,endDate),fetchGA4Week(cfg,prevStart,prevEnd),fetchGSCWeek(cfg,startDate,endDate),fetchGSCWeek(cfg,prevStart,prevEnd),fetchPageSpeed(cfg),fetchHubSpot(cfg),fetchGSCKeywords(cfg)]);
+  const [ga4Raw,ga4PrevRaw,gscRaw,gscPrevRaw,psiRaw,hsRaw,kwRaw,ga4TrendRaw,gscTrendRaw]=await Promise.all([
+    fetchGA4Week(cfg,startDate,endDate),fetchGA4Week(cfg,prevStart,prevEnd),
+    fetchGSCWeek(cfg,startDate,endDate),fetchGSCWeek(cfg,prevStart,prevEnd),
+    fetchPageSpeed(cfg),fetchHubSpot(cfg),fetchGSCKeywords(cfg),
+    fetchGA4Trend(cfg),fetchGSCTrend(cfg)
+  ]);
   const ga4cur=ga4Raw?processGA4Rows(ga4Raw):null,ga4prev=ga4PrevRaw?processGA4Rows(ga4PrevRaw):null,gsccur=gscRaw?processGSCRows(gscRaw):null,gscprev=gscPrevRaw?processGSCRows(gscPrevRaw):null,psi=psiRaw?processPSI(psiRaw):null;
   if(!ga4cur&&!gsccur&&!psi&&hsRaw===null)notify('Could not connect to any API. Check credentials in Settings.','error');
   else notify('Data refreshed!','success');
+
+  // Build merged weekly trend: GA4 sessions + GSC CTR aligned by week label
+  let trendWeeks=null;
+  const ga4t=ga4TrendRaw?processGA4Trend(ga4TrendRaw):null;
+  const gsct=gscTrendRaw?processGSCTrend(gscTrendRaw):null;
+  if(ga4t&&ga4t.length){
+    trendWeeks=ga4t.map(w=>{
+      const g=gsct?gsct.find(x=>x.label===w.label):null;
+      return{label:w.label,sessions:w.sessions,ctr:g?g.ctr:null};
+    });
+    // persist for intelligence text
+    const stored=getData();
+    stored.weeks=trendWeeks;
+    saveData(stored);
+  }
+
   renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hsRaw,kwRaw);
   renderKeywords(kwRaw);
+  rebuildTrendChart(trendWeeks);
   document.getElementById('spin').style.display='none';
   document.getElementById('refresh-lbl').textContent='↻ Refresh data';
 }
@@ -1254,8 +1323,10 @@ function loadDemoData(){
   ]};
   renderKeywords(demoKeywords);
   const stored=getData();
-  if(stored.weeks.length<2){stored.weeks=[{label:'W40',sessions:1820,ctr:2.1},{label:'W41',sessions:2100,ctr:2.3},{label:'W42',sessions:2340,ctr:2.5},{label:'W43',sessions:2180,ctr:2.4},{label:'W44',sessions:2510,ctr:2.7},{label:'W45',sessions:2760,ctr:2.9},{label:'W46',sessions:2850,ctr:3.1},{label:'W47',sessions:3180,ctr:3.25}];saveData(stored);}
+  const demoWeeks=[{label:'W40',sessions:1820,ctr:2.1},{label:'W41',sessions:2100,ctr:2.3},{label:'W42',sessions:2340,ctr:2.5},{label:'W43',sessions:2180,ctr:2.4},{label:'W44',sessions:2510,ctr:2.7},{label:'W45',sessions:2760,ctr:2.9},{label:'W46',sessions:2850,ctr:3.1},{label:'W47',sessions:3180,ctr:3.25}];
+  stored.weeks=demoWeeks;saveData(stored);
   renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,demoKeywords);
+  rebuildTrendChart(demoWeeks);
   notify('Demo data loaded. Add API keys in Settings for live data.','info');
 }
 
@@ -1465,6 +1536,5 @@ function openActionModal(idx){
 </div>
 </body>
 </html>
-
 
 
