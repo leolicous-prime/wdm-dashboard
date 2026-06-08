@@ -134,7 +134,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .chg-down{color:var(--accent);}
 .chg-neutral{color:var(--text3);}
 .kw-row{grid-template-columns:2fr 65px 90px 75px 70px;}
-.kw-brand::before{content:'B';display:inline-block;font-size:9px;font-family:'DM Mono',monospace;background:rgba(255,185,42,.2);color:var(--primary2);border-radius:3px;padding:1px 4px;margin-left:6px;vertical-align:middle;}
+.kw-brand{display:inline-flex;align-items:center;margin-left:6px;vertical-align:middle;position:relative;cursor:default;}
+.kw-brand img{width:14px;height:14px;opacity:.85;transition:opacity .15s;display:block;}
+.kw-brand:hover img{opacity:1;}
+.kw-brand::after{content:'Brand keyword — contains your company name';position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1a1712;color:#fff;font-size:11px;font-family:'DM Sans',sans-serif;white-space:nowrap;padding:5px 9px;border-radius:6px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:200;}
+.kw-brand:hover::after{opacity:1;}
 
 /* PAGESPEED */
 .ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem;}
@@ -708,8 +712,9 @@ function renderKeywords(data){
     const kw=r.keys[0];
     const isBrand=BRAND_KW.has(kw.toLowerCase());
     const posColor=r.position<=10?'color:#15803d':r.position<=20?'':'color:var(--text3)';
+    const brandIcon='<span class="kw-brand"><img src="https://planima.se/wp-content/uploads/2020/03/Planima-Symbol-Positiv-Gul.svg" width="14" height="14" alt="brand"/></span>';
     return '<div class="metric-row kw-row">'
-      +'<span class="metric-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+kw+(isBrand?'<span class="kw-brand"></span>':'')+'</span>'
+      +'<span class="metric-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+kw+(isBrand?brandIcon:'')+'</span>'
       +'<span class="metric-val">'+Math.round(r.clicks).toLocaleString()+'</span>'
       +'<span class="metric-val">'+Math.round(r.impressions).toLocaleString()+'</span>'
       +'<span class="metric-val" style="'+posColor+'">'+r.position.toFixed(1)+'</span>'
