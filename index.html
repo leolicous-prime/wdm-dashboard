@@ -1,826 +1,885 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WDM Dashboard – Leo | Planima</title>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
-  <style>
-    :root {
-      color-scheme: light;
-      --purple: #7c3aed; --blue: #2563eb; --green: #16a34a;
-      --amber: #d97706; --red: #dc2626;
-      --border: #e4e4e7; --bg: #f4f4f5; --card: #fff;
-      --text: #18181b; --muted: #71717a; --faint: #a1a1aa;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<title>WDM Dashboard — Planima</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg:#F7F5E9;--bg2:#FFFFFF;--bg3:#EEEBd8;
+  --border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.14);
+  --text:#1a1712;--text2:#5a5545;--text3:#9e9880;
+  --primary:#FFB92A;--primary2:#e8a418;
+  --accent:#F45B80;--accent2:#d94670;
+  --blue:#3b82f6;--purple:#8b5cf6;--teal:#0d9488;--green:#16a34a;
+  --radius:10px;--radius-lg:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;min-height:100vh;}
 
-    /* Setup overlay */
-    #setup-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; z-index: 100; }
-    #setup-overlay.hidden { display: none; }
-    .setup-box { background: #fff; border-radius: 14px; padding: 32px 36px; width: 480px; max-width: 95vw; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
-    .setup-box h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-    .setup-box p { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
-    .setup-group { margin-bottom: 16px; }
-    .setup-group label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 5px; }
-    .setup-group input { width: 100%; border: 1px solid var(--border); border-radius: 7px; padding: 9px 12px; font-size: 13px; outline: none; transition: border-color 0.15s; }
-    .setup-group input:focus { border-color: var(--purple); }
-    .setup-group .hint { font-size: 11px; color: var(--faint); margin-top: 4px; }
-    .btn-primary { width: 100%; background: var(--purple); color: #fff; border: none; border-radius: 8px; padding: 11px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
-    .btn-primary:hover { background: #6d28d9; }
+/* SETUP */
+#setup-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);background-image:radial-gradient(ellipse 60% 50% at 50% -10%,rgba(255,185,42,.12),transparent);}
+.setup-box{width:100%;max-width:640px;padding:2rem;}
+.setup-logo{font-family:'Instrument Serif',serif;font-size:28px;margin-bottom:4px;}
+.setup-logo span{color:var(--primary);font-style:italic;}
+.setup-sub{color:var(--text2);font-size:13px;margin-bottom:2.5rem;}
+.setup-step{margin-bottom:1.5rem;}
+.step-header{display:flex;align-items:center;gap:10px;margin-bottom:.75rem;}
+.step-num{width:24px;height:24px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--text2);flex-shrink:0;}
+.step-title{font-size:14px;font-weight:500;}
+.step-body{padding-left:34px;}
+.how-to{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px;}
+.how-to-title{font-size:11px;font-weight:500;color:var(--primary2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;}
+.how-to ol{padding-left:16px;}
+.how-to li{font-size:12px;color:var(--text2);margin-bottom:3px;}
+.how-to a{color:var(--accent);text-decoration:none;}
+.field-row{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+.field-label{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;}
+.field-input{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:10px 14px;outline:none;width:100%;transition:border-color .2s;}
+.field-input:focus{border-color:var(--primary);}
+.field-input::placeholder{color:var(--text3);}
+.setup-footer{display:flex;align-items:center;gap:12px;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);flex-wrap:wrap;}
+.btn-primary{background:var(--primary);color:#1a1712;font-weight:600;font-size:13px;border:none;border-radius:var(--radius);padding:11px 24px;cursor:pointer;transition:background .2s,transform .1s;font-family:'DM Sans',sans-serif;}
+.btn-primary:hover{background:var(--primary2);}
+.btn-primary:active{transform:scale(.98);}
+.btn-ghost{background:transparent;color:var(--text2);font-size:13px;border:1px solid var(--border2);border-radius:var(--radius);padding:10px 18px;cursor:pointer;transition:background .2s;font-family:'DM Sans',sans-serif;}
+.btn-ghost:hover{background:var(--bg3);color:var(--text);}
+.setup-note{font-size:11px;color:var(--text3);}
 
-    /* Header */
-    .header { background: #fff; border-bottom: 1px solid var(--border); padding: 13px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
-    .header-left h1 { font-size: 16px; font-weight: 700; }
-    .header-left h1 span { font-weight: 400; color: var(--muted); }
-    .header-meta { font-size: 12px; color: var(--faint); margin-top: 2px; }
-    .header-right { display: flex; align-items: center; gap: 10px; }
-    .btn-sm { border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; font-size: 12px; cursor: pointer; color: var(--muted); background: none; transition: background 0.15s; }
-    .btn-sm:hover { background: var(--bg); }
-    .google-dot { width: 8px; height: 8px; border-radius: 50%; background: #ea4335; display: inline-block; margin-right: 5px; }
-    .authed .google-dot { background: #34a853; }
+/* DASHBOARD */
+#dashboard{display:none;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border);background:var(--bg2);position:sticky;top:0;z-index:100;}
+.topbar-logo{font-family:'Instrument Serif',serif;font-size:20px;}
+.topbar-logo span{color:var(--primary);font-style:italic;}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.last-updated{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;}
+.btn-sm{font-size:12px;padding:7px 14px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.btn-sm:hover{background:var(--bg3);color:var(--text);}
+.btn-google{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--border2);color:var(--text);font-weight:500;}
+.btn-google:hover{background:var(--bg3);}
+.btn-google.signed-in{border-color:rgba(22,163,74,.3);color:#15803d;background:rgba(22,163,74,.06);}
+.btn-refresh{display:flex;align-items:center;gap:6px;background:rgba(255,185,42,.12);border-color:rgba(255,185,42,.4);color:var(--primary2);}
+.btn-refresh:hover{background:rgba(255,185,42,.22);}
+.spinner{width:12px;height:12px;border:2px solid rgba(255,185,42,.3);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.content{padding:2rem;max-width:1200px;margin:0 auto;}
 
-    /* Tabs */
-    .tabs { background: #fff; border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; gap: 0; }
-    .tab-btn { padding: 12px 20px; font-size: 13px; font-weight: 500; color: var(--muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s; }
-    .tab-btn:hover { color: var(--text); }
-    .tab-btn.active { color: var(--purple); border-bottom-color: var(--purple); font-weight: 600; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+/* TABS */
+.tabs{display:flex;gap:2px;margin-bottom:2rem;background:var(--bg3);border-radius:var(--radius);padding:4px;width:fit-content;flex-wrap:wrap;}
+.tab-btn{font-size:13px;font-weight:400;color:var(--text2);background:transparent;border:none;border-radius:8px;padding:7px 18px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.tab-btn.active{background:var(--bg2);color:var(--text);font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.08);}
 
-    /* Layout */
-    .container { max-width: 1100px; margin: 0 auto; padding: 24px 20px; }
-    .section-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--faint); margin-bottom: 10px; }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-    .mb { margin-bottom: 22px; }
+/* STATUS */
+.status-bar{display:flex;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap;}
+.status-pill{display:flex;align-items:center;gap:6px;font-size:11px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;color:var(--text2);}
+.status-dot{width:7px;height:7px;border-radius:50%;}
+.dot-green{background:var(--green);box-shadow:0 0 6px rgba(22,163,74,.4);}
+.dot-red{background:var(--accent);}
+.dot-gray{background:var(--text3);}
 
-    /* Cards */
-    .card { background: var(--card); border-radius: 10px; border: 1px solid var(--border); padding: 18px 20px; }
-    .card.ap { border-left: 4px solid var(--purple); }
-    .card.ab { border-left: 4px solid var(--blue); }
-    .m-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
-    .m-value { font-size: 30px; font-weight: 700; line-height: 1.1; }
-    .m-sub { font-size: 12px; color: var(--faint); margin-top: 5px; }
-    .tag { font-size: 10px; padding: 1px 5px; border-radius: 3px; background: #f1f5f9; color: #64748b; margin-left: 4px; font-weight: 500; }
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:1.5rem;}
+.kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;position:relative;overflow:hidden;transition:border-color .2s;}
+.kpi-card:hover{border-color:var(--border2);}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi-card.c-green::before{background:var(--primary);}
+.kpi-card.c-blue::before{background:var(--blue);}
+.kpi-card.c-teal::before{background:var(--teal);}
+.kpi-card.c-amber::before{background:var(--primary);}
+.kpi-card.c-purple::before{background:var(--purple);}
+.kpi-card.c-red::before{background:var(--accent);}
+.kpi-label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.kpi-value{font-size:28px;font-weight:500;color:var(--text);line-height:1;margin-bottom:8px;font-family:'DM Mono',monospace;}
+.kpi-value.loading{color:var(--text3);font-size:18px;}
+.kpi-delta{font-size:12px;display:flex;align-items:center;gap:4px;}
+.delta-up{color:var(--green);}
+.delta-down{color:var(--accent);}
+.delta-neutral{color:var(--text3);}
+.kpi-source{position:absolute;top:12px;right:12px;font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;}
 
-    /* Delta (week-over-week) */
-    .delta { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 600; margin-top: 6px; }
-    .delta.up   { color: var(--green); }
-    .delta.down { color: var(--red); }
-    .delta.flat { color: var(--faint); }
+/* CHARTS */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem;}
+@media(max-width:768px){.chart-grid{grid-template-columns:1fr;}}
+.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;}
+.chart-card.full{grid-column:1/-1;}
+.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.chart-title{font-size:13px;font-weight:500;color:var(--text);}
+.chart-subtitle{font-size:11px;color:var(--text3);margin-top:2px;}
+.chart-wrap{position:relative;width:100%;}
+.legend-row{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);}
+.legend-dot{width:8px;height:8px;border-radius:2px;}
 
-    /* Badge */
-    .badge { display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 100px; margin-top: 8px; }
-    .b-green { background: #dcfce7; color: #15803d; }
-    .b-amber { background: #fef3c7; color: #92400e; }
-    .b-red   { background: #fee2e2; color: #b91c1c; }
+/* METRICS TABLE */
+.metrics-section{margin-bottom:1.5rem;}
+.section-title{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem;}
+.metric-table{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
+.metric-row{display:grid;grid-template-columns:1fr 2fr 90px 90px 100px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;gap:12px;}
+.metric-row:last-child{border-bottom:none;}
+.metric-row.header{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;padding:10px 16px;background:var(--bg3);}
+.metric-name{font-weight:500;color:var(--text);}
+.metric-desc{color:var(--text2);font-size:12px;}
+.metric-val{font-family:'DM Mono',monospace;color:var(--text);text-align:right;}
+.metric-prev{font-family:'DM Mono',monospace;color:var(--text3);text-align:right;}
+.metric-chg{text-align:right;font-family:'DM Mono',monospace;font-size:12px;}
+.chg-up{color:var(--green);}
+.chg-down{color:var(--accent);}
+.chg-neutral{color:var(--text3);}
 
-    /* Charts */
-    .chart-wrap { position: relative; height: 175px; margin-top: 12px; }
+/* PAGESPEED */
+.ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem;}
+@media(max-width:600px){.ps-grid{grid-template-columns:1fr;}}
+.gauge-row{display:flex;justify-content:space-around;align-items:center;padding:.5rem 0;flex-wrap:wrap;gap:12px;}
+.gauge-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.gauge-label{font-size:11px;color:var(--text2);text-align:center;}
 
-    /* Table */
-    table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 12px; }
-    thead th { background: #fafafa; font-size: 11px; font-weight: 600; color: var(--muted); text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
-    tbody td { padding: 8px 10px; border-bottom: 1px solid #f4f4f5; }
-    tbody tr:last-child td { border-bottom: none; }
-    tbody tr:hover { background: #fafafa; }
-    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+/* CWV */
+.cwv-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:2rem;}
+.cwv-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;cursor:pointer;transition:border-color .2s,box-shadow .2s;}
+.cwv-card:hover{border-color:var(--primary);box-shadow:0 2px 8px rgba(255,185,42,.12);}
+.cwv-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.cwv-abbr{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--text);}
+.cwv-value{font-size:22px;font-weight:500;font-family:'DM Mono',monospace;color:var(--text);margin-bottom:4px;line-height:1;}
+.cwv-name{font-size:11px;color:var(--text2);margin-bottom:2px;}
+.cwv-target{font-size:10px;color:var(--text3);}
+.vital-status{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;}
+.status-good{background:rgba(22,163,74,.1);color:#15803d;}
+.status-needs{background:rgba(255,185,42,.15);color:#92580a;}
+.status-poor{background:rgba(244,91,128,.12);color:#be185d;}
 
-    .loading-txt { font-size: 12px; color: var(--faint); padding: 20px 0; text-align: center; }
-    .warn-banner { background: #fefce8; border: 1px solid #fde68a; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #78350f; margin-bottom: 16px; }
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(26,23,18,.5);display:flex;align-items:center;justify-content:center;z-index:500;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:1.75rem;max-width:520px;width:calc(100% - 2rem);max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.15);}
+.modal-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;gap:1rem;}
+.modal-title{font-size:16px;font-weight:500;color:var(--text);}
+.modal-subtitle{font-size:12px;color:var(--text2);margin-top:2px;}
+.modal-close{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text2);flex-shrink:0;transition:background .2s;}
+.modal-close:hover{background:var(--border2);}
+.modal-metric{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:1rem;font-family:'DM Mono',monospace;font-size:12px;color:var(--text2);}
+.modal-tips-title{font-size:11px;font-weight:500;color:var(--primary2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;}
+.modal-tip{display:flex;gap:10px;margin-bottom:10px;}
+.tip-num{width:20px;height:20px;background:var(--bg3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:var(--text2);flex-shrink:0;margin-top:2px;}
+.tip-text{font-size:13px;color:var(--text2);line-height:1.5;}
+.tip-text strong{color:var(--text);}
 
-    /* PageSpeed tab */
-    .psi-scores { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 22px; }
-    .score-ring-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
-    .score-ring { position: relative; width: 120px; height: 120px; margin-bottom: 12px; }
-    .score-ring svg { transform: rotate(-90deg); }
-    .score-ring .score-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; }
-    .score-label { font-size: 13px; font-weight: 600; color: var(--muted); }
-    .score-device { font-size: 12px; color: var(--faint); margin-top: 2px; }
+/* BADGES */
+.source-badge{display:inline-block;font-size:10px;font-family:'DM Mono',monospace;padding:2px 7px;border-radius:4px;font-weight:500;}
+.badge-ga{background:rgba(59,130,246,.1);color:#1d4ed8;border:1px solid rgba(59,130,246,.2);}
+.badge-hs{background:rgba(255,185,42,.15);color:#92580a;border:1px solid rgba(255,185,42,.3);}
+.badge-gsc{background:rgba(244,91,128,.1);color:#be185d;border:1px solid rgba(244,91,128,.2);}
+.badge-ps{background:rgba(139,92,246,.1);color:#6d28d9;border:1px solid rgba(139,92,246,.2);}
 
-    .cwv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 22px; }
-    .cwv-card { background: var(--card); border-radius: 10px; border: 1px solid var(--border); padding: 16px 18px; cursor: pointer; transition: box-shadow 0.15s; position: relative; }
-    .cwv-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
-    .cwv-name { font-size: 12px; font-weight: 700; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
-    .cwv-info-icon { font-size: 13px; color: var(--faint); font-weight: 400; }
-    .cwv-value { font-size: 24px; font-weight: 700; }
-    .cwv-threshold { font-size: 11px; color: var(--faint); margin-top: 3px; }
+/* GUIDE */
+.guide-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.5rem;}
+.guide-title{font-size:16px;font-weight:500;color:var(--text);margin-bottom:4px;}
+.guide-sub{font-size:13px;color:var(--text2);margin-bottom:1.5rem;}
+.guide-steps{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:700px){.guide-steps{grid-template-columns:1fr;}}
+.guide-step{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;}
+.guide-step-num{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:4px;}
+.guide-step-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px;}
+.guide-step-list{list-style:none;}
+.guide-step-list li{font-size:12px;color:var(--text2);padding:3px 0;display:flex;gap:8px;}
+.guide-step-list li::before{content:'→';color:var(--primary);flex-shrink:0;}
 
-    /* CWV Tooltip modal */
-    #cwv-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.15s; }
-    #cwv-modal.open { opacity: 1; pointer-events: all; }
-    .cwv-modal-box { background: #fff; border-radius: 14px; padding: 28px 32px; width: 480px; max-width: 95vw; box-shadow: 0 20px 60px rgba(0,0,0,0.2); transform: translateY(8px); transition: transform 0.15s; }
-    #cwv-modal.open .cwv-modal-box { transform: translateY(0); }
-    .cwv-modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
-    .cwv-modal-title { font-size: 17px; font-weight: 700; }
-    .cwv-modal-metric { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .cwv-modal-close { background: none; border: none; font-size: 20px; color: var(--faint); cursor: pointer; line-height: 1; padding: 0 4px; }
-    .cwv-modal-close:hover { color: var(--text); }
-    .cwv-modal-tips { list-style: none; }
-    .cwv-modal-tips li { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid #f4f4f5; font-size: 13px; line-height: 1.5; }
-    .cwv-modal-tips li:last-child { border-bottom: none; }
-    .cwv-modal-tips li::before { content: '→'; color: var(--purple); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
-    .cwv-pass  { border-top: 3px solid var(--green); }
-    .cwv-warn  { border-top: 3px solid var(--amber); }
-    .cwv-fail  { border-top: 3px solid var(--red); }
+/* TOAST */
+.notif{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--text);max-width:300px;z-index:1000;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;}
+.notif.show{opacity:1;transform:translateY(0);}
+.notif-success{border-left:3px solid var(--green);}
+.notif-error{border-left:3px solid var(--accent);}
+.notif-info{border-left:3px solid var(--blue);}
 
-    .opp-list { list-style: none; }
-    .opp-list li { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f4f4f5; font-size: 13px; }
-    .opp-list li:last-child { border-bottom: none; }
-    .opp-saving { font-size: 11px; font-weight: 600; color: var(--amber); background: #fef3c7; padding: 2px 7px; border-radius: 100px; }
-
-    @media (max-width: 720px) { .grid-3, .grid-4, .psi-scores, .cwv-grid { grid-template-columns: 1fr 1fr; } .grid-2 { grid-template-columns: 1fr; } }
-    @media (max-width: 480px) { .grid-3, .grid-4, .grid-2, .psi-scores, .cwv-grid { grid-template-columns: 1fr; } }
-  </style>
+@media(max-width:600px){
+  .content{padding:1rem;}
+  .kpi-grid{grid-template-columns:1fr 1fr;}
+  .metric-row{grid-template-columns:1fr 1fr;}
+  .metric-row .metric-desc,.metric-row .metric-prev{display:none;}
+  .topbar{padding:1rem;}
+}
+</style>
 </head>
 <body>
 
-<!-- Setup Overlay -->
-<div id="setup-overlay">
+<!-- SETUP SCREEN -->
+<div id="setup-screen">
   <div class="setup-box">
-    <h2>Konfigurera Dashboard</h2>
-    <p>Fyll i dina API-nycklar. Sparas lokalt i din webbläsare – du behöver bara göra detta en gång.</p>
-    <div class="setup-group">
-      <label>Google OAuth Client ID</label>
-      <input type="text" id="cfg-oauth" placeholder="802672552111-....apps.googleusercontent.com">
-      <div class="hint">Google Cloud Console → Credentials → OAuth 2.0 Client IDs</div>
-    </div>
-    <div class="setup-group">
-      <label>GA4 Property ID</label>
-      <input type="text" id="cfg-ga4" placeholder="t.ex. 298509938">
-    </div>
-    <div class="setup-group">
-      <label>Site URL (Search Console)</label>
-      <input type="text" id="cfg-gsc" placeholder="https://planima.se/">
-    </div>
-    <div class="setup-group">
-      <label>PageSpeed API Key</label>
-      <input type="text" id="cfg-psi" placeholder="AIza...">
-    </div>
-    <div class="setup-group">
-      <label>HubSpot Service Key Token</label>
-      <input type="text" id="cfg-hs" placeholder="pat-na1-...">
-    </div>
-    <button class="btn-primary" onclick="saveConfig()">Spara och öppna dashboard</button>
-  </div>
-</div>
+    <div class="setup-logo">WDM <span>Dashboard</span></div>
+    <p class="setup-sub">Connect your data sources. Credentials are stored locally in your browser only — never sent anywhere.</p>
 
-<!-- CWV Tooltip Modal -->
-<div id="cwv-modal" onclick="if(event.target===this)closeCwvModal()">
-  <div class="cwv-modal-box">
-    <div class="cwv-modal-header">
-      <div>
-        <div class="cwv-modal-title" id="cwv-modal-title">–</div>
-        <div class="cwv-modal-metric" id="cwv-modal-metric">–</div>
+    <div class="setup-step">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">Google (GA4 + Search Console + PageSpeed) <span class="source-badge badge-ga">OAuth</span></div>
       </div>
-      <button class="cwv-modal-close" onclick="closeCwvModal()">✕</button>
-    </div>
-    <ul class="cwv-modal-tips" id="cwv-modal-tips"></ul>
-  </div>
-</div>
-
-<!-- Header -->
-<div class="header">
-  <div class="header-left">
-    <h1>WDM Dashboard <span>— Leo</span></h1>
-    <div class="header-meta">planima.se &nbsp;·&nbsp; <span id="last-updated">–</span></div>
-  </div>
-  <div class="header-right">
-    <button class="btn-sm" id="google-btn" onclick="triggerGoogleAuth()">
-      <span class="google-dot"></span><span id="google-label">Anslut Google</span>
-    </button>
-    <button class="btn-sm" onclick="openSetup()">⚙ Inställningar</button>
-    <button class="btn-sm" onclick="loadAll()">↻ Uppdatera</button>
-  </div>
-</div>
-
-<!-- Tabs -->
-<div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('overview', this)">📊 Översikt</button>
-  <button class="tab-btn" onclick="switchTab('pagespeed', this)">⚡ PageSpeed & CWV</button>
-</div>
-
-<!-- Tab: Overview -->
-<div id="tab-overview" class="tab-content active">
-  <div class="container">
-
-    <div id="no-google-warn" class="warn-banner hidden">
-      ⚠ Google inte anslutet – GA4 och Search Console-data saknas. Klicka "Anslut Google" ovan.
-    </div>
-
-    <div class="section-label">⭐ North Star</div>
-    <div class="grid-3 mb">
-      <div class="card ap">
-        <div class="m-label">Visitor → Lead Conversion Rate</div>
-        <div class="m-value" id="ns-rate">–</div>
-        <div class="m-sub">Sessioner → nya HubSpot-kontakter (7 dagar)</div>
-        <div id="ns-badge"></div>
-        <div id="ns-delta" class="delta flat"></div>
-      </div>
-      <div class="card">
-        <div class="m-label">Sessioner <span class="tag">GA4</span></div>
-        <div class="m-value" id="ns-sessions">–</div>
-        <div class="m-sub">Senaste 7 dagar</div>
-        <div id="sessions-delta" class="delta flat"></div>
-      </div>
-      <div class="card">
-        <div class="m-label">Nya leads <span class="tag">HubSpot</span></div>
-        <div class="m-value" id="ns-leads">–</div>
-        <div class="m-sub">Senaste 7 dagar</div>
-        <div id="leads-delta" class="delta flat"></div>
-      </div>
-    </div>
-
-    <div class="section-label">📊 Primära KPI:er</div>
-    <div class="grid-4 mb">
-      <div class="card ab">
-        <div class="m-label">Non-brand klick <span class="tag">GSC</span></div>
-        <div class="m-value" id="kpi-nonbrand">–</div>
-        <div class="m-sub" id="kpi-nonbrand-sub">Exkl. varumärkessökningar</div>
-        <div id="nonbrand-delta" class="delta flat"></div>
-      </div>
-      <div class="card ab">
-        <div class="m-label">High-intent conv. <span class="tag">GA4</span></div>
-        <div class="m-value" id="kpi-hiconv">–</div>
-        <div class="m-sub">Demo, pris, lösning, kampanj</div>
-        <div id="hiconv-delta" class="delta flat"></div>
-      </div>
-      <div class="card ab">
-        <div class="m-label">Organiska klick <span class="tag">GSC</span></div>
-        <div class="m-value" id="kpi-org-clicks">–</div>
-        <div class="m-sub" id="kpi-org-impressions">– impressions</div>
-        <div id="orgclicks-delta" class="delta flat"></div>
-      </div>
-      <div class="card ab" style="cursor:pointer;" onclick="switchTab('pagespeed', document.querySelectorAll('.tab-btn')[1])">
-        <div class="m-label">Performance Score <span class="tag">PSI</span></div>
-        <div class="m-value" id="kpi-cwv" style="font-size:26px;">–</div>
-        <div class="m-sub" id="kpi-cwv-sub">Klicka för detaljer →</div>
-      </div>
-    </div>
-
-    <div class="grid-2 mb">
-      <div class="card">
-        <div class="m-label">Organiska klick – veckotrend <span class="tag">GSC</span></div>
-        <div class="chart-wrap"><canvas id="gsc-chart"></canvas></div>
-        <div id="gsc-loading" class="loading-txt">Anslut Google för att ladda data</div>
-      </div>
-      <div class="card">
-        <div class="m-label">Nya HubSpot-kontakter – veckotrend <span class="tag">HubSpot</span></div>
-        <div class="chart-wrap"><canvas id="hs-chart"></canvas></div>
-        <div id="hs-loading" class="loading-txt">Laddar...</div>
-      </div>
-    </div>
-
-    <div class="card mb">
-      <div class="m-label">Top keywords – senaste 7 dagar <span class="tag">GSC</span></div>
-      <div id="kw-loading" class="loading-txt">Anslut Google för att ladda keywords</div>
-      <div id="kw-table-wrap"></div>
-    </div>
-
-    <div class="section-label">🛡 Guardrails</div>
-    <div class="grid-3">
-      <div class="card">
-        <div class="m-label">Snitt organisk position <span class="tag">GSC</span></div>
-        <div class="m-value" id="guard-pos">–</div>
-        <div class="m-sub">Alla organiska queries</div>
-        <div id="pos-delta" class="delta flat"></div>
-      </div>
-      <div class="card">
-        <div class="m-label">Snitt CTR <span class="tag">GSC</span></div>
-        <div class="m-value" id="guard-ctr">–</div>
-        <div class="m-sub">Organiska resultat</div>
-        <div id="ctr-delta" class="delta flat"></div>
-      </div>
-      <div class="card">
-        <div class="m-label">Form submit rate <span class="tag">GA4</span></div>
-        <div class="m-value" id="guard-form">–</div>
-        <div class="m-sub">Formulärinskick / sessioner</div>
-        <div id="form-delta" class="delta flat"></div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- Tab: PageSpeed & CWV -->
-<div id="tab-pagespeed" class="tab-content">
-  <div class="container">
-
-    <div class="section-label">🏎 Performance Score</div>
-    <div class="psi-scores mb">
-      <div class="card score-ring-wrap">
-        <div class="score-ring">
-          <svg viewBox="0 0 120 120" width="120" height="120">
-            <circle cx="60" cy="60" r="50" fill="none" stroke="#f0f0f0" stroke-width="10"/>
-            <circle id="ring-mobile" cx="60" cy="60" r="50" fill="none" stroke="#16a34a" stroke-width="10" stroke-dasharray="314" stroke-dashoffset="314" stroke-linecap="round" style="transition: stroke-dashoffset 0.8s ease;"/>
-          </svg>
-          <div class="score-num" id="score-mobile-num">–</div>
+      <div class="step-body">
+        <div class="how-to">
+          <div class="how-to-title">Important: add redirect URI in Google Cloud Console</div>
+          <ol>
+            <li>Go to <a href="https://console.cloud.google.com/apis/credentials" target="_blank">console.cloud.google.com/apis/credentials</a></li>
+            <li>Open your Web application OAuth client</li>
+            <li>Under <strong>Authorized redirect URIs</strong>, add: <code>https://leolicous-prime.github.io/wdm-dashboard/</code></li>
+            <li>Under <strong>Authorized JavaScript origins</strong>, confirm: <code>https://leolicous-prime.github.io</code></li>
+            <li>Save and copy the <strong>Client ID</strong></li>
+          </ol>
         </div>
-        <div class="score-label">Mobil</div>
-        <div class="score-device" id="score-mobile-sub">–</div>
-      </div>
-      <div class="card score-ring-wrap">
-        <div class="score-ring">
-          <svg viewBox="0 0 120 120" width="120" height="120">
-            <circle cx="60" cy="60" r="50" fill="none" stroke="#f0f0f0" stroke-width="10"/>
-            <circle id="ring-desktop" cx="60" cy="60" r="50" fill="none" stroke="#16a34a" stroke-width="10" stroke-dasharray="314" stroke-dashoffset="314" stroke-linecap="round" style="transition: stroke-dashoffset 0.8s ease;"/>
-          </svg>
-          <div class="score-num" id="score-desktop-num">–</div>
+        <div class="field-row">
+          <div class="field-label">Google OAuth Client ID</div>
+          <input class="field-input" id="cfg-oauth" type="text" placeholder="123456789-abc....apps.googleusercontent.com"/>
         </div>
-        <div class="score-label">Desktop</div>
-        <div class="score-device" id="score-desktop-sub">–</div>
+        <div class="field-row">
+          <div class="field-label">GA4 Property ID</div>
+          <input class="field-input" id="cfg-ga4" type="text" placeholder="e.g. 298509938"/>
+        </div>
+        <div class="field-row">
+          <div class="field-label">Site URL (Search Console)</div>
+          <input class="field-input" id="cfg-gsc" type="text" placeholder="https://planima.se/"/>
+        </div>
+        <div class="field-row">
+          <div class="field-label">PageSpeed API Key</div>
+          <input class="field-input" id="cfg-psi" type="text" placeholder="AIza..."/>
+        </div>
       </div>
     </div>
 
-    <div class="section-label">Core Web Vitals – Mobil</div>
-    <div class="cwv-grid mb" id="cwv-mobile-grid">
-      <div class="cwv-card" id="cwv-lcp" onclick="showCwvModal('lcp')"><div class="cwv-name">LCP <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-lcp-val">–</div><div class="cwv-threshold">Bra: &lt; 2.5s · Dålig: &gt; 4s</div></div>
-      <div class="cwv-card" id="cwv-cls" onclick="showCwvModal('cls')"><div class="cwv-name">CLS <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-cls-val">–</div><div class="cwv-threshold">Bra: &lt; 0.1 · Dålig: &gt; 0.25</div></div>
-      <div class="cwv-card" id="cwv-inp" onclick="showCwvModal('inp')"><div class="cwv-name">INP <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-inp-val">–</div><div class="cwv-threshold">Bra: &lt; 200ms · Dålig: &gt; 500ms</div></div>
-      <div class="cwv-card" id="cwv-fcp" onclick="showCwvModal('fcp')"><div class="cwv-name">FCP <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-fcp-val">–</div><div class="cwv-threshold">Bra: &lt; 1.8s · Dålig: &gt; 3s</div></div>
-      <div class="cwv-card" id="cwv-tbt" onclick="showCwvModal('tbt')"><div class="cwv-name">TBT <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-tbt-val">–</div><div class="cwv-threshold">Bra: &lt; 200ms</div></div>
-      <div class="cwv-card" id="cwv-si"  onclick="showCwvModal('si')"><div class="cwv-name">Speed Index <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-si-val">–</div><div class="cwv-threshold">Bra: &lt; 3.4s</div></div>
+    <div class="setup-step">
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <div class="step-title">HubSpot <span class="source-badge badge-hs">Service Key</span></div>
+      </div>
+      <div class="step-body">
+        <div class="field-row">
+          <div class="field-label">HubSpot Service Key Token</div>
+          <input class="field-input" id="cfg-hs" type="text" placeholder="pat-na1-..."/>
+        </div>
+      </div>
     </div>
 
-    <div class="section-label">Core Web Vitals – Desktop</div>
-    <div class="cwv-grid mb" id="cwv-desktop-grid">
-      <div class="cwv-card" id="cwv-d-lcp" onclick="showCwvModal('lcp')"><div class="cwv-name">LCP <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-d-lcp-val">–</div><div class="cwv-threshold">Bra: &lt; 2.5s</div></div>
-      <div class="cwv-card" id="cwv-d-cls" onclick="showCwvModal('cls')"><div class="cwv-name">CLS <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-d-cls-val">–</div><div class="cwv-threshold">Bra: &lt; 0.1</div></div>
-      <div class="cwv-card" id="cwv-d-inp" onclick="showCwvModal('inp')"><div class="cwv-name">INP <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-d-inp-val">–</div><div class="cwv-threshold">Bra: &lt; 200ms</div></div>
-      <div class="cwv-card" id="cwv-d-fcp" onclick="showCwvModal('fcp')"><div class="cwv-name">FCP <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-d-fcp-val">–</div><div class="cwv-threshold">Bra: &lt; 1.8s</div></div>
-      <div class="cwv-card" id="cwv-d-tbt" onclick="showCwvModal('tbt')"><div class="cwv-name">TBT <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-d-tbt-val">–</div><div class="cwv-threshold">Bra: &lt; 200ms</div></div>
-      <div class="cwv-card" id="cwv-d-si"  onclick="showCwvModal('si')"><div class="cwv-name">Speed Index <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-d-si-val">–</div><div class="cwv-threshold">Bra: &lt; 3.4s</div></div>
+    <div class="setup-footer">
+      <button class="btn-primary" onclick="saveConfig()">Save &amp; open dashboard</button>
+      <button class="btn-ghost" onclick="useDemoData()">Use demo data</button>
+      <span class="setup-note">Credentials stored in your browser only.</span>
     </div>
-
-    <div class="card">
-      <div class="m-label" style="margin-bottom:12px;">🔧 Förbättringsmöjligheter – Mobil</div>
-      <div id="psi-loading" class="loading-txt">Laddar PageSpeed-data...</div>
-      <ul class="opp-list" id="opp-list"></ul>
-    </div>
-
   </div>
 </div>
+
+<!-- MAIN DASHBOARD -->
+<div id="dashboard">
+  <div class="topbar">
+    <div class="topbar-logo">WDM <span>Dashboard</span></div>
+    <div class="topbar-right">
+      <span class="last-updated" id="last-updated">—</span>
+      <button class="btn-sm btn-google" id="btn-google" onclick="googleSignIn()" style="display:none;">
+        <svg width="14" height="14" viewBox="0 0 24 24" style="flex-shrink:0"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        <span id="google-lbl">Sign in with Google</span>
+      </button>
+      <button class="btn-sm btn-refresh" onclick="refreshAll()">
+        <div class="spinner" id="spin"></div>
+        <span id="refresh-lbl">&#8635; Refresh data</span>
+      </button>
+      <button class="btn-sm" onclick="openSettings()">&#9881; Settings</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="status-bar" id="status-bar">
+      <div class="status-pill"><div class="status-dot dot-gray" id="dot-ga4"></div><span id="lbl-ga4">GA4 not connected</span></div>
+      <div class="status-pill"><div class="status-dot dot-gray" id="dot-gsc"></div><span id="lbl-gsc">Search Console not connected</span></div>
+      <div class="status-pill"><div class="status-dot dot-gray" id="dot-hs"></div><span id="lbl-hs">HubSpot not connected</span></div>
+      <div class="status-pill"><div class="status-dot dot-gray" id="dot-ps"></div><span id="lbl-ps">PageSpeed not connected</span></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+      <button class="tab-btn" onclick="showTab('seo')">SEO</button>
+      <button class="tab-btn" onclick="showTab('performance')">Performance</button>
+      <button class="tab-btn" onclick="showTab('vitals')">Core Web Vitals</button>
+      <button class="tab-btn" onclick="showTab('guide')">Guide</button>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div id="tab-overview">
+      <div class="kpi-grid">
+        <div class="kpi-card c-green"><div class="kpi-source">GA4</div><div class="kpi-label">Organic sessions</div><div class="kpi-value loading" id="kpi-sessions">—</div><div class="kpi-delta delta-neutral" id="d-sessions">loading…</div></div>
+        <div class="kpi-card c-blue"><div class="kpi-source">GSC</div><div class="kpi-label">Avg. position</div><div class="kpi-value loading" id="kpi-position">—</div><div class="kpi-delta delta-neutral" id="d-position">lower is better</div></div>
+        <div class="kpi-card c-teal"><div class="kpi-source">GSC</div><div class="kpi-label">Click-through rate</div><div class="kpi-value loading" id="kpi-ctr">—</div><div class="kpi-delta delta-neutral" id="d-ctr">loading…</div></div>
+        <div class="kpi-card c-amber"><div class="kpi-source">PageSpeed</div><div class="kpi-label">Mobile speed score</div><div class="kpi-value loading" id="kpi-speed">—</div><div class="kpi-delta delta-neutral" id="d-speed">0–100</div></div>
+        <div class="kpi-card c-purple"><div class="kpi-source">GA4</div><div class="kpi-label">Bounce rate</div><div class="kpi-value loading" id="kpi-bounce">—</div><div class="kpi-delta delta-neutral" id="d-bounce">loading…</div></div>
+        <div class="kpi-card c-red"><div class="kpi-source">HubSpot</div><div class="kpi-label">New contacts (week)</div><div class="kpi-value loading" id="kpi-conv">—</div><div class="kpi-delta delta-neutral" id="d-conv">loading…</div></div>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-card full">
+          <div class="chart-header"><div><div class="chart-title">Weekly trend — organic sessions &amp; CTR</div><div class="chart-subtitle">Last 8 weeks, updated on each refresh.</div></div></div>
+          <div class="legend-row">
+            <div class="legend-item"><div class="legend-dot" style="background:#FFB92A"></div>Organic sessions</div>
+            <div class="legend-item"><div class="legend-dot" style="border:2px dashed #F45B80;background:transparent;border-radius:2px;"></div>CTR %</div>
+          </div>
+          <div class="chart-wrap" style="height:240px;"><canvas id="trendChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div class="chart-title">Traffic by channel</div></div>
+          <div class="chart-wrap" style="height:200px;"><canvas id="channelChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div class="chart-title">Impressions vs clicks</div></div>
+          <div class="legend-row">
+            <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>Impressions</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#F45B80"></div>Clicks</div>
+          </div>
+          <div class="chart-wrap" style="height:200px;"><canvas id="impClickChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO -->
+    <div id="tab-seo" style="display:none;">
+      <div class="metrics-section">
+        <div class="section-title">Search Console — last 7 days</div>
+        <div class="metric-table">
+          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right">This week</span><span style="text-align:right">Last week</span><span style="text-align:right">Change</span></div>
+          <div class="metric-row"><span class="metric-name">Impressions</span><span class="metric-desc">Times your pages appeared in search results</span><span class="metric-val" id="m-impressions">—</span><span class="metric-prev" id="mp-impressions">—</span><span class="metric-chg chg-neutral" id="mc-impressions">—</span></div>
+          <div class="metric-row"><span class="metric-name">Total clicks</span><span class="metric-desc">Clicks from Google search to your site</span><span class="metric-val" id="m-clicks">—</span><span class="metric-prev" id="mp-clicks">—</span><span class="metric-chg chg-neutral" id="mc-clicks">—</span></div>
+          <div class="metric-row"><span class="metric-name">Avg. position</span><span class="metric-desc">Mean ranking across all keywords (lower = better)</span><span class="metric-val" id="m-position">—</span><span class="metric-prev" id="mp-position">—</span><span class="metric-chg chg-neutral" id="mc-position">—</span></div>
+          <div class="metric-row"><span class="metric-name">CTR</span><span class="metric-desc">Clicks ÷ impressions — title &amp; description quality</span><span class="metric-val" id="m-ctr">—</span><span class="metric-prev" id="mp-ctr">—</span><span class="metric-chg chg-neutral" id="mc-ctr">—</span></div>
+        </div>
+      </div>
+      <div class="metrics-section">
+        <div class="section-title">GA4 — organic acquisition</div>
+        <div class="metric-table">
+          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right">This week</span><span style="text-align:right">Last week</span><span style="text-align:right">Change</span></div>
+          <div class="metric-row"><span class="metric-name">Organic sessions</span><span class="metric-desc">Visits that arrived via unpaid search</span><span class="metric-val" id="m-sessions">—</span><span class="metric-prev" id="mp-sessions">—</span><span class="metric-chg chg-neutral" id="mc-sessions">—</span></div>
+          <div class="metric-row"><span class="metric-name">Organic users</span><span class="metric-desc">Unique visitors from organic search</span><span class="metric-val" id="m-users">—</span><span class="metric-prev" id="mp-users">—</span><span class="metric-chg chg-neutral" id="mc-users">—</span></div>
+          <div class="metric-row"><span class="metric-name">Engagement rate</span><span class="metric-desc">Sessions where user actively engaged</span><span class="metric-val" id="m-engage">—</span><span class="metric-prev" id="mp-engage">—</span><span class="metric-chg chg-neutral" id="mc-engage">—</span></div>
+          <div class="metric-row"><span class="metric-name">Avg. engagement time</span><span class="metric-desc">Time users actively used the page</span><span class="metric-val" id="m-engtime">—</span><span class="metric-prev" id="mp-engtime">—</span><span class="metric-chg chg-neutral" id="mc-engtime">—</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERFORMANCE -->
+    <div id="tab-performance" style="display:none;">
+      <div class="metrics-section">
+        <div class="section-title">HubSpot — new contacts</div>
+        <div class="metric-table">
+          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right">This week</span><span style="text-align:right">Last week</span><span style="text-align:right">Change</span></div>
+          <div class="metric-row"><span class="metric-name">New contacts</span><span class="metric-desc">Total new contacts created (all sources)</span><span class="metric-val" id="m-contacts">—</span><span class="metric-prev" id="mp-contacts">—</span><span class="metric-chg chg-neutral" id="mc-contacts">—</span></div>
+        </div>
+      </div>
+      <div class="metrics-section">
+        <div class="section-title">GA4 — engagement &amp; bounce</div>
+        <div class="metric-table">
+          <div class="metric-row header"><span>Metric</span><span>What it measures</span><span style="text-align:right">This week</span><span style="text-align:right">Last week</span><span style="text-align:right">Change</span></div>
+          <div class="metric-row"><span class="metric-name">Bounce rate</span><span class="metric-desc">Sessions with no interaction. Lower is better.</span><span class="metric-val" id="m-bounce">—</span><span class="metric-prev" id="mp-bounce">—</span><span class="metric-chg chg-neutral" id="mc-bounce">—</span></div>
+          <div class="metric-row"><span class="metric-name">Pages / session</span><span class="metric-desc">Average pages viewed per visit</span><span class="metric-val" id="m-pps">—</span><span class="metric-prev" id="mp-pps">—</span><span class="metric-chg chg-neutral" id="mc-pps">—</span></div>
+          <div class="metric-row"><span class="metric-name">Avg. session duration</span><span class="metric-desc">Mean time spent per visit</span><span class="metric-val" id="m-duration">—</span><span class="metric-prev" id="mp-duration">—</span><span class="metric-chg chg-neutral" id="mc-duration">—</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CORE WEB VITALS -->
+    <div id="tab-vitals" style="display:none;">
+      <p style="font-size:12px;color:var(--text3);margin-bottom:1.5rem;">Click any CWV card to see improvement tips.</p>
+      <div class="section-title" style="margin-bottom:.75rem;">PageSpeed scores</div>
+      <div class="ps-grid">
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Mobile</div><div class="chart-subtitle">Live from PageSpeed API</div></div><span class="source-badge badge-ps">PSI</span></div>
+          <div class="gauge-row">
+            <div class="gauge-wrap"><svg viewBox="0 0 80 80" width="80" height="80"><circle cx="40" cy="40" r="32" fill="none" stroke="#EEEBd8" stroke-width="7"/><circle cx="40" cy="40" r="32" fill="none" stroke="#FFB92A" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" id="g-perf-m" stroke-dashoffset="201" transform="rotate(-90 40 40)"/><text x="40" y="44" text-anchor="middle" font-size="15" font-weight="500" fill="#1a1712" id="gt-perf-m">—</text></svg><div class="gauge-label">Performance</div></div>
+            <div class="gauge-wrap"><svg viewBox="0 0 80 80" width="80" height="80"><circle cx="40" cy="40" r="32" fill="none" stroke="#EEEBd8" stroke-width="7"/><circle cx="40" cy="40" r="32" fill="none" stroke="#F45B80" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" id="g-acc-m" stroke-dashoffset="201" transform="rotate(-90 40 40)"/><text x="40" y="44" text-anchor="middle" font-size="15" font-weight="500" fill="#1a1712" id="gt-acc-m">—</text></svg><div class="gauge-label">Accessibility</div></div>
+            <div class="gauge-wrap"><svg viewBox="0 0 80 80" width="80" height="80"><circle cx="40" cy="40" r="32" fill="none" stroke="#EEEBd8" stroke-width="7"/><circle cx="40" cy="40" r="32" fill="none" stroke="#8b5cf6" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" id="g-bp-m" stroke-dashoffset="201" transform="rotate(-90 40 40)"/><text x="40" y="44" text-anchor="middle" font-size="15" font-weight="500" fill="#1a1712" id="gt-bp-m">—</text></svg><div class="gauge-label">Best practices</div></div>
+            <div class="gauge-wrap"><svg viewBox="0 0 80 80" width="80" height="80"><circle cx="40" cy="40" r="32" fill="none" stroke="#EEEBd8" stroke-width="7"/><circle cx="40" cy="40" r="32" fill="none" stroke="#0d9488" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" id="g-seo-m" stroke-dashoffset="201" transform="rotate(-90 40 40)"/><text x="40" y="44" text-anchor="middle" font-size="15" font-weight="500" fill="#1a1712" id="gt-seo-m">—</text></svg><div class="gauge-label">SEO</div></div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Desktop</div><div class="chart-subtitle">Live from PageSpeed API</div></div><span class="source-badge badge-ps">PSI</span></div>
+          <div class="gauge-row">
+            <div class="gauge-wrap"><svg viewBox="0 0 80 80" width="80" height="80"><circle cx="40" cy="40" r="32" fill="none" stroke="#EEEBd8" stroke-width="7"/><circle cx="40" cy="40" r="32" fill="none" stroke="#FFB92A" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" id="g-perf-d" stroke-dashoffset="201" transform="rotate(-90 40 40)"/><text x="40" y="44" text-anchor="middle" font-size="15" font-weight="500" fill="#1a1712" id="gt-perf-d">—</text></svg><div class="gauge-label">Performance</div></div>
+            <div class="gauge-wrap"><svg viewBox="0 0 80 80" width="80" height="80"><circle cx="40" cy="40" r="32" fill="none" stroke="#EEEBd8" stroke-width="7"/><circle cx="40" cy="40" r="32" fill="none" stroke="#F45B80" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" id="g-acc-d" stroke-dashoffset="201" transform="rotate(-90 40 40)"/><text x="40" y="44" text-anchor="middle" font-size="15" font-weight="500" fill="#1a1712" id="gt-acc-d">—</text></svg><div class="gauge-label">Accessibility</div></div>
+            <div class="gauge-wrap"><svg viewBox="0 0 80 80" width="80" height="80"><circle cx="40" cy="40" r="32" fill="none" stroke="#EEEBd8" stroke-width="7"/><circle cx="40" cy="40" r="32" fill="none" stroke="#8b5cf6" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" id="g-bp-d" stroke-dashoffset="201" transform="rotate(-90 40 40)"/><text x="40" y="44" text-anchor="middle" font-size="15" font-weight="500" fill="#1a1712" id="gt-bp-d">—</text></svg><div class="gauge-label">Best practices</div></div>
+            <div class="gauge-wrap"><svg viewBox="0 0 80 80" width="80" height="80"><circle cx="40" cy="40" r="32" fill="none" stroke="#EEEBd8" stroke-width="7"/><circle cx="40" cy="40" r="32" fill="none" stroke="#0d9488" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" id="g-seo-d" stroke-dashoffset="201" transform="rotate(-90 40 40)"/><text x="40" y="44" text-anchor="middle" font-size="15" font-weight="500" fill="#1a1712" id="gt-seo-d">—</text></svg><div class="gauge-label">SEO</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-bottom:.75rem;">Core Web Vitals — mobile (click for improvement tips)</div>
+      <div class="cwv-strip">
+        <div class="cwv-card" onclick="showCwvModal('lcp')"><div class="cwv-top"><span class="cwv-abbr">LCP</span><span class="vital-status" id="vs-lcp">—</span></div><div class="cwv-value" id="v-lcp">—</div><div class="cwv-name">Largest Contentful Paint</div><div class="cwv-target">Target: &lt; 2.5 s</div></div>
+        <div class="cwv-card" onclick="showCwvModal('cls')"><div class="cwv-top"><span class="cwv-abbr">CLS</span><span class="vital-status" id="vs-cls">—</span></div><div class="cwv-value" id="v-cls">—</div><div class="cwv-name">Cumulative Layout Shift</div><div class="cwv-target">Target: &lt; 0.1</div></div>
+        <div class="cwv-card" onclick="showCwvModal('inp')"><div class="cwv-top"><span class="cwv-abbr">INP</span><span class="vital-status" id="vs-inp">—</span></div><div class="cwv-value" id="v-inp">—</div><div class="cwv-name">Interaction to Next Paint</div><div class="cwv-target">Target: &lt; 200 ms</div></div>
+        <div class="cwv-card" onclick="showCwvModal('fcp')"><div class="cwv-top"><span class="cwv-abbr">FCP</span><span class="vital-status" id="vs-fcp">—</span></div><div class="cwv-value" id="v-fcp">—</div><div class="cwv-name">First Contentful Paint</div><div class="cwv-target">Target: &lt; 1.8 s</div></div>
+        <div class="cwv-card" onclick="showCwvModal('tbt')"><div class="cwv-top"><span class="cwv-abbr">TBT</span><span class="vital-status" id="vs-tbt">—</span></div><div class="cwv-value" id="v-tbt">—</div><div class="cwv-name">Total Blocking Time</div><div class="cwv-target">Target: &lt; 200 ms</div></div>
+        <div class="cwv-card" onclick="showCwvModal('si')"><div class="cwv-top"><span class="cwv-abbr">SI</span><span class="vital-status" id="vs-si">—</span></div><div class="cwv-value" id="v-si">—</div><div class="cwv-name">Speed Index</div><div class="cwv-target">Target: &lt; 3.4 s</div></div>
+      </div>
+    </div>
+
+    <!-- GUIDE -->
+    <div id="tab-guide" style="display:none;">
+      <div class="guide-card">
+        <div class="guide-title">Weekly review rhythm</div>
+        <div class="guide-sub">Open this dashboard before your weekly check-in and click "Refresh data". Here's what each source gives you:</div>
+        <div class="guide-steps">
+          <div class="guide-step"><div class="guide-step-num">01</div><div class="guide-step-title">Google Analytics 4 <span class="source-badge badge-ga">GA4</span></div><ul class="guide-step-list"><li>Organic sessions &amp; users</li><li>Bounce rate &amp; engagement rate</li><li>Pages per session</li><li>Avg. session duration</li><li>Traffic by channel breakdown</li></ul></div>
+          <div class="guide-step"><div class="guide-step-num">02</div><div class="guide-step-title">Google Search Console <span class="source-badge badge-gsc">GSC</span></div><ul class="guide-step-list"><li>Impressions in Google search</li><li>Total clicks from Google</li><li>Average ranking position</li><li>Click-through rate (CTR)</li></ul></div>
+          <div class="guide-step"><div class="guide-step-num">03</div><div class="guide-step-title">HubSpot <span class="source-badge badge-hs">Service Key</span></div><ul class="guide-step-list"><li>New contacts created this week</li><li>Week-over-week contact growth</li></ul></div>
+          <div class="guide-step"><div class="guide-step-num">04</div><div class="guide-step-title">PageSpeed Insights <span class="source-badge badge-ps">PSI</span></div><ul class="guide-step-list"><li>Mobile &amp; desktop speed score</li><li>LCP, CLS, INP (Core Web Vitals)</li><li>Accessibility &amp; SEO score</li></ul></div>
+        </div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-title">What "good" looks like</div>
+        <div class="guide-sub">Reference benchmarks for your weekly review.</div>
+        <div class="metric-table">
+          <div class="metric-row header"><span>Metric</span><span>Needs work</span><span style="text-align:right">Good</span><span style="text-align:right">Excellent</span><span></span></div>
+          <div class="metric-row"><span class="metric-name">Avg. position</span><span class="metric-desc" style="color:#be185d">Above 30</span><span class="metric-val">Below 20</span><span class="metric-prev" style="color:#15803d">Below 10</span><span></span></div>
+          <div class="metric-row"><span class="metric-name">CTR</span><span class="metric-desc" style="color:#be185d">Below 1%</span><span class="metric-val">2–3%</span><span class="metric-prev" style="color:#15803d">5%+</span><span></span></div>
+          <div class="metric-row"><span class="metric-name">Mobile speed</span><span class="metric-desc" style="color:#be185d">Below 50</span><span class="metric-val">60–74</span><span class="metric-prev" style="color:#15803d">75+</span><span></span></div>
+          <div class="metric-row"><span class="metric-name">LCP</span><span class="metric-desc" style="color:#be185d">Over 4 s</span><span class="metric-val">2.5–4 s</span><span class="metric-prev" style="color:#15803d">Under 2.5 s</span><span></span></div>
+          <div class="metric-row"><span class="metric-name">CLS</span><span class="metric-desc" style="color:#be185d">Over 0.25</span><span class="metric-val">0.1–0.25</span><span class="metric-prev" style="color:#15803d">Under 0.1</span><span></span></div>
+          <div class="metric-row"><span class="metric-name">Bounce rate</span><span class="metric-desc" style="color:#be185d">Above 70%</span><span class="metric-val">40–60%</span><span class="metric-prev" style="color:#15803d">Below 40%</span><span></span></div>
+        </div>
+      </div>
+      <div style="text-align:center;padding:1rem 0;">
+        <button class="btn-ghost" onclick="openSettings()">&#9881; Update API credentials</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CWV MODAL -->
+<div class="modal-overlay" id="cwv-modal" onclick="closeCwvModal(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div><div class="modal-title" id="modal-title">—</div><div class="modal-subtitle" id="modal-subtitle">—</div></div>
+      <button class="modal-close" onclick="closeCwvModal()">&#10005;</button>
+    </div>
+    <div class="modal-metric" id="modal-metric">—</div>
+    <div class="modal-tips-title">How to improve</div>
+    <div id="modal-tips"></div>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
 
 <script>
-const BRAND = new Set(['planima','planima ab','planima underhållsplan','planima.se','planima crm']);
-const HI_INTENT_PATHS = ['/demo','/pris','/losning','/kampanj','/jamfor'];
-let CFG = {}, gToken = null, gscChart = null, hsChart = null;
+const CFG_KEY='wdm_cfg_v2',DATA_KEY='wdm_data_v2';
+function getConfig(){try{return JSON.parse(localStorage.getItem(CFG_KEY)||'{}')}catch{return{}}}
+function saveConfigToStorage(c){localStorage.setItem(CFG_KEY,JSON.stringify(c))}
+function getData(){try{return JSON.parse(localStorage.getItem(DATA_KEY)||'{"weeks":[]}')}catch{return{weeks:[]}}}
+function saveData(d){localStorage.setItem(DATA_KEY,JSON.stringify(d))}
 
-// Config
-function loadConfig() { CFG = JSON.parse(localStorage.getItem('wdm_cfg') || '{}'); }
-function saveConfig() {
-  CFG = {
-    oauth: document.getElementById('cfg-oauth').value.trim(),
-    ga4:   document.getElementById('cfg-ga4').value.trim(),
-    gsc:   document.getElementById('cfg-gsc').value.trim() || 'https://planima.se/',
-    psi:   document.getElementById('cfg-psi').value.trim(),
-    hs:    document.getElementById('cfg-hs').value.trim()
-  };
-  localStorage.setItem('wdm_cfg', JSON.stringify(CFG));
-  document.getElementById('setup-overlay').classList.add('hidden');
-  init();
+// OAUTH — redirect (implicit) flow
+let googleAccessToken=null,tokenExpiresAt=0;
+function googleSignIn(){
+  const cfg=getConfig();
+  if(!cfg.oauth){notify('Add your OAuth Client ID in Settings first.','error');openSettings();return;}
+  const scopes='https://www.googleapis.com/auth/analytics.readonly https://www.googleapis.com/auth/webmasters.readonly';
+  const redirectUri=window.location.href.split('?')[0].split('#')[0];
+  const p=new URLSearchParams({client_id:cfg.oauth,redirect_uri:redirectUri,response_type:'token',scope:scopes,include_granted_scopes:'true'});
+  window.location.href='https://accounts.google.com/o/oauth2/v2/auth?'+p.toString();
 }
-function openSetup() {
-  loadConfig();
-  ['oauth','ga4','gsc','psi','hs'].forEach(k => document.getElementById('cfg-'+k).value = CFG[k]||'');
-  document.getElementById('cfg-gsc').value = CFG.gsc || 'https://planima.se/';
-  document.getElementById('setup-overlay').classList.remove('hidden');
+function handleOAuthCallback(){
+  if(!window.location.hash)return false;
+  const p=new URLSearchParams(window.location.hash.replace('#',''));
+  const token=p.get('access_token'),exp=p.get('expires_in');
+  if(token){
+    googleAccessToken=token;
+    tokenExpiresAt=Date.now()+(parseInt(exp)-60)*1000;
+    sessionStorage.setItem('g_tok',token);
+    sessionStorage.setItem('g_exp',tokenExpiresAt.toString());
+    history.replaceState(null,'',window.location.pathname);
+    return true;
+  }
+  return false;
 }
-
-// Tabs
-function switchTab(id, btn) {
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
-  btn.classList.add('active');
-  if (id === 'pagespeed') loadPageSpeed();
+function loadSavedToken(){
+  const t=sessionStorage.getItem('g_tok'),e=parseInt(sessionStorage.getItem('g_exp')||'0');
+  if(t&&Date.now()<e){googleAccessToken=t;tokenExpiresAt=e;return true;}
+  return false;
 }
-
-// Dates
-const pad = n => String(n).padStart(2,'0');
-function isoDate(d) { return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
-function daysAgo(n) { const d=new Date(); d.setDate(d.getDate()-n); return isoDate(d); }
-const TODAY = isoDate(new Date());
-
-// Formatting
-function fmt(n) { if (n===undefined||n===null||n==='') return '–'; return Number(n).toLocaleString('sv-SE'); }
-function fmtPct(n, d=1) { if (!n && n!==0) return '–'; return Number(n).toFixed(d)+'%'; }
-
-function renderDelta(elId, current, previous, lowerIsBetter=false) {
-  const el = document.getElementById(elId);
-  if (!el || !current || !previous || previous===0) { el && (el.innerHTML=''); return; }
-  const pct = ((current - previous) / Math.abs(previous)) * 100;
-  const isGood = lowerIsBetter ? pct < 0 : pct > 0;
-  const arrow = pct > 0 ? '↑' : '↓';
-  const cls   = isGood ? 'up' : (Math.abs(pct) < 1 ? 'flat' : 'down');
-  el.className = `delta ${cls}`;
-  el.textContent = `${arrow} ${Math.abs(pct).toFixed(1)}% vs förra veckan`;
+function isGoogleAuthed(){return!!(googleAccessToken&&Date.now()<tokenExpiresAt);}
+function updateGoogleBtn(){
+  const btn=document.getElementById('btn-google'),lbl=document.getElementById('google-lbl');
+  if(!btn)return;
+  if(isGoogleAuthed()){btn.className='btn-sm btn-google signed-in';lbl.textContent='✓ Google connected';}
+  else{btn.className='btn-sm btn-google';lbl.textContent='Sign in with Google';}
 }
 
-function scoreBadge(val, good, ok) {
-  if (!val && val!==0) return '';
-  if (val>=good) return '<span class="badge b-green">↑ Bra</span>';
-  if (val>=ok)   return '<span class="badge b-amber">→ OK</span>';
-  return '<span class="badge b-red">↓ Under mål</span>';
+// SETUP
+function saveConfig(){
+  const cfg={oauth:document.getElementById('cfg-oauth').value.trim(),ga4:document.getElementById('cfg-ga4').value.trim(),gsc:document.getElementById('cfg-gsc').value.trim(),psi:document.getElementById('cfg-psi').value.trim(),hs:document.getElementById('cfg-hs').value.trim(),demo:false};
+  if(!cfg.oauth&&!cfg.ga4&&!cfg.gsc&&!cfg.hs){notify('Fill in at least one data source, or use demo data.','error');return;}
+  saveConfigToStorage(cfg);startDashboard();
+}
+function useDemoData(){saveConfigToStorage({demo:true});startDashboard();loadDemoData();}
+function openSettings(){
+  const cfg=getConfig();
+  ['oauth','ga4','gsc','psi','hs'].forEach(k=>{const el=document.getElementById('cfg-'+k);if(el)el.value=cfg[k]||'';});
+  document.getElementById('dashboard').style.display='none';
+  document.getElementById('setup-screen').style.display='flex';
+}
+function startDashboard(){
+  document.getElementById('setup-screen').style.display='none';
+  document.getElementById('dashboard').style.display='block';
+  const cfg=getConfig();
+  if(cfg.oauth&&!cfg.demo)document.getElementById('btn-google').style.display='flex';
+  updateGoogleBtn();
+  if(trendChart){trendChart.destroy();trendChart=null;}
+  if(channelChart){channelChart.destroy();channelChart=null;}
+  if(impClickChart){impClickChart.destroy();impClickChart=null;}
+  initCharts();
+  if(!cfg.demo)refreshAll();else loadDemoData();
 }
 
-// Google Auth
-function triggerGoogleAuth() {
-  if (!CFG.oauth) { alert('Fyll i Google OAuth Client ID i ⚙ Inställningar.'); openSetup(); return; }
-  google.accounts.oauth2.initTokenClient({
-    client_id: CFG.oauth,
-    scope: 'https://www.googleapis.com/auth/analytics.readonly https://www.googleapis.com/auth/webmasters.readonly',
-    callback: (resp) => {
-      if (resp.error) { alert('Google-auth misslyckades: ' + resp.error); return; }
-      gToken = resp.access_token;
-      document.getElementById('google-btn').classList.add('authed');
-      document.getElementById('google-label').textContent = 'Google anslutet';
-      document.getElementById('no-google-warn').classList.add('hidden');
-      loadGoogleData();
-    }
-  }).requestAccessToken();
+// TABS
+const TABS=['overview','seo','performance','vitals','guide'];
+function showTab(name){
+  TABS.forEach(t=>document.getElementById('tab-'+t).style.display=t===name?'':'none');
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',TABS[i]===name));
 }
 
-async function gFetch(url, method='GET', body=null) {
-  if (!gToken) return null;
-  const opts = { method, headers: { 'Authorization': `Bearer ${gToken}`, 'Content-Type': 'application/json' } };
-  if (body) opts.body = JSON.stringify(body);
-  const res = await fetch(url, opts);
-  if (!res.ok) return null;
-  return res.json();
+// TOAST
+let notifTimer;
+function notify(msg,type='info'){
+  clearTimeout(notifTimer);
+  const n=document.getElementById('notif');
+  n.textContent=msg;n.className='notif notif-'+type+' show';
+  notifTimer=setTimeout(()=>n.classList.remove('show'),3500);
 }
 
-// GA4 – with week comparison
-async function loadGA4() {
-  if (!gToken || !CFG.ga4) return null;
-  const url = `https://analyticsdata.googleapis.com/v1beta/properties/${CFG.ga4}:runReport`;
+// HELPERS
+function setStatus(id,ok,label){
+  document.getElementById('dot-'+id).className='status-dot '+(ok?'dot-green':'dot-red');
+  document.getElementById('lbl-'+id).textContent=label;
+}
+function fmt(n,dec=0){
+  if(n===null||n===undefined||isNaN(n))return'—';
+  return dec>0?parseFloat(n).toFixed(dec):Math.round(n).toLocaleString();
+}
+function fmtPct(n){return(n===null||isNaN(n))?'—':parseFloat(n).toFixed(1)+'%';}
+function fmtPos(n){return(n===null||isNaN(n))?'—':parseFloat(n).toFixed(1);}
+function fmtSec(ms){
+  if(!ms||isNaN(ms))return'—';
+  const s=ms/1000;
+  return s>=60?Math.floor(s/60)+'m '+Math.round(s%60)+'s':s.toFixed(0)+'s';
+}
+function pctChange(cur,prev){if(!prev||prev===0)return null;return((cur-prev)/prev)*100;}
+function changeCls(cur,prev,lowerBetter=false){
+  if(cur===null||prev===null)return'chg-neutral';
+  const better=lowerBetter?cur<prev:cur>prev;
+  return better?'chg-up':'chg-down';
+}
+function changeStr(cur,prev,lowerBetter=false){
+  if(cur===null||prev===null||isNaN(cur)||isNaN(prev)||prev===0)return'—';
+  const pct=Math.round(Math.abs((cur-prev)/prev)*100);
+  const sign=(cur-prev)>0?'+':'-';
+  return sign+pct+'%';
+}
+function setMetric(id,val,prevVal,lowerBetter=false){
+  const vEl=document.getElementById('m-'+id),pEl=document.getElementById('mp-'+id),cEl=document.getElementById('mc-'+id);
+  if(vEl)vEl.textContent=val!==null?val:'—';
+  if(pEl)pEl.textContent=prevVal!==null?prevVal:'—';
+  if(cEl){
+    const raw=parseFloat(String(val||'').replace(/[^0-9.-]/g,'')),rawP=parseFloat(String(prevVal||'').replace(/[^0-9.-]/g,''));
+    if(!isNaN(raw)&&!isNaN(rawP)&&rawP!==0){cEl.textContent=changeStr(raw,rawP,lowerBetter);cEl.className='metric-chg '+changeCls(raw,rawP,lowerBetter);}
+    else{cEl.textContent='—';cEl.className='metric-chg chg-neutral';}
+  }
+}
+function setKpiDelta(id,cur,prev,lowerBetter=false){
+  const el=document.getElementById('d-'+id);
+  if(!el||cur===null||prev===null||!prev)return;
+  const pct=pctChange(cur,prev);
+  if(pct===null)return;
+  const better=lowerBetter?pct<0:pct>0;
+  const arrow=pct>0?'↑':'↓';
+  el.textContent=arrow+' '+Math.abs(Math.round(pct))+'% vs last week';
+  el.className='kpi-delta '+(better?'delta-up':'delta-down');
+}
 
-  const data = await gFetch(url, 'POST', {
-    dateRanges: [
-      { startDate: '7daysAgo',  endDate: 'today', name: 'current' },
-      { startDate: '14daysAgo', endDate: '8daysAgo', name: 'previous' }
-    ],
-    metrics: [{ name: 'sessions' }]
+// DATE HELPERS
+function isoDate(d){return d.toISOString().split('T')[0];}
+function daysAgo(n){const d=new Date();d.setDate(d.getDate()-n);return d;}
+function getWeekNum(d){const j=new Date(d.getFullYear(),0,1);return Math.ceil(((d-j)/86400000+j.getDay()+1)/7);}
+
+// CHARTS
+let trendChart,channelChart,impClickChart;
+function initCharts(){
+  const gc='rgba(0,0,0,.06)',tc='#9e9880';
+  trendChart=new Chart(document.getElementById('trendChart'),{type:'line',data:{labels:[],datasets:[{label:'Organic sessions',data:[],borderColor:'#FFB92A',backgroundColor:'rgba(255,185,42,.08)',tension:.4,fill:true,yAxisID:'y',pointRadius:4,pointBackgroundColor:'#FFB92A'},{label:'CTR %',data:[],borderColor:'#F45B80',borderDash:[5,4],tension:.4,fill:false,yAxisID:'y2',pointRadius:4,pointBackgroundColor:'#F45B80'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{color:tc,font:{size:11},callback:v=>v.toLocaleString()},grid:{color:gc}},y2:{position:'right',ticks:{color:tc,font:{size:11},callback:v=>v+'%'},grid:{display:false}},x:{ticks:{color:tc,font:{size:11}}}}}});
+  channelChart=new Chart(document.getElementById('channelChart'),{type:'doughnut',data:{labels:['Organic','Direct','Referral','Social','Other'],datasets:[{data:[0,0,0,0,0],backgroundColor:['#FFB92A','#F45B80','#8b5cf6','#0d9488','#c7bfa0'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#5a5545',font:{size:11},boxWidth:10,padding:12}}}}});
+  impClickChart=new Chart(document.getElementById('impClickChart'),{type:'bar',data:{labels:[],datasets:[{label:'Impressions',data:[],backgroundColor:'rgba(139,92,246,.3)',borderColor:'#8b5cf6',borderWidth:1},{label:'Clicks',data:[],backgroundColor:'rgba(244,91,128,.3)',borderColor:'#F45B80',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{color:tc,font:{size:11}},grid:{color:gc}},x:{ticks:{color:tc,font:{size:11},autoSkip:true,maxRotation:30}}}}});
+}
+function rebuildTrendChart(){
+  const d=getData();if(!d.weeks.length)return;
+  trendChart.data.labels=d.weeks.map(w=>w.label);
+  trendChart.data.datasets[0].data=d.weeks.map(w=>w.sessions);
+  trendChart.data.datasets[1].data=d.weeks.map(w=>w.ctr);
+  trendChart.update();
+}
+
+// API: GA4
+async function fetchGA4Week(cfg,startDate,endDate){
+  if(!cfg.ga4||!isGoogleAuthed())return null;
+  const url='https://analyticsdata.googleapis.com/v1beta/properties/'+cfg.ga4+':runReport';
+  const body={dateRanges:[{startDate,endDate}],dimensions:[{name:'sessionDefaultChannelGroup'}],metrics:[{name:'sessions'},{name:'totalUsers'},{name:'bounceRate'},{name:'engagementRate'},{name:'averageSessionDuration'},{name:'screenPageViewsPerSession'}]};
+  try{
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+googleAccessToken},body:JSON.stringify(body)});
+    if(r.status===401){setStatus('ga4',false,'GA4: session expired — sign in again');googleAccessToken=null;updateGoogleBtn();return null;}
+    if(!r.ok){console.error('GA4',r.status);return null;}
+    return await r.json();
+  }catch(e){console.error('GA4',e);return null;}
+}
+function processGA4Rows(data){
+  if(!data||!data.rows)return null;
+  const r={sessions:0,organicSessions:0,users:0,bounce:0,engage:0,engTime:0,pps:0,channels:{}};
+  let n=0;
+  data.rows.forEach(row=>{
+    const ch=row.dimensionValues[0].value,mv=row.metricValues.map(m=>parseFloat(m.value));
+    r.sessions+=mv[0];r.users+=mv[1];r.bounce+=mv[2];r.engage+=mv[3];r.engTime+=mv[4];r.pps+=mv[5];
+    r.channels[ch]=(r.channels[ch]||0)+mv[0];
+    if(ch.toLowerCase().includes('organic'))r.organicSessions+=mv[0];
+    n++;
   });
-
-  let curSess=0, prevSess=0;
-  if (data?.rows) {
-    data.rows.forEach(r => {
-      if (r.dimensionValues?.[0]?.value === 'current')  curSess  = parseInt(r.metricValues[0]?.value||0);
-      if (r.dimensionValues?.[0]?.value === 'previous') prevSess = parseInt(r.metricValues[0]?.value||0);
-    });
-    // Fallback if no dimension split
-    if (!curSess && data.rows[0]) curSess = parseInt(data.rows[0].metricValues[0]?.value||0);
-  }
-  document.getElementById('ns-sessions').textContent = fmt(curSess);
-  renderDelta('sessions-delta', curSess, prevSess);
-
-  // High-intent pages
-  const hiData = await gFetch(url, 'POST', {
-    dateRanges: [
-      { startDate: '7daysAgo', endDate: 'today', name: 'current' },
-      { startDate: '14daysAgo', endDate: '8daysAgo', name: 'previous' }
-    ],
-    metrics: [{ name: 'sessions' }, { name: 'conversions' }],
-    dimensions: [{ name: 'pagePath' }],
-    dimensionFilter: { orGroup: { expressions: HI_INTENT_PATHS.map(p => ({ filter: { fieldName: 'pagePath', stringFilter: { matchType: 'CONTAINS', value: p } } })) } }
-  });
-  if (hiData?.rows) {
-    const hiSess = hiData.rows.reduce((s,r)=>s+parseInt(r.metricValues[0]?.value||0),0);
-    const hiConv = hiData.rows.reduce((s,r)=>s+parseInt(r.metricValues[1]?.value||0),0);
-    document.getElementById('kpi-hiconv').textContent = fmtPct(hiSess>0 ? hiConv/hiSess*100 : 0);
-  }
-
-  // Form submit
-  const formData = await gFetch(url, 'POST', {
-    dateRanges: [{ startDate: '7daysAgo', endDate: 'today' }],
-    metrics: [{ name: 'eventCount' }],
-    dimensions: [{ name: 'eventName' }],
-    dimensionFilter: { filter: { fieldName: 'eventName', stringFilter: { value: 'form_submit' } } }
-  });
-  if (formData?.rows && curSess > 0) {
-    const submits = parseInt(formData.rows[0]?.metricValues[0]?.value||0);
-    document.getElementById('guard-form').textContent = fmtPct(submits/curSess*100);
-  }
-
-  return { cur: curSess, prev: prevSess };
+  if(n>0){r.bounce/=n;r.engage/=n;r.engTime/=n;r.pps/=n;}
+  return r;
 }
 
-// GSC – with week comparison
-async function loadGSC() {
-  if (!gToken || !CFG.gsc) return;
-  const siteUrl = encodeURIComponent(CFG.gsc);
-  const base = `https://searchconsole.googleapis.com/webmasters/v3/sites/${siteUrl}/searchAnalytics/query`;
-
-  // Current week
-  const cur = await gFetch(base, 'POST', { startDate: daysAgo(7), endDate: daysAgo(1), dimensions: [], rowLimit: 1 });
-  // Previous week
-  const prev = await gFetch(base, 'POST', { startDate: daysAgo(14), endDate: daysAgo(8), dimensions: [], rowLimit: 1 });
-
-  if (cur?.rows?.length) {
-    const r = cur.rows[0], rp = prev?.rows?.[0] || {};
-    document.getElementById('kpi-org-clicks').textContent      = fmt(r.clicks);
-    document.getElementById('kpi-org-impressions').textContent = fmt(r.impressions) + ' impressions';
-    document.getElementById('guard-ctr').textContent = fmtPct((r.ctr||0)*100);
-    document.getElementById('guard-pos').textContent = (r.position||0).toFixed(1);
-    renderDelta('orgclicks-delta', r.clicks, rp.clicks);
-    renderDelta('ctr-delta', r.ctr, rp.ctr);
-    renderDelta('pos-delta', r.position, rp.position, true); // lower pos = better
-  }
-
-  // Weekly trend (last 12 weeks)
-  const weekly = await gFetch(base, 'POST', { startDate: daysAgo(84), endDate: daysAgo(1), dimensions: ['date'], rowLimit: 84 });
-  if (weekly?.rows) {
-    const weekMap = {};
-    weekly.rows.forEach(r => {
-      const d = new Date(r.keys[0]); const mon = new Date(d); mon.setDate(d.getDate()-((d.getDay()+6)%7));
-      const key = isoDate(mon); weekMap[key] = (weekMap[key]||0) + r.clicks;
-    });
-    const weeks = Object.keys(weekMap).sort();
-    document.getElementById('gsc-loading').style.display = 'none';
-    const ctx = document.getElementById('gsc-chart').getContext('2d');
-    if (gscChart) gscChart.destroy();
-    gscChart = new Chart(ctx, {
-      type: 'line',
-      data: { labels: weeks.map(w=>w.slice(5)), datasets: [{ data: weeks.map(w=>weekMap[w]), borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,0.07)', fill: true, tension: 0.35, pointRadius: 3 }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f0f0f0' }, ticks: { font: { size: 11 } } }, x: { grid: { display: false }, ticks: { font: { size: 10 }, maxTicksLimit: 10, maxRotation: 40 } } } }
-    });
-  }
-
-  // Keywords
-  const kwRes = await gFetch(base, 'POST', { startDate: daysAgo(7), endDate: daysAgo(1), dimensions: ['query'], rowLimit: 20 });
-  if (kwRes?.rows) {
-    document.getElementById('kw-loading').style.display = 'none';
-    const kws = kwRes.rows;
-    const nbClicks  = kws.filter(r=>!BRAND.has(r.keys[0].toLowerCase())).reduce((s,r)=>s+r.clicks,0);
-    const totClicks = kws.reduce((s,r)=>s+r.clicks,0);
-    document.getElementById('kpi-nonbrand').textContent     = fmt(nbClicks);
-    document.getElementById('kpi-nonbrand-sub').textContent = `av ${fmt(totClicks)} totala klick`;
-
-    // Compare with prev week for non-brand
-    const kwPrev = await gFetch(base, 'POST', { startDate: daysAgo(14), endDate: daysAgo(8), dimensions: ['query'], rowLimit: 20 });
-    if (kwPrev?.rows) {
-      const prevNb = kwPrev.rows.filter(r=>!BRAND.has(r.keys[0].toLowerCase())).reduce((s,r)=>s+r.clicks,0);
-      renderDelta('nonbrand-delta', nbClicks, prevNb);
-    }
-
-    document.getElementById('kw-table-wrap').innerHTML = `
-      <table>
-        <thead><tr><th>Keyword</th><th class="num">Klick</th><th class="num">Impressions</th><th class="num">CTR</th><th class="num">Position</th></tr></thead>
-        <tbody>${kws.map(r=>`<tr><td>${r.keys[0]}</td><td class="num">${fmt(r.clicks)}</td><td class="num">${fmt(r.impressions)}</td><td class="num">${fmtPct((r.ctr||0)*100)}</td><td class="num">${(r.position||0).toFixed(1)}</td></tr>`).join('')}</tbody>
-      </table>`;
-  }
+// API: GSC
+async function fetchGSCWeek(cfg,startDate,endDate){
+  if(!cfg.gsc||!isGoogleAuthed())return null;
+  const url='https://www.googleapis.com/webmasters/v3/sites/'+encodeURIComponent(cfg.gsc)+'/searchAnalytics/query';
+  try{
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+googleAccessToken},body:JSON.stringify({startDate,endDate,dimensions:['date'],rowLimit:28})});
+    if(r.status===401){setStatus('gsc',false,'GSC: session expired — sign in again');return null;}
+    if(!r.ok)return null;
+    return await r.json();
+  }catch(e){console.error('GSC',e);return null;}
+}
+function processGSCRows(data){
+  if(!data||!data.rows||!data.rows.length)return null;
+  const agg=data.rows.reduce((a,r)=>({clicks:a.clicks+r.clicks,impressions:a.impressions+r.impressions,totalPos:a.totalPos+r.position,totalCtr:a.totalCtr+r.ctr,count:a.count+1}),{clicks:0,impressions:0,totalPos:0,totalCtr:0,count:0});
+  agg.position=agg.count?agg.totalPos/agg.count:0;
+  agg.ctr=agg.count?(agg.totalCtr/agg.count)*100:0;
+  agg.dailyRows=data.rows;
+  return agg;
 }
 
-// HubSpot – with week comparison
-async function loadHubSpot() {
-  if (!CFG.hs) { document.getElementById('hs-loading').textContent = 'HubSpot-token saknas – lägg till i ⚙ Inställningar'; return null; }
-  const headers = { 'Authorization': `Bearer ${CFG.hs}`, 'Content-Type': 'application/json' };
-  try {
-    const now = Date.now();
-    const w1start = now - 7*86400000, w2start = now - 14*86400000, w2end = now - 8*86400000;
-
-    const [r1, r2] = await Promise.all([
-      fetch('https://api.hubspot.com/crm/v3/objects/contacts/search', { method:'POST', headers, body: JSON.stringify({ filterGroups:[{filters:[{propertyName:'createdate',operator:'GTE',value:w1start.toString()}]}], properties:['createdate'], limit:1 }) }).then(r=>r.json()),
-      fetch('https://api.hubspot.com/crm/v3/objects/contacts/search', { method:'POST', headers, body: JSON.stringify({ filterGroups:[{filters:[{propertyName:'createdate',operator:'BETWEEN',value:w2start.toString(),highValue:w2end.toString()}]}], properties:['createdate'], limit:1 }) }).then(r=>r.json())
+// API: PageSpeed
+async function fetchPageSpeed(cfg){
+  if(!cfg.gsc||!cfg.psi)return null;
+  const url=cfg.gsc.replace(/\/$/,'');
+  try{
+    const [mob,desk]=await Promise.all([
+      fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url='+encodeURIComponent(url)+'&strategy=mobile&key='+cfg.psi).then(r=>r.json()),
+      fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url='+encodeURIComponent(url)+'&strategy=desktop&key='+cfg.psi).then(r=>r.json())
     ]);
-
-    const cur = r1?.total || 0, prev = r2?.total || 0;
-    document.getElementById('ns-leads').textContent = fmt(cur);
-    renderDelta('leads-delta', cur, prev);
-
-    // Trend
-    const resTrend = await fetch('https://api.hubspot.com/crm/v3/objects/contacts/search', { method:'POST', headers, body: JSON.stringify({ filterGroups:[{filters:[{propertyName:'createdate',operator:'GTE',value:(now-84*86400000).toString()}]}], properties:['createdate'], limit:100 }) }).then(r=>r.json());
-    const weeks = {};
-    for (let i=11;i>=0;i--) { const d=new Date(); d.setDate(d.getDate()-i*7); const mon=new Date(d); mon.setDate(d.getDate()-((d.getDay()+6)%7)); weeks[isoDate(mon)]=0; }
-    (resTrend?.results||[]).forEach(c => { const d=new Date(c.properties.createdate); const mon=new Date(d); mon.setDate(d.getDate()-((d.getDay()+6)%7)); const k=isoDate(mon); if(k in weeks) weeks[k]++; });
-    const labels = Object.keys(weeks).sort();
-    document.getElementById('hs-loading').style.display = 'none';
-    const ctx = document.getElementById('hs-chart').getContext('2d');
-    if (hsChart) hsChart.destroy();
-    hsChart = new Chart(ctx, {
-      type: 'bar',
-      data: { labels: labels.map(l=>l.slice(5)), datasets: [{ data: labels.map(k=>weeks[k]), backgroundColor: 'rgba(37,99,235,0.75)', borderRadius: 4, borderSkipped: false }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f0f0f0' }, ticks: { font: { size: 11 } } }, x: { grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 40 } } } }
-    });
-    return { cur, prev };
-  } catch(e) { console.error('HubSpot:', e); document.getElementById('hs-loading').textContent = 'Kunde inte nå HubSpot'; return null; }
+    return{mobile:mob,desktop:desk};
+  }catch(e){console.error('PSI',e);return null;}
+}
+function processPSI(data){
+  if(!data)return null;
+  const extract=d=>{
+    if(!d||d.error)return null;
+    const cats=d.lighthouseResult&&d.lighthouseResult.categories||{},audits=d.lighthouseResult&&d.lighthouseResult.audits||{};
+    return{
+      performance:Math.round((cats.performance&&cats.performance.score||0)*100),
+      accessibility:Math.round((cats.accessibility&&cats.accessibility.score||0)*100),
+      bestPractices:Math.round((cats['best-practices']&&cats['best-practices'].score||0)*100),
+      seo:Math.round((cats.seo&&cats.seo.score||0)*100),
+      lcp:audits['largest-contentful-paint']&&audits['largest-contentful-paint'].displayValue||'—',
+      cls:audits['cumulative-layout-shift']&&audits['cumulative-layout-shift'].displayValue||'—',
+      inp:audits['interaction-to-next-paint']&&audits['interaction-to-next-paint'].displayValue||audits['total-blocking-time']&&audits['total-blocking-time'].displayValue||'—',
+      fcp:audits['first-contentful-paint']&&audits['first-contentful-paint'].displayValue||'—',
+      tbt:audits['total-blocking-time']&&audits['total-blocking-time'].displayValue||'—',
+      si:audits['speed-index']&&audits['speed-index'].displayValue||'—',
+      lcpNum:audits['largest-contentful-paint']&&audits['largest-contentful-paint'].numericValue||null,
+      clsNum:audits['cumulative-layout-shift']&&audits['cumulative-layout-shift'].numericValue||null,
+      inpNum:audits['interaction-to-next-paint']&&audits['interaction-to-next-paint'].numericValue||audits['total-blocking-time']&&audits['total-blocking-time'].numericValue||null,
+      fcpNum:audits['first-contentful-paint']&&audits['first-contentful-paint'].numericValue||null,
+      tbtNum:audits['total-blocking-time']&&audits['total-blocking-time'].numericValue||null,
+      siNum:audits['speed-index']&&audits['speed-index'].numericValue||null
+    };
+  };
+  return{mobile:extract(data.mobile),desktop:extract(data.desktop)};
 }
 
-// PageSpeed – full detail
-let psiLoaded = false;
-async function loadPageSpeed() {
-  if (!CFG.psi || psiLoaded) return;
-  psiLoaded = true;
-
-  async function fetchPSI(strategy) {
-    const res = await fetch(`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent('https://planima.se')}&strategy=${strategy}&key=${CFG.psi}`);
-    return res.json();
-  }
-
-  function scoreColor(s) { return s>=90 ? '#16a34a' : s>=50 ? '#d97706' : '#dc2626'; }
-  function cwvClass(metric, val) {
-    const thresholds = { lcp:[2500,4000], cls:[0.1,0.25], inp:[200,500], fcp:[1800,3000], tbt:[200,600], si:[3400,5800] };
-    const t = thresholds[metric];
-    if (!t || !val) return '';
-    return val <= t[0] ? 'cwv-pass' : val <= t[1] ? 'cwv-warn' : 'cwv-fail';
-  }
-
-  function renderCWV(audits, prefix) {
-    const metrics = [
-      { key: 'lcp', audit: 'largest-contentful-paint',  rawKey: 'numericValue', div: 1000 },
-      { key: 'cls', audit: 'cumulative-layout-shift',   rawKey: 'numericValue', div: 1     },
-      { key: 'inp', audit: 'interaction-to-next-paint', rawKey: 'numericValue', div: 1     },
-      { key: 'fcp', audit: 'first-contentful-paint',    rawKey: 'numericValue', div: 1000 },
-      { key: 'tbt', audit: 'total-blocking-time',       rawKey: 'numericValue', div: 1     },
-      { key: 'si',  audit: 'speed-index',               rawKey: 'numericValue', div: 1000 }
-    ];
-    metrics.forEach(({ key, audit, div }) => {
-      const a = audits[audit];
-      const valEl = document.getElementById(`cwv-${prefix}${prefix?'-':''}${key}-val`) || document.getElementById(`cwv-${key}-val`);
-      const card  = document.getElementById(`cwv-${prefix}${prefix?'-':''}${key}`)     || document.getElementById(`cwv-${key}`);
-      if (!a || !valEl) return;
-      valEl.textContent = a.displayValue || '–';
-      const raw = a.numericValue;
-      if (card && raw !== undefined) { card.className = `cwv-card ${cwvClass(key, div===1000 ? raw/1000 : raw)}`; }
-    });
-  }
-
-  try {
-    document.getElementById('psi-loading').textContent = 'Hämtar mobil...';
-    const [mobile, desktop] = await Promise.all([fetchPSI('mobile'), fetchPSI('desktop')]);
-    document.getElementById('psi-loading').style.display = 'none';
-
-    [{ data: mobile, prefix: '', ring: 'mobile' }, { data: desktop, prefix: 'd', ring: 'desktop' }].forEach(({ data, prefix, ring }) => {
-      const score = Math.round((data?.lighthouseResult?.categories?.performance?.score || 0) * 100);
-      const color = scoreColor(score);
-      const circ  = document.getElementById(`ring-${ring}`);
-      const numEl = document.getElementById(`score-${ring}-num`);
-      const subEl = document.getElementById(`score-${ring}-sub`);
-      const audits = data?.lighthouseResult?.audits || {};
-
-      numEl.textContent = score; numEl.style.color = color;
-      circ.style.stroke = color;
-      circ.style.strokeDashoffset = 314 - (314 * score / 100);
-      subEl.textContent = score>=90 ? '✓ Bra prestanda' : score>=50 ? '⚠ Förbättring behövs' : '✗ Dålig prestanda';
-
-      if (ring === 'mobile') renderCWV(audits, '');
-      else renderCWV(audits, 'd');
-
-      // Overview tab score
-      if (ring === 'mobile') {
-        document.getElementById('kpi-cwv').textContent = `${score}/100`;
-        document.getElementById('kpi-cwv').style.color = color;
-        document.getElementById('kpi-cwv-sub').textContent = `${audits['largest-contentful-paint']?.displayValue||'–'} LCP · Klicka för detaljer →`;
-      }
-    });
-
-    // Opportunities
-    const audits = mobile?.lighthouseResult?.audits || {};
-    const opps = Object.values(audits)
-      .filter(a => a.details?.type === 'opportunity' && a.numericValue > 0)
-      .sort((a,b) => b.numericValue - a.numericValue)
-      .slice(0, 8);
-    const list = document.getElementById('opp-list');
-    if (opps.length) {
-      list.innerHTML = opps.map(a => `<li><span>${a.title}</span><span class="opp-saving">${a.displayValue||''}</span></li>`).join('');
-    } else {
-      list.innerHTML = '<li><span style="color:var(--green)">✓ Inga kritiska förbättringsmöjligheter hittades</span></li>';
+// API: HubSpot — uses api.hubapi.com (CORS-friendly)
+async function fetchHubSpot(cfg){
+  if(!cfg.hs)return null;
+  const now=new Date(),weekAgo=new Date(now-7*24*3600000),twoWeeks=new Date(now-14*24*3600000);
+  const mkBody=(after,before)=>JSON.stringify({filterGroups:[{filters:[{propertyName:'createdate',operator:'GTE',value:after.getTime()},{propertyName:'createdate',operator:'LTE',value:before.getTime()}]}],properties:['createdate'],limit:1});
+  const headers={'Authorization':'Bearer '+cfg.hs,'Content-Type':'application/json'};
+  const endpoint='https://api.hubapi.com/crm/v3/objects/contacts/search';
+  try{
+    const [r1,r2]=await Promise.all([
+      fetch(endpoint,{method:'POST',headers,body:mkBody(weekAgo,now)}),
+      fetch(endpoint,{method:'POST',headers,body:mkBody(twoWeeks,weekAgo)})
+    ]);
+    if(!r1.ok){
+      const err=await r1.json().catch(()=>({}));
+      console.error('HubSpot',r1.status,err);
+      setStatus('hs',false,r1.status===401?'HubSpot: invalid token':'HubSpot: connection failed');
+      return null;
     }
-  } catch(e) {
-    document.getElementById('psi-loading').textContent = 'Fel vid hämtning av PageSpeed-data';
-    console.error('PSI:', e);
+    const d1=await r1.json(),d2=r2.ok?await r2.json():null;
+    setStatus('hs',true,'HubSpot connected');
+    return{current:d1&&d1.total!=null?d1.total:0,previous:d2&&d2.total!=null?d2.total:0};
+  }catch(e){console.error('HubSpot',e);setStatus('hs',false,'HubSpot: connection failed');return null;}
+}
+
+// RENDER
+function setGauge(circleId,textId,score){
+  const el=document.getElementById(circleId),tel=document.getElementById(textId);
+  if(el)el.style.strokeDashoffset=(201-(score/100)*201).toFixed(1);
+  if(tel)tel.textContent=score;
+}
+const CWV_T={lcp:[2500,4000],cls:[0.1,0.25],inp:[200,500],fcp:[1800,3000],tbt:[200,600],si:[3400,5800]};
+function cwvStatus(key,num){if(num===null||num===undefined)return'needs';const t=CWV_T[key];return num<=t[0]?'good':num<=t[1]?'needs':'poor';}
+const CWV_LBL={good:'Good',needs:'Needs work',poor:'Poor'};
+const CWV_CLS={good:'status-good',needs:'status-needs',poor:'status-poor'};
+
+function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs){
+  if(ga4cur){
+    const s=ga4cur.organicSessions||ga4cur.sessions,sp=ga4prev?ga4prev.organicSessions||ga4prev.sessions:null;
+    document.getElementById('kpi-sessions').textContent=fmt(s);
+    document.getElementById('kpi-sessions').className='kpi-value';
+    document.getElementById('kpi-bounce').textContent=fmtPct(ga4cur.bounce*100);
+    document.getElementById('kpi-bounce').className='kpi-value';
+    if(sp)setKpiDelta('sessions',s,sp);
+    if(ga4prev)setKpiDelta('bounce',ga4cur.bounce,ga4prev.bounce,true);
+    else document.getElementById('d-bounce').textContent='engagement: '+fmtPct(ga4cur.engage*100);
+    setStatus('ga4',true,'GA4 connected');
+    channelChart.data.labels=Object.keys(ga4cur.channels);
+    channelChart.data.datasets[0].data=Object.values(ga4cur.channels);
+    channelChart.update();
+    setMetric('sessions',fmt(s),ga4prev?fmt(sp):null);
+    setMetric('users',fmt(ga4cur.users),ga4prev?fmt(ga4prev.users):null);
+    setMetric('engage',fmtPct(ga4cur.engage*100),ga4prev?fmtPct(ga4prev.engage*100):null);
+    setMetric('engtime',fmtSec(ga4cur.engTime*1000),ga4prev?fmtSec(ga4prev.engTime*1000):null);
+    setMetric('bounce',fmtPct(ga4cur.bounce*100),ga4prev?fmtPct(ga4prev.bounce*100):null,true);
+    setMetric('pps',ga4cur.pps.toFixed(1),ga4prev?ga4prev.pps.toFixed(1):null);
+    setMetric('duration',fmtSec(ga4cur.engTime*1000),ga4prev?fmtSec(ga4prev.engTime*1000):null);
   }
-}
-
-async function loadGoogleData() {
-  await Promise.allSettled([loadGA4(), loadGSC()]);
-  calcNorthStar();
-  updateTimestamp();
-}
-
-function calcNorthStar() {
-  const s = parseInt((document.getElementById('ns-sessions').textContent||'').replace(/[\s ]/g,''));
-  const l = parseInt((document.getElementById('ns-leads').textContent||'').replace(/[\s ]/g,''));
-  if (!s || !l) return;
-  const rate = (l/s*100).toFixed(2);
-  document.getElementById('ns-rate').textContent = rate + '%';
-  document.getElementById('ns-badge').innerHTML  = scoreBadge(parseFloat(rate), 2, 1);
-}
-
-function updateTimestamp() {
-  document.getElementById('last-updated').textContent =
-    `Uppdaterad ${new Date().toLocaleString('sv-SE',{dateStyle:'short',timeStyle:'short'})}`;
-}
-
-async function loadAll() {
-  psiLoaded = false;
-  document.getElementById('last-updated').textContent = 'Hämtar...';
-  await Promise.allSettled([loadGA4(), loadGSC(), loadHubSpot(), loadPageSpeed()]);
-  calcNorthStar();
-  updateTimestamp();
-}
-
-function init() {
-  loadConfig();
-  if (!CFG.oauth && !CFG.hs) { openSetup(); return; }
-  document.getElementById('no-google-warn').classList.remove('hidden');
-  Promise.allSettled([loadHubSpot(), loadPageSpeed()]);
-  updateTimestamp();
-}
-
-// CWV Tooltip content
-const CWV_TIPS = {
-  lcp: {
-    title: 'LCP – Largest Contentful Paint',
-    metric: 'Hur lång tid det tar för det största synliga elementet att laddas (bild, rubrik etc.)',
-    tips: [
-      'Optimera och komprimera bilder – använd WebP eller AVIF istället för PNG/JPG.',
-      'Lägg till <link rel="preload"> på den bild som är störst above-the-fold.',
-      'Förbättra serverns svarstid (TTFB) – använd caching och ett CDN som Cloudflare.',
-      'Ta bort render-blockerande resurser: skjut upp JS med defer/async och ladda CSS kritiskt.',
-      'Undvik att ladda LCP-bilden via CSS background-image – använd en <img>-tagg istället.'
-    ]
-  },
-  cls: {
-    title: 'CLS – Cumulative Layout Shift',
-    metric: 'Mäter hur mycket innehållet hoppar runt visuellt under sidladdningen.',
-    tips: [
-      'Sätt alltid explicit width och height på bilder och video-element i HTML.',
-      'Reservera plats för annonser, embeds och iframes med en min-height innan de laddas.',
-      'Undvik att injicera nytt innehåll ovanför befintligt innehåll efter att sidan laddats.',
-      'Använd CSS transform för animationer istället för egenskaper som triggar layout (top, left, width).',
-      'Ladda anpassade fonter med font-display: optional eller swap för att undvika layout-shift.'
-    ]
-  },
-  inp: {
-    title: 'INP – Interaction to Next Paint',
-    metric: 'Mäter hur snabbt sidan svarar visuellt på användarinteraktioner (klick, tangentbord).',
-    tips: [
-      'Bryt upp långa JavaScript-uppgifter (> 50ms) med scheduler.yield() eller setTimeout.',
-      'Minimera JavaScript som körs i main thread – flytta tung logik till Web Workers.',
-      'Optimera tredjepartsskript: ladda Google Tag Manager, chatt-widgets etc. med defer.',
-      'Använd requestAnimationFrame för visuella uppdateringar som sker direkt efter interaktion.',
-      'Profiliera med Chrome DevTools → Performance för att hitta exakt vilken kod som blockerar.'
-    ]
-  },
-  fcp: {
-    title: 'FCP – First Contentful Paint',
-    metric: 'Tid tills det första synliga innehållet (text eller bild) visas på skärmen.',
-    tips: [
-      'Eliminera render-blockerande resurser: CSS och JS som laddas i <head> utan defer/async.',
-      'Minifiera och komprimera CSS – skicka kritisk CSS inline i <head>.',
-      'Aktivera HTTP/2 eller HTTP/3 på servern för parallell nedladdning av resurser.',
-      'Använd <link rel="preconnect"> till externa domäner (fonter, analytics, CDN).',
-      'Aktivera Gzip eller Brotli-komprimering på webbservern.'
-    ]
-  },
-  tbt: {
-    title: 'TBT – Total Blocking Time',
-    metric: 'Total tid som main thread är blockerad och inte kan svara på användarinput.',
-    tips: [
-      'Identifiera och dela upp långa JavaScript-uppgifter med Chrome DevTools → Performance.',
-      'Ladda icke-kritiska skript med defer eller async – speciellt tredjepartsskript.',
-      'Använd code splitting (t.ex. med Webpack/Vite) för att bara ladda JS som behövs direkt.',
-      'Ta bort oanvänd JavaScript – granska med Coverage-verktyget i Chrome DevTools.',
-      'Flytta tung beräkning (filtrering, sortering) till Web Workers eller server-side.'
-    ]
-  },
-  si: {
-    title: 'Speed Index',
-    metric: 'Mäter hur snabbt innehållet visuellt fylls på under sidladdningen.',
-    tips: [
-      'Optimera CSS-leveransen: ta bort oanvänd CSS och ladda kritisk CSS inline.',
-      'Komprimera och lazy-loada bilder below-the-fold med loading="lazy".',
-      'Minska antalet render-blockerande resurser i <head>.',
-      'Använd ett CDN för att minska geografisk latens till besökare.',
-      'Förbättra serverns TTFB med server-side caching och optimerade databasfrågor.'
-    ]
+  if(gsccur){
+    document.getElementById('kpi-position').textContent=fmtPos(gsccur.position);
+    document.getElementById('kpi-position').className='kpi-value';
+    document.getElementById('kpi-ctr').textContent=fmtPct(gsccur.ctr);
+    document.getElementById('kpi-ctr').className='kpi-value';
+    if(gscprev){setKpiDelta('position',gsccur.position,gscprev.position,true);setKpiDelta('ctr',gsccur.ctr,gscprev.ctr);}
+    setStatus('gsc',true,'Search Console connected');
+    setMetric('impressions',fmt(gsccur.impressions),gscprev?fmt(gscprev.impressions):null);
+    setMetric('clicks',fmt(gsccur.clicks),gscprev?fmt(gscprev.clicks):null);
+    setMetric('position',fmtPos(gsccur.position),gscprev?fmtPos(gscprev.position):null,true);
+    setMetric('ctr',fmtPct(gsccur.ctr),gscprev?fmtPct(gscprev.ctr):null);
+    if(gsccur.dailyRows){
+      const rows=gsccur.dailyRows.slice(-8);
+      impClickChart.data.labels=rows.map(r=>r.keys[0].slice(5));
+      impClickChart.data.datasets[0].data=rows.map(r=>r.impressions);
+      impClickChart.data.datasets[1].data=rows.map(r=>r.clicks);
+      impClickChart.update();
+    }
   }
+  if(psi&&psi.mobile){
+    const m=psi.mobile,d=psi.desktop;
+    document.getElementById('kpi-speed').textContent=m.performance;
+    document.getElementById('kpi-speed').className='kpi-value';
+    const cls=m.performance>=75?'delta-up':m.performance>=50?'delta-neutral':'delta-down';
+    const lbl=m.performance>=75?'Good score':m.performance>=50?'Needs improvement':'Urgent: fix needed';
+    document.getElementById('d-speed').textContent=lbl;
+    document.getElementById('d-speed').className='kpi-delta '+cls;
+    setStatus('ps',true,'PageSpeed connected');
+    setGauge('g-perf-m','gt-perf-m',m.performance);setGauge('g-acc-m','gt-acc-m',m.accessibility);setGauge('g-bp-m','gt-bp-m',m.bestPractices);setGauge('g-seo-m','gt-seo-m',m.seo);
+    if(d){setGauge('g-perf-d','gt-perf-d',d.performance);setGauge('g-acc-d','gt-acc-d',d.accessibility);setGauge('g-bp-d','gt-bp-d',d.bestPractices);setGauge('g-seo-d','gt-seo-d',d.seo);}
+    [['lcp',m.lcpNum,m.lcp],['cls',m.clsNum,m.cls],['inp',m.inpNum,m.inp],['fcp',m.fcpNum,m.fcp],['tbt',m.tbtNum,m.tbt],['si',m.siNum,m.si]].forEach(([key,num,val])=>{
+      const vEl=document.getElementById('v-'+key),sEl=document.getElementById('vs-'+key);
+      if(vEl)vEl.textContent=val;
+      if(sEl){const s=cwvStatus(key,num);sEl.textContent=CWV_LBL[s];sEl.className='vital-status '+CWV_CLS[s];}
+    });
+  }
+  if(hs!==null){
+    document.getElementById('kpi-conv').textContent=fmt(hs.current);
+    document.getElementById('kpi-conv').className='kpi-value';
+    setKpiDelta('conv',hs.current,hs.previous);
+    setMetric('contacts',fmt(hs.current),fmt(hs.previous));
+  }
+  if(ga4cur&&gsccur){
+    const s=ga4cur.organicSessions||ga4cur.sessions,ctr=gsccur.ctr||0,wk='W'+getWeekNum(new Date());
+    const stored=getData();
+    if(!stored.weeks.find(w=>w.label===wk)){
+      stored.weeks.push({label:wk,sessions:Math.round(s),ctr:parseFloat(ctr.toFixed(2))});
+      if(stored.weeks.length>12)stored.weeks.shift();
+      saveData(stored);
+    }
+  }
+  rebuildTrendChart();
+  document.getElementById('last-updated').textContent='Updated: '+new Date().toLocaleTimeString();
+}
+
+// REFRESH
+async function refreshAll(){
+  const cfg=getConfig();
+  if(cfg.demo){loadDemoData();return;}
+  document.getElementById('spin').style.display='block';
+  document.getElementById('refresh-lbl').textContent='Fetching…';
+  const endDate=isoDate(new Date()),startDate=isoDate(daysAgo(7)),prevEnd=isoDate(daysAgo(7)),prevStart=isoDate(daysAgo(14));
+  if(cfg.oauth&&!isGoogleAuthed()){setStatus('ga4',false,'GA4: click "Sign in with Google"');setStatus('gsc',false,'GSC: click "Sign in with Google"');}
+  notify('Fetching live data…','info');
+  const [ga4Raw,ga4PrevRaw,gscRaw,gscPrevRaw,psiRaw,hsRaw]=await Promise.all([fetchGA4Week(cfg,startDate,endDate),fetchGA4Week(cfg,prevStart,prevEnd),fetchGSCWeek(cfg,startDate,endDate),fetchGSCWeek(cfg,prevStart,prevEnd),fetchPageSpeed(cfg),fetchHubSpot(cfg)]);
+  const ga4cur=ga4Raw?processGA4Rows(ga4Raw):null,ga4prev=ga4PrevRaw?processGA4Rows(ga4PrevRaw):null,gsccur=gscRaw?processGSCRows(gscRaw):null,gscprev=gscPrevRaw?processGSCRows(gscPrevRaw):null,psi=psiRaw?processPSI(psiRaw):null;
+  if(!ga4cur&&!gsccur&&!psi&&hsRaw===null)notify('Could not connect to any API. Check credentials in Settings.','error');
+  else notify('Data refreshed!','success');
+  renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hsRaw);
+  document.getElementById('spin').style.display='none';
+  document.getElementById('refresh-lbl').textContent='↻ Refresh data';
+}
+
+// DEMO DATA
+function loadDemoData(){
+  const ga4cur={sessions:5240,organicSessions:3180,users:3540,bounce:0.46,engage:0.54,engTime:102,pps:2.4,channels:{'Organic Search':3180,'Direct':1040,'Referral':560,'Social':380,'Email':80}};
+  const ga4prev={sessions:4820,organicSessions:2940,users:3210,bounce:0.49,engage:0.51,engTime:94,pps:2.2,channels:{'Organic Search':2940,'Direct':980,'Referral':480,'Social':320,'Email':100}};
+  const gsccur={clicks:1340,impressions:41200,position:13.8,ctr:3.25,dailyRows:Array.from({length:8},(_,i)=>({keys:[isoDate(daysAgo(7-i))],impressions:4800+Math.round(Math.random()*1200),clicks:160+Math.round(Math.random()*80)}))};
+  const gscprev={clicks:1180,impressions:36800,position:15.2,ctr:2.96};
+  const psi={mobile:{performance:68,accessibility:91,bestPractices:87,seo:94,lcp:'2.8 s',cls:'0.08',inp:'180 ms',fcp:'1.6 s',tbt:'240 ms',si:'3.9 s',lcpNum:2800,clsNum:0.08,inpNum:180,fcpNum:1600,tbtNum:240,siNum:3900},desktop:{performance:88,accessibility:94,bestPractices:92,seo:97,lcp:'1.1 s',cls:'0.02',inp:'60 ms',fcp:'0.7 s',tbt:'80 ms',si:'1.4 s',lcpNum:1100,clsNum:0.02,inpNum:60,fcpNum:700,tbtNum:80,siNum:1400}};
+  const hs={current:48,previous:39};
+  setStatus('ga4',true,'GA4 (demo)');setStatus('gsc',true,'Search Console (demo)');setStatus('ps',true,'PageSpeed (demo)');setStatus('hs',true,'HubSpot (demo)');
+  const stored=getData();
+  if(stored.weeks.length<2){stored.weeks=[{label:'W40',sessions:1820,ctr:2.1},{label:'W41',sessions:2100,ctr:2.3},{label:'W42',sessions:2340,ctr:2.5},{label:'W43',sessions:2180,ctr:2.4},{label:'W44',sessions:2510,ctr:2.7},{label:'W45',sessions:2760,ctr:2.9},{label:'W46',sessions:2850,ctr:3.1},{label:'W47',sessions:3180,ctr:3.25}];saveData(stored);}
+  renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs);
+  notify('Demo data loaded. Add API keys in Settings for live data.','info');
+}
+
+// CWV MODAL
+const CWV_TIPS={
+  lcp:{title:'LCP — Largest Contentful Paint',subtitle:'How fast your largest element loads',metric:'Good: < 2.5 s  ·  Needs work: 2.5–4 s  ·  Poor: > 4 s',tips:[{head:'Optimise images',body:'Use WebP/AVIF format, add loading="lazy", and set explicit width/height attributes.'},{head:'Preload the hero image',body:'Add <link rel="preload" as="image" href="hero.webp"> in the head to load it earlier.'},{head:'Reduce server response time',body:'Aim for TTFB under 600 ms. Use a CDN, caching headers, and efficient server-side rendering.'},{head:'Remove render-blocking resources',body:'Defer non-critical JS and inline critical CSS so the browser can paint sooner.'}]},
+  cls:{title:'CLS — Cumulative Layout Shift',subtitle:'Visual stability — elements jumping after load',metric:'Good: < 0.1  ·  Needs work: 0.1–0.25  ·  Poor: > 0.25',tips:[{head:'Set dimensions on images & videos',body:'Always add width and height attributes so the browser reserves space before files load.'},{head:'Reserve space for ads & embeds',body:'Use a CSS aspect-ratio container so third-party content does not push layout down.'},{head:'Avoid injecting content above the fold',body:"Don't add banners that push main content down after initial paint."},{head:'Use CSS transforms for animations',body:'Animate with transform and opacity only — these do not cause layout recalculations.'}]},
+  inp:{title:'INP — Interaction to Next Paint',subtitle:'How fast the page responds to clicks/taps',metric:'Good: < 200 ms  ·  Needs work: 200–500 ms  ·  Poor: > 500 ms',tips:[{head:'Break up long JavaScript tasks',body:'Any task over 50 ms blocks the main thread. Split heavy work with setTimeout or the Scheduler API.'},{head:'Reduce third-party scripts',body:'Chat widgets, analytics, and tag managers add main-thread work. Audit and remove what you do not need.'},{head:'Use web workers for heavy compute',body:'Move expensive calculations off the main thread so interactions stay responsive.'},{head:'Debounce input handlers',body:'Scroll and input events fire very fast. Debounce your handlers to reduce main-thread pressure.'}]},
+  fcp:{title:'FCP — First Contentful Paint',subtitle:'When the first text or image appears on screen',metric:'Good: < 1.8 s  ·  Needs work: 1.8–3 s  ·  Poor: > 3 s',tips:[{head:'Eliminate render-blocking resources',body:'Move non-critical CSS to async and defer JS. Preload critical fonts.'},{head:'Reduce server response time',body:'Every millisecond before HTML arrives delays FCP. Use caching, a CDN, and efficient server code.'},{head:'Inline critical CSS',body:'Extract CSS for above-the-fold content and inline it in head to skip a network round-trip.'},{head:'Preconnect to critical origins',body:'Add link rel="preconnect" for fonts.googleapis.com and other early-needed origins.'}]},
+  tbt:{title:'TBT — Total Blocking Time',subtitle:'Time the main thread was blocked between FCP and TTI',metric:'Good: < 200 ms  ·  Needs work: 200–600 ms  ·  Poor: > 600 ms',tips:[{head:'Reduce JavaScript bundle size',body:'Code-split, tree-shake, and lazy-load non-critical modules. Use Bundle Analyzer to find large imports.'},{head:'Audit third-party scripts',body:'Third-party JS is the #1 cause of high TBT. Load tag manager and chat scripts with async or defer.'},{head:'Use Lighthouse to find long tasks',body:'The "Avoid long main-thread tasks" audit lists the culprits. Prioritise tasks over 150 ms.'},{head:'Minimise main-thread work',body:'Move everything you can to a Web Worker. Compress images server-side to avoid client-side decode work.'}]},
+  si:{title:'SI — Speed Index',subtitle:'How quickly content is visually populated',metric:'Good: < 3.4 s  ·  Needs work: 3.4–5.8 s  ·  Poor: > 5.8 s',tips:[{head:'Improve FCP and LCP first',body:'Speed Index is a composite — fixing FCP and LCP will directly reduce it.'},{head:'Reduce above-the-fold render cost',body:'Minimise CSS complexity of the first viewport. Avoid layout-heavy components near the top.'},{head:'Load web fonts efficiently',body:'Use font-display: swap and preload critical fonts so text appears before the font file loads.'},{head:'Avoid large layout changes early on',body:'Any element causing a repaint after initial paint increases Speed Index. Keep the above-fold DOM simple.'}]}
 };
-
-function showCwvModal(key) {
-  const data = CWV_TIPS[key];
-  if (!data) return;
-  document.getElementById('cwv-modal-title').textContent = data.title;
-  document.getElementById('cwv-modal-metric').textContent = data.metric;
-  document.getElementById('cwv-modal-tips').innerHTML = data.tips.map(t => `<li>${t}</li>`).join('');
+function showCwvModal(key){
+  const tip=CWV_TIPS[key];if(!tip)return;
+  document.getElementById('modal-title').textContent=tip.title;
+  document.getElementById('modal-subtitle').textContent=tip.subtitle;
+  document.getElementById('modal-metric').textContent=tip.metric;
+  document.getElementById('modal-tips').innerHTML=tip.tips.map((t,i)=>'<div class="modal-tip"><div class="tip-num">'+(i+1)+'</div><div class="tip-text"><strong>'+t.head+'</strong><br>'+t.body+'</div></div>').join('');
   document.getElementById('cwv-modal').classList.add('open');
 }
-function closeCwvModal() {
+function closeCwvModal(e){
+  if(e&&e.target!==document.getElementById('cwv-modal'))return;
   document.getElementById('cwv-modal').classList.remove('open');
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCwvModal(); });
 
-window.addEventListener('load', () => {
-  loadConfig();
-  if (localStorage.getItem('wdm_cfg')) {
-    document.getElementById('setup-overlay').classList.add('hidden');
-    init();
+// INIT
+window.addEventListener('load',()=>{
+  const wasCallback=handleOAuthCallback();
+  loadSavedToken();
+  updateGoogleBtn();
+  const cfg=getConfig();
+  ['oauth','ga4','gsc','psi','hs'].forEach(k=>{const el=document.getElementById('cfg-'+k);if(el&&cfg[k])el.value=cfg[k];});
+  if(cfg.oauth||cfg.ga4||cfg.gsc||cfg.hs||cfg.demo){
+    startDashboard();
+    if(wasCallback){updateGoogleBtn();notify('Google connected! Fetching data…','success');setTimeout(refreshAll,500);}
   }
 });
 </script>
