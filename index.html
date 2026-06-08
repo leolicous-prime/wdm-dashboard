@@ -74,11 +74,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 
 /* STATUS */
 .status-bar{display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap;}
-.date-filter-bar{display:flex;align-items:center;gap:6px;margin-bottom:1.5rem;flex-wrap:wrap;}
-.date-filter-label{font-size:11px;color:var(--text3);margin-right:2px;}
-.df-btn{font-size:12px;padding:5px 14px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;white-space:nowrap;}
-.df-btn:hover{background:var(--bg3);color:var(--text);}
-.df-btn.active{background:var(--primary);border-color:var(--primary);color:#1a1712;font-weight:600;}
 .status-pill{display:flex;align-items:center;gap:6px;font-size:11px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;color:var(--text2);}
 .status-dot{width:7px;height:7px;border-radius:50%;}
 .dot-green{background:var(--green);box-shadow:0 0 6px rgba(22,163,74,.4);}
@@ -378,14 +373,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <div class="status-pill"><div class="status-dot dot-gray" id="dot-gsc"></div><span id="lbl-gsc">Search Console not connected</span></div>
       <div class="status-pill"><div class="status-dot dot-gray" id="dot-hs"></div><span id="lbl-hs">HubSpot not connected</span></div>
       <div class="status-pill"><div class="status-dot dot-gray" id="dot-ps"></div><span id="lbl-ps">PageSpeed not connected</span></div>
-    </div>
-
-    <div class="date-filter-bar">
-      <span class="date-filter-label">Period</span>
-      <button class="df-btn active" id="df-week" onclick="setDateRange('week')">This week</button>
-      <button class="df-btn" id="df-lastweek" onclick="setDateRange('lastweek')">Last week</button>
-      <button class="df-btn" id="df-month" onclick="setDateRange('month')">This month</button>
-      <button class="df-btn" id="df-lastmonth" onclick="setDateRange('lastmonth')">Last month</button>
     </div>
 
     <div class="tabs">
@@ -688,10 +675,9 @@ function startDashboard(){
   if(channelChart){channelChart.destroy();channelChart=null;}
   if(impClickChart){impClickChart.destroy();impClickChart=null;}
   initCharts();
-  updateTableHeaders();
   if(cfg.demo){loadDemoData();}
   else{
-    const cached=loadRangeData(currentRange);
+    const cached=loadRangeData('week');
     if(cached){renderFromCache(cached);}
     else{showEmptyState();}
   }
@@ -758,8 +744,7 @@ function setKpiDelta(id,cur,prev,lowerBetter=false){
   if(pct===null)return;
   const better=lowerBetter?pct<0:pct>0;
   const arrow=pct>0?'↑':'↓';
-  const vsLabel={week:'vs prev. week',lastweek:'vs week before',month:'vs last month',lastmonth:'vs month before'}[currentRange]||'vs prev. period';
-  el.textContent=arrow+' '+Math.abs(Math.round(pct))+'% '+vsLabel;
+  el.textContent=arrow+' '+Math.abs(Math.round(pct))+'% vs prev. week';
   el.className='kpi-delta '+(better?'delta-up':'delta-down');
 }
 
@@ -790,56 +775,14 @@ function showEmptyState(){
   document.getElementById('last-updated').textContent='No data — click Refresh to load';
 }
 
-// DATE RANGE
-let currentRange='week';
-function getDateRange(range){
-  const today=new Date();
-  let start,end,prevStart,prevEnd;
-  if(range==='week'){
-    end=isoDate(today);start=isoDate(daysAgo(6));
-    prevEnd=isoDate(daysAgo(7));prevStart=isoDate(daysAgo(13));
-  } else if(range==='lastweek'){
-    end=isoDate(daysAgo(7));start=isoDate(daysAgo(13));
-    prevEnd=isoDate(daysAgo(14));prevStart=isoDate(daysAgo(20));
-  } else if(range==='month'){
-    const s=new Date(today.getFullYear(),today.getMonth(),1);
-    end=isoDate(today);start=isoDate(s);
-    const ps=new Date(today.getFullYear(),today.getMonth()-1,1);
-    const pe=new Date(today.getFullYear(),today.getMonth(),0);
-    prevStart=isoDate(ps);prevEnd=isoDate(pe);
-  } else if(range==='lastmonth'){
-    const s=new Date(today.getFullYear(),today.getMonth()-1,1);
-    const e=new Date(today.getFullYear(),today.getMonth(),0);
-    end=isoDate(e);start=isoDate(s);
-    const ps=new Date(today.getFullYear(),today.getMonth()-2,1);
-    const pe=new Date(today.getFullYear(),today.getMonth()-1,0);
-    prevStart=isoDate(ps);prevEnd=isoDate(pe);
-  }
-  return{start,end,prevStart,prevEnd};
-}
-const RANGE_LABELS={
-  week:  {cur:'This week',  prev:'Last week'},
-  lastweek:{cur:'Last week', prev:'Week before'},
-  month: {cur:'This month', prev:'Last month'},
-  lastmonth:{cur:'Last month',prev:'Month before'},
-};
-function updateTableHeaders(){
-  const l=RANGE_LABELS[currentRange]||RANGE_LABELS.week;
-  document.querySelectorAll('.col-current').forEach(el=>el.textContent=l.cur);
-  document.querySelectorAll('.col-prev').forEach(el=>el.textContent=l.prev);
-}
-function setDateRange(range){
-  currentRange=range;
-  ['week','lastweek','month','lastmonth'].forEach(r=>{
-    const el=document.getElementById('df-'+r);
-    if(el)el.classList.toggle('active',r===range);
-  });
-  updateTableHeaders();
-  const cfg=getConfig();
-  if(cfg.demo){loadDemoData();return;}
-  const cached=loadRangeData(range);
-  if(cached){renderFromCache(cached);}
-  else{showEmptyState();}
+// DATE RANGE (this week only)
+function getDateRange(){
+  return{
+    start:isoDate(daysAgo(6)),
+    end:isoDate(new Date()),
+    prevStart:isoDate(daysAgo(13)),
+    prevEnd:isoDate(daysAgo(7))
+  };
 }
 function getWeekNum(d){const j=new Date(d.getFullYear(),0,1);return Math.ceil(((d-j)/86400000+j.getDay()+1)/7);}
 
@@ -1330,7 +1273,7 @@ async function refreshAll(){
   if(cfg.demo){loadDemoData();return;}
   document.getElementById('spin').style.display='block';
   document.getElementById('refresh-lbl').textContent='Fetching…';
-  const {start:startDate,end:endDate,prevStart,prevEnd}=getDateRange(currentRange);
+  const {start:startDate,end:endDate,prevStart,prevEnd}=getDateRange();
   if(cfg.oauth&&!isGoogleAuthed()){setStatus('ga4',false,'GA4: click "Sign in with Google"');setStatus('gsc',false,'GSC: click "Sign in with Google"');}
   notify('Fetching live data…','info');
   const [ga4Raw,ga4PrevRaw,gscRaw,gscPrevRaw,psiRaw,hsRaw,kwRaw]=await Promise.all([fetchGA4Week(cfg,startDate,endDate),fetchGA4Week(cfg,prevStart,prevEnd),fetchGSCWeek(cfg,startDate,endDate),fetchGSCWeek(cfg,prevStart,prevEnd),fetchPageSpeed(cfg),fetchHubSpot(cfg),fetchGSCKeywords(cfg)]);
@@ -1338,7 +1281,7 @@ async function refreshAll(){
   if(!ga4cur&&!gsccur&&!psi&&hsRaw===null)notify('Could not connect to any API. Check credentials in Settings.','error');
   else{
     notify('Data refreshed!','success');
-    saveRangeData(currentRange,{ga4cur,ga4prev,gsccur,gscprev,psi,hsRaw,kwRaw});
+    saveRangeData('week',{ga4cur,ga4prev,gsccur,gscprev,psi,hsRaw,kwRaw});
   }
   renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hsRaw,kwRaw);
   renderKeywords(kwRaw);
