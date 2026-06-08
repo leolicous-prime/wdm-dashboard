@@ -103,10 +103,27 @@
     .score-device { font-size: 12px; color: var(--faint); margin-top: 2px; }
 
     .cwv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 22px; }
-    .cwv-card { background: var(--card); border-radius: 10px; border: 1px solid var(--border); padding: 16px 18px; }
-    .cwv-name { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+    .cwv-card { background: var(--card); border-radius: 10px; border: 1px solid var(--border); padding: 16px 18px; cursor: pointer; transition: box-shadow 0.15s; position: relative; }
+    .cwv-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    .cwv-name { font-size: 12px; font-weight: 700; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
+    .cwv-info-icon { font-size: 13px; color: var(--faint); font-weight: 400; }
     .cwv-value { font-size: 24px; font-weight: 700; }
     .cwv-threshold { font-size: 11px; color: var(--faint); margin-top: 3px; }
+
+    /* CWV Tooltip modal */
+    #cwv-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.15s; }
+    #cwv-modal.open { opacity: 1; pointer-events: all; }
+    .cwv-modal-box { background: #fff; border-radius: 14px; padding: 28px 32px; width: 480px; max-width: 95vw; box-shadow: 0 20px 60px rgba(0,0,0,0.2); transform: translateY(8px); transition: transform 0.15s; }
+    #cwv-modal.open .cwv-modal-box { transform: translateY(0); }
+    .cwv-modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+    .cwv-modal-title { font-size: 17px; font-weight: 700; }
+    .cwv-modal-metric { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .cwv-modal-close { background: none; border: none; font-size: 20px; color: var(--faint); cursor: pointer; line-height: 1; padding: 0 4px; }
+    .cwv-modal-close:hover { color: var(--text); }
+    .cwv-modal-tips { list-style: none; }
+    .cwv-modal-tips li { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid #f4f4f5; font-size: 13px; line-height: 1.5; }
+    .cwv-modal-tips li:last-child { border-bottom: none; }
+    .cwv-modal-tips li::before { content: '→'; color: var(--purple); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
     .cwv-pass  { border-top: 3px solid var(--green); }
     .cwv-warn  { border-top: 3px solid var(--amber); }
     .cwv-fail  { border-top: 3px solid var(--red); }
@@ -149,6 +166,20 @@
       <input type="text" id="cfg-hs" placeholder="pat-na1-...">
     </div>
     <button class="btn-primary" onclick="saveConfig()">Spara och öppna dashboard</button>
+  </div>
+</div>
+
+<!-- CWV Tooltip Modal -->
+<div id="cwv-modal" onclick="if(event.target===this)closeCwvModal()">
+  <div class="cwv-modal-box">
+    <div class="cwv-modal-header">
+      <div>
+        <div class="cwv-modal-title" id="cwv-modal-title">–</div>
+        <div class="cwv-modal-metric" id="cwv-modal-metric">–</div>
+      </div>
+      <button class="cwv-modal-close" onclick="closeCwvModal()">✕</button>
+    </div>
+    <ul class="cwv-modal-tips" id="cwv-modal-tips"></ul>
   </div>
 </div>
 
@@ -307,22 +338,22 @@
 
     <div class="section-label">Core Web Vitals – Mobil</div>
     <div class="cwv-grid mb" id="cwv-mobile-grid">
-      <div class="cwv-card" id="cwv-lcp"><div class="cwv-name">LCP</div><div class="cwv-value" id="cwv-lcp-val">–</div><div class="cwv-threshold">Bra: &lt; 2.5s · Dålig: &gt; 4s</div></div>
-      <div class="cwv-card" id="cwv-cls"><div class="cwv-name">CLS</div><div class="cwv-value" id="cwv-cls-val">–</div><div class="cwv-threshold">Bra: &lt; 0.1 · Dålig: &gt; 0.25</div></div>
-      <div class="cwv-card" id="cwv-inp"><div class="cwv-name">INP</div><div class="cwv-value" id="cwv-inp-val">–</div><div class="cwv-threshold">Bra: &lt; 200ms · Dålig: &gt; 500ms</div></div>
-      <div class="cwv-card" id="cwv-fcp"><div class="cwv-name">FCP</div><div class="cwv-value" id="cwv-fcp-val">–</div><div class="cwv-threshold">Bra: &lt; 1.8s · Dålig: &gt; 3s</div></div>
-      <div class="cwv-card" id="cwv-tbt"><div class="cwv-name">TBT</div><div class="cwv-value" id="cwv-tbt-val">–</div><div class="cwv-threshold">Bra: &lt; 200ms</div></div>
-      <div class="cwv-card" id="cwv-si"><div class="cwv-name">Speed Index</div><div class="cwv-value" id="cwv-si-val">–</div><div class="cwv-threshold">Bra: &lt; 3.4s</div></div>
+      <div class="cwv-card" id="cwv-lcp" onclick="showCwvModal('lcp')"><div class="cwv-name">LCP <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-lcp-val">–</div><div class="cwv-threshold">Bra: &lt; 2.5s · Dålig: &gt; 4s</div></div>
+      <div class="cwv-card" id="cwv-cls" onclick="showCwvModal('cls')"><div class="cwv-name">CLS <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-cls-val">–</div><div class="cwv-threshold">Bra: &lt; 0.1 · Dålig: &gt; 0.25</div></div>
+      <div class="cwv-card" id="cwv-inp" onclick="showCwvModal('inp')"><div class="cwv-name">INP <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-inp-val">–</div><div class="cwv-threshold">Bra: &lt; 200ms · Dålig: &gt; 500ms</div></div>
+      <div class="cwv-card" id="cwv-fcp" onclick="showCwvModal('fcp')"><div class="cwv-name">FCP <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-fcp-val">–</div><div class="cwv-threshold">Bra: &lt; 1.8s · Dålig: &gt; 3s</div></div>
+      <div class="cwv-card" id="cwv-tbt" onclick="showCwvModal('tbt')"><div class="cwv-name">TBT <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-tbt-val">–</div><div class="cwv-threshold">Bra: &lt; 200ms</div></div>
+      <div class="cwv-card" id="cwv-si"  onclick="showCwvModal('si')"><div class="cwv-name">Speed Index <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-si-val">–</div><div class="cwv-threshold">Bra: &lt; 3.4s</div></div>
     </div>
 
     <div class="section-label">Core Web Vitals – Desktop</div>
     <div class="cwv-grid mb" id="cwv-desktop-grid">
-      <div class="cwv-card" id="cwv-d-lcp"><div class="cwv-name">LCP</div><div class="cwv-value" id="cwv-d-lcp-val">–</div><div class="cwv-threshold">Bra: &lt; 2.5s</div></div>
-      <div class="cwv-card" id="cwv-d-cls"><div class="cwv-name">CLS</div><div class="cwv-value" id="cwv-d-cls-val">–</div><div class="cwv-threshold">Bra: &lt; 0.1</div></div>
-      <div class="cwv-card" id="cwv-d-inp"><div class="cwv-name">INP</div><div class="cwv-value" id="cwv-d-inp-val">–</div><div class="cwv-threshold">Bra: &lt; 200ms</div></div>
-      <div class="cwv-card" id="cwv-d-fcp"><div class="cwv-name">FCP</div><div class="cwv-value" id="cwv-d-fcp-val">–</div><div class="cwv-threshold">Bra: &lt; 1.8s</div></div>
-      <div class="cwv-card" id="cwv-d-tbt"><div class="cwv-name">TBT</div><div class="cwv-value" id="cwv-d-tbt-val">–</div><div class="cwv-threshold">Bra: &lt; 200ms</div></div>
-      <div class="cwv-card" id="cwv-d-si"><div class="cwv-name">Speed Index</div><div class="cwv-value" id="cwv-d-si-val">–</div><div class="cwv-threshold">Bra: &lt; 3.4s</div></div>
+      <div class="cwv-card" id="cwv-d-lcp" onclick="showCwvModal('lcp')"><div class="cwv-name">LCP <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-d-lcp-val">–</div><div class="cwv-threshold">Bra: &lt; 2.5s</div></div>
+      <div class="cwv-card" id="cwv-d-cls" onclick="showCwvModal('cls')"><div class="cwv-name">CLS <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-d-cls-val">–</div><div class="cwv-threshold">Bra: &lt; 0.1</div></div>
+      <div class="cwv-card" id="cwv-d-inp" onclick="showCwvModal('inp')"><div class="cwv-name">INP <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-d-inp-val">–</div><div class="cwv-threshold">Bra: &lt; 200ms</div></div>
+      <div class="cwv-card" id="cwv-d-fcp" onclick="showCwvModal('fcp')"><div class="cwv-name">FCP <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-d-fcp-val">–</div><div class="cwv-threshold">Bra: &lt; 1.8s</div></div>
+      <div class="cwv-card" id="cwv-d-tbt" onclick="showCwvModal('tbt')"><div class="cwv-name">TBT <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-d-tbt-val">–</div><div class="cwv-threshold">Bra: &lt; 200ms</div></div>
+      <div class="cwv-card" id="cwv-d-si"  onclick="showCwvModal('si')"><div class="cwv-name">Speed Index <span class="cwv-info-icon">ⓘ</span></div><div class="cwv-value" id="cwv-d-si-val">–</div><div class="cwv-threshold">Bra: &lt; 3.4s</div></div>
     </div>
 
     <div class="card">
@@ -701,6 +732,89 @@ function init() {
   Promise.allSettled([loadHubSpot(), loadPageSpeed()]);
   updateTimestamp();
 }
+
+// CWV Tooltip content
+const CWV_TIPS = {
+  lcp: {
+    title: 'LCP – Largest Contentful Paint',
+    metric: 'Hur lång tid det tar för det största synliga elementet att laddas (bild, rubrik etc.)',
+    tips: [
+      'Optimera och komprimera bilder – använd WebP eller AVIF istället för PNG/JPG.',
+      'Lägg till <link rel="preload"> på den bild som är störst above-the-fold.',
+      'Förbättra serverns svarstid (TTFB) – använd caching och ett CDN som Cloudflare.',
+      'Ta bort render-blockerande resurser: skjut upp JS med defer/async och ladda CSS kritiskt.',
+      'Undvik att ladda LCP-bilden via CSS background-image – använd en <img>-tagg istället.'
+    ]
+  },
+  cls: {
+    title: 'CLS – Cumulative Layout Shift',
+    metric: 'Mäter hur mycket innehållet hoppar runt visuellt under sidladdningen.',
+    tips: [
+      'Sätt alltid explicit width och height på bilder och video-element i HTML.',
+      'Reservera plats för annonser, embeds och iframes med en min-height innan de laddas.',
+      'Undvik att injicera nytt innehåll ovanför befintligt innehåll efter att sidan laddats.',
+      'Använd CSS transform för animationer istället för egenskaper som triggar layout (top, left, width).',
+      'Ladda anpassade fonter med font-display: optional eller swap för att undvika layout-shift.'
+    ]
+  },
+  inp: {
+    title: 'INP – Interaction to Next Paint',
+    metric: 'Mäter hur snabbt sidan svarar visuellt på användarinteraktioner (klick, tangentbord).',
+    tips: [
+      'Bryt upp långa JavaScript-uppgifter (> 50ms) med scheduler.yield() eller setTimeout.',
+      'Minimera JavaScript som körs i main thread – flytta tung logik till Web Workers.',
+      'Optimera tredjepartsskript: ladda Google Tag Manager, chatt-widgets etc. med defer.',
+      'Använd requestAnimationFrame för visuella uppdateringar som sker direkt efter interaktion.',
+      'Profiliera med Chrome DevTools → Performance för att hitta exakt vilken kod som blockerar.'
+    ]
+  },
+  fcp: {
+    title: 'FCP – First Contentful Paint',
+    metric: 'Tid tills det första synliga innehållet (text eller bild) visas på skärmen.',
+    tips: [
+      'Eliminera render-blockerande resurser: CSS och JS som laddas i <head> utan defer/async.',
+      'Minifiera och komprimera CSS – skicka kritisk CSS inline i <head>.',
+      'Aktivera HTTP/2 eller HTTP/3 på servern för parallell nedladdning av resurser.',
+      'Använd <link rel="preconnect"> till externa domäner (fonter, analytics, CDN).',
+      'Aktivera Gzip eller Brotli-komprimering på webbservern.'
+    ]
+  },
+  tbt: {
+    title: 'TBT – Total Blocking Time',
+    metric: 'Total tid som main thread är blockerad och inte kan svara på användarinput.',
+    tips: [
+      'Identifiera och dela upp långa JavaScript-uppgifter med Chrome DevTools → Performance.',
+      'Ladda icke-kritiska skript med defer eller async – speciellt tredjepartsskript.',
+      'Använd code splitting (t.ex. med Webpack/Vite) för att bara ladda JS som behövs direkt.',
+      'Ta bort oanvänd JavaScript – granska med Coverage-verktyget i Chrome DevTools.',
+      'Flytta tung beräkning (filtrering, sortering) till Web Workers eller server-side.'
+    ]
+  },
+  si: {
+    title: 'Speed Index',
+    metric: 'Mäter hur snabbt innehållet visuellt fylls på under sidladdningen.',
+    tips: [
+      'Optimera CSS-leveransen: ta bort oanvänd CSS och ladda kritisk CSS inline.',
+      'Komprimera och lazy-loada bilder below-the-fold med loading="lazy".',
+      'Minska antalet render-blockerande resurser i <head>.',
+      'Använd ett CDN för att minska geografisk latens till besökare.',
+      'Förbättra serverns TTFB med server-side caching och optimerade databasfrågor.'
+    ]
+  }
+};
+
+function showCwvModal(key) {
+  const data = CWV_TIPS[key];
+  if (!data) return;
+  document.getElementById('cwv-modal-title').textContent = data.title;
+  document.getElementById('cwv-modal-metric').textContent = data.metric;
+  document.getElementById('cwv-modal-tips').innerHTML = data.tips.map(t => `<li>${t}</li>`).join('');
+  document.getElementById('cwv-modal').classList.add('open');
+}
+function closeCwvModal() {
+  document.getElementById('cwv-modal').classList.remove('open');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCwvModal(); });
 
 window.addEventListener('load', () => {
   loadConfig();
