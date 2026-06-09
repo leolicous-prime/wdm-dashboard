@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
-<title>WDM Dashboard v3 — Planima</title>
+<title>WDM Dashboard v4 — Planima</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
@@ -386,6 +386,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 
     <!-- OVERVIEW -->
     <div id="tab-overview">
+      <div id="weekly-summary" style="display:none;background:rgba(255,185,42,.08);border:1px solid rgba(255,185,42,.25);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.25rem;">
+  <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--primary2);margin-bottom:.4rem;">Veckans lägesbild</div>
+  <div id="summary-text" style="font-size:13.5px;line-height:1.65;color:var(--text1);"></div>
+</div>
       <div class="kpi-grid">
         <div class="kpi-card c-green"><div class="kpi-header"><div class="kpi-source">GA4</div><div class="kpi-label">Organic sessions</div></div><div class="kpi-value loading" id="kpi-sessions">—</div><div class="kpi-delta delta-neutral" id="d-sessions">laddar…</div></div>
         <div class="kpi-card c-blue"><div class="kpi-header"><div class="kpi-source">GSC</div><div class="kpi-label">Avg. position</div></div><div class="kpi-value loading" id="kpi-position">—</div><div class="kpi-delta delta-neutral" id="d-position">lägre är bättre</div></div>
@@ -393,6 +397,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
         <div class="kpi-card c-amber"><div class="kpi-header"><div class="kpi-source">PageSpeed</div><div class="kpi-label">Mobile speed score</div></div><div class="kpi-value loading" id="kpi-speed">—</div><div class="kpi-delta delta-neutral" id="d-speed">0–100</div></div>
         <div class="kpi-card c-purple"><div class="kpi-header"><div class="kpi-source">GA4</div><div class="kpi-label">Bounce rate</div></div><div class="kpi-value loading" id="kpi-bounce">—</div><div class="kpi-delta delta-neutral" id="d-bounce">laddar…</div></div>
         <div class="kpi-card c-red"><div class="kpi-header"><div class="kpi-source">HubSpot</div><div class="kpi-label">New contacts (week)</div></div><div class="kpi-value loading" id="kpi-conv">—</div><div class="kpi-delta delta-neutral" id="d-conv">laddar…</div></div>
+        <div class="kpi-card c-teal"><div class="kpi-header"><div class="kpi-source">Web</div><div class="kpi-label">Organic conv. rate</div></div><div class="kpi-value loading" id="kpi-convrate">—</div><div class="kpi-delta delta-neutral" id="d-convrate">sessioner → kontakter</div></div>
       </div>
       <div class="chart-grid">
         <div class="chart-card full">
@@ -460,6 +465,15 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
           <div id="keywords-body"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">Laddar…</div></div>
         </div>
       </div>
+          <div class="metrics-section">
+            <div class="section-title">Branded vs Non-branded</div>
+            <div class="metric-table">
+              <div class="metric-row header" style="grid-template-columns:1fr 70px 70px 80px 80px">
+                <span>Typ</span><span style="text-align:right">Klick</span><span style="text-align:right">Impr.</span><span style="text-align:right">CTR</span><span style="text-align:right">Pos.</span>
+              </div>
+              <div id="brand-split-body"><div style="padding:1.25rem;text-align:center;color:var(--text3);font-size:13px;">Laddar…</div></div>
+            </div>
+          </div>
     </div>
 
     <!-- PERFORMANCE -->
@@ -478,6 +492,15 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
           <div id="hs-sources-body"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">Laddar…</div></div>
         </div>
       </div>
+      <div class="metrics-section">
+            <div class="section-title">Konversionssidor — sessioner denna vecka</div>
+            <div class="metric-table">
+              <div class="metric-row header" style="grid-template-columns:2fr 70px 70px 80px">
+                <span>Sida</span><span style="text-align:right">Sessioner</span><span style="text-align:right">Eng.tid</span><span style="text-align:right">Bounce</span>
+              </div>
+              <div id="conv-pages-body"><div style="padding:1.25rem;text-align:center;color:var(--text3);font-size:13px;">Laddar…</div></div>
+            </div>
+          </div>
       <div class="metrics-section">
         <div class="section-title">PageSpeed — sidor med underkänd CLS</div>
         <div class="metric-table">
@@ -620,7 +643,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 <div class="notif" id="notif"></div>
 
 <script>
-const CFG_KEY='wdm_cfg_v2',DATA_KEY='wdm_data_v2';
+const CFG_KEY='wdm_cfg_v3',DATA_KEY='wdm_data_v3';
 function getConfig(){try{return JSON.parse(localStorage.getItem(CFG_KEY)||'{}')}catch{return{}}}
 function saveConfigToStorage(c){localStorage.setItem(CFG_KEY,JSON.stringify(c))}
 function getData(){try{return JSON.parse(localStorage.getItem(DATA_KEY)||'{"weeks":[]}')}catch{return{weeks:[]}}}
@@ -763,7 +786,7 @@ function getWeekNum(d){const j=new Date(d.getFullYear(),0,1);return Math.ceil(((
 let trendChart,channelChart,impClickChart;
 function initCharts(){
   const gc='rgba(0,0,0,.06)',tc='#9e9880';
-  trendChart=new Chart(document.getElementById('trendChart'),{type:'line',data:{labels:[],datasets:[{label:'Organic sessions',data:[],borderColor:'#FFB92A',backgroundColor:'rgba(255,185,42,.08)',tension:.4,fill:true,yAxisID:'y',pointRadius:4,pointBackgroundColor:'#FFB92A'},{label:'CTR %',data:[],borderColor:'#F45B80',borderDash:[5,4],tension:.4,fill:false,yAxisID:'y2',pointRadius:4,pointBackgroundColor:'#F45B80'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{color:tc,font:{size:11},callback:v=>v.toLocaleString()},grid:{color:gc}},y2:{position:'right',ticks:{color:tc,font:{size:11},callback:v=>parseFloat(v.toFixed(2))+'%'},grid:{display:false}},x:{ticks:{color:tc,font:{size:11}}}}}});
+  trendChart=new Chart(document.getElementById('trendChart'),{type:'line',data:{labels:[],datasets:[{label:'Organic sessions',data:[],borderColor:'#FFB92A',backgroundColor:'rgba(255,185,42,.08)',tension:.4,fill:true,yAxisID:'y',pointRadius:4,pointBackgroundColor:'#FFB92A'},{label:'CTR %',data:[],borderColor:'#F45B80',borderDash:[5,4],tension:.4,fill:false,yAxisID:'y2',pointRadius:4,pointBackgroundColor:'#F45B80'},{label:'4-v snitt',data:[],borderColor:'rgba(0,0,0,.18)',borderDash:[3,3],tension:.4,fill:false,yAxisID:'y',pointRadius:0,borderWidth:1.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{color:tc,font:{size:11},callback:v=>v.toLocaleString()},grid:{color:gc}},y2:{position:'right',ticks:{color:tc,font:{size:11},callback:v=>parseFloat(v.toFixed(2))+'%'},grid:{display:false}},x:{ticks:{color:tc,font:{size:11}}}}}});
   channelChart=new Chart(document.getElementById('channelChart'),{type:'doughnut',data:{labels:['Organic','Direct','Referral','Social','Other'],datasets:[{data:[0,0,0,0,0],backgroundColor:['#FFB92A','#F45B80','#8b5cf6','#0d9488','#c7bfa0'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#5a5545',font:{size:11},boxWidth:10,padding:12}}}}});
   impClickChart=new Chart(document.getElementById('impClickChart'),{type:'bar',data:{labels:[],datasets:[{label:'Impressions',data:[],backgroundColor:'rgba(139,92,246,.3)',borderColor:'#8b5cf6',borderWidth:1},{label:'Clicks',data:[],backgroundColor:'rgba(244,91,128,.3)',borderColor:'#F45B80',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{color:tc,font:{size:11}},grid:{color:gc}},x:{ticks:{color:tc,font:{size:11},autoSkip:true,maxRotation:30}}}}});
 }
@@ -774,6 +797,8 @@ function rebuildTrendChart(weeks){
   trendChart.data.labels=data.map(w=>w.label);
   trendChart.data.datasets[0].data=data.map(w=>w.sessions);
   trendChart.data.datasets[1].data=data.map(w=>w.ctr!=null?w.ctr:null);
+  const avg4=data.map((_,i)=>{const w=data.slice(Math.max(0,i-3),i+1);return Math.round(w.reduce((s,x)=>s+x.sessions,0)/w.length);});
+  trendChart.data.datasets[2].data=avg4;
   trendChart.update();
 }
 
@@ -1100,6 +1125,75 @@ function renderKeywords(data){
   }).join('');
 }
 
+function renderBrandSplit(data){
+  const el=document.getElementById('brand-split-body');
+  if(!el)return;
+  if(!data||!data.rows||!data.rows.length){
+    el.innerHTML='<div style="padding:1.25rem;text-align:center;color:var(--text3);font-size:13px;">Ingen data.</div>';
+    return;
+  }
+  const brand={clicks:0,impressions:0,ctrSum:0,posSum:0,count:0};
+  const nonbrand={clicks:0,impressions:0,ctrSum:0,posSum:0,count:0};
+  data.rows.forEach(r=>{
+    const kw=r.keys[0].toLowerCase();
+    const bucket=BRAND_KW.has(kw)?brand:nonbrand;
+    bucket.clicks+=r.clicks||0;
+    bucket.impressions+=r.impressions||0;
+    bucket.ctrSum+=(r.ctr||0)*100;
+    bucket.posSum+=r.position||0;
+    bucket.count++;
+  });
+  const row=(label,b,cls)=>{
+    if(!b.count)return'';
+    const ctr=b.count?(b.ctrSum/b.count).toFixed(1)+'%':'—';
+    const pos=b.count?(b.posSum/b.count).toFixed(1):'—';
+    return`<div class="metric-row" style="grid-template-columns:1fr 70px 70px 80px 80px">
+      <span class="metric-name">${label}</span>
+      <span class="metric-val">${b.clicks.toLocaleString('sv-SE')}</span>
+      <span class="metric-val">${b.impressions.toLocaleString('sv-SE')}</span>
+      <span class="metric-val">${ctr}</span>
+      <span class="metric-val ${cls}">${pos}</span>
+    </div>`;
+  };
+  el.innerHTML=row('🏷 Branded',brand,'')+'<div style="height:1px;background:var(--border);margin:0 0"></div>'+row('🔍 Non-branded',nonbrand,'');
+}
+
+const CONV_PAGES=['/priser','/features','/demo'];
+async function fetchConversionPages(cfg){
+  if(!cfg.ga4||!isGoogleAuthed())return null;
+  const url=`https://analyticsdata.googleapis.com/v1beta/properties/${cfg.ga4}:runReport`;
+  const end=isoDate(new Date()),start=isoDate(daysAgo(7));
+  try{
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+googleAccessToken},body:JSON.stringify({dateRanges:[{startDate:start,endDate:end}],dimensions:[{name:'pagePath'}],metrics:[{name:'sessions'},{name:'bounceRate'},{name:'averageSessionDuration'}],dimensionFilter:{filter:{fieldName:'pagePath',inListFilter:{values:CONV_PAGES}}}})});
+    if(!r.ok)return null;
+    return await r.json();
+  }catch(e){return null;}
+}
+function renderConversionPages(data){
+  const el=document.getElementById('conv-pages-body');
+  if(!el)return;
+  if(!data||!data.rows||!data.rows.length){
+    el.innerHTML='<div style="padding:1.25rem;text-align:center;color:var(--text3);font-size:13px;">Konversionssidorna hittades inte bland veckans trafik.</div>';
+    return;
+  }
+  const map={};
+  (data.rows||[]).forEach(r=>{
+    map[r.dimensionValues[0].value]={sessions:+r.metricValues[0].value,bounce:+r.metricValues[1].value,dur:+r.metricValues[2].value};
+  });
+  el.innerHTML=CONV_PAGES.map(path=>{
+    const d=map[path];
+    if(!d)return`<div class="metric-row" style="grid-template-columns:2fr 70px 70px 80px"><span class="metric-name" style="font-family:'DM Mono',monospace;font-size:12px;">${path}</span><span style="color:var(--text3);font-size:12px;" colspan="3">Ingen data</span></div>`;
+    const bounceCls=d.bounce<0.4?'status-good':d.bounce<0.6?'status-needs':'status-poor';
+    const bounceLbl=(d.bounce*100).toFixed(0)+'%';
+    return`<div class="metric-row" style="grid-template-columns:2fr 70px 70px 80px">
+      <span class="metric-name" style="font-family:'DM Mono',monospace;font-size:12px;">${path}</span>
+      <span class="metric-val">${Math.round(d.sessions).toLocaleString('sv-SE')}</span>
+      <span class="metric-val">${fmtSec(d.dur*1000)}</span>
+      <span style="text-align:right"><span class="vital-status ${bounceCls}">${bounceLbl}</span></span>
+    </div>`;
+  }).join('');
+}
+
 // API: PageSpeed
 async function fetchPageSpeed(cfg){
   if(!cfg.gsc||!cfg.psi)return null;
@@ -1237,13 +1331,52 @@ function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,kwRaw){
     document.getElementById('kpi-conv').textContent=fmt(hs.current);
     document.getElementById('kpi-conv').className='kpi-value';
     setKpiDelta('conv',hs.current,hs.previous);
+    if(ga4cur){
+      const s=ga4cur.organicSessions||ga4cur.sessions;
+      const rate=s>0?+(hs.current/s*100).toFixed(2):0;
+      document.getElementById('kpi-convrate').textContent=rate.toFixed(2)+'%';
+      document.getElementById('kpi-convrate').className='kpi-value';
+      document.getElementById('d-convrate').textContent=hs.current+' kontakter / '+fmt(s)+' sessioner';
+      document.getElementById('d-convrate').className='kpi-delta delta-neutral';
+    }
     setMetric('contacts',fmt(hs.current),fmt(hs.previous));
   }
   // trend chart is rebuilt by refreshAll after API fetch; no-op here for demo/direct calls
   document.getElementById('last-updated').textContent='Uppdaterad: '+new Date().toLocaleTimeString();
   updateBenchmarks(gsccur, psi, ga4cur);
   lastIntelData={gsccur,gscprev,psi,ga4cur,ga4prev,kwRaw:kwRaw||null};
+  buildWeeklySummary(ga4cur,ga4prev,gsccur,gscprev,hs);
   generateIntelligence();
+}
+
+function buildWeeklySummary(ga4cur,ga4prev,gsccur,gscprev,hs){
+  const el=document.getElementById('weekly-summary');
+  const txt=document.getElementById('summary-text');
+  if(!el||!txt)return;
+  const parts=[];
+  if(ga4cur&&ga4prev){
+    const s=ga4cur.organicSessions||ga4cur.sessions;
+    const sp=ga4prev.organicSessions||ga4prev.sessions;
+    const pct=Math.round(((s-sp)/sp)*100);
+    const dir=pct>=0?`ökade med ${pct}%`:`minskade med ${Math.abs(pct)}%`;
+    parts.push(`Organisk trafik ${dir} jämfört med förra veckan (${s.toLocaleString('sv-SE')} sessioner).`);
+  }
+  if(gsccur&&gscprev){
+    const ctrPct=Math.round(((gsccur.ctr-gscprev.ctr)/gscprev.ctr)*100);
+    const posPct=Math.round(((gsccur.position-gscprev.position)/gscprev.position)*100);
+    const ctrDir=ctrPct>=0?'förbättrades':'försämrades';
+    const posDir=gsccur.position<gscprev.position?'förbättrades':'försämrades';
+    parts.push(`CTR ${ctrDir} med ${Math.abs(ctrPct)}% och snittsposition ${posDir} (${gsccur.position.toFixed(1)} vs ${gscprev.position.toFixed(1)}).`);
+  }
+  if(hs&&ga4cur){
+    const s=ga4cur.organicSessions||ga4cur.sessions;
+    const rate=s>0?(hs.current/s*100).toFixed(1):0;
+    const dir=hs.current>=hs.previous?`upp från ${hs.previous}`:`ner från ${hs.previous}`;
+    parts.push(`${hs.current} nya kontakter den här veckan (${dir}) — organisk konverteringsgrad: ${rate}%.`);
+  }
+  if(!parts.length)return;
+  txt.textContent=parts.join(' ');
+  el.style.display='block';
 }
 
 // INTELLIGENCE DATA STORE
@@ -1488,13 +1621,14 @@ async function refreshAll(){
   if(cfg.oauth&&!isGoogleAuthed()){setStatus('ga4',false,'GA4: klicka "Sign in with Google"');setStatus('gsc',false,'GSC: klicka "Sign in with Google"');}
   notify('Hämtar livedata…','info');
   // Phase 1: fast parallel fetch of all main data
-  const [ga4Raw,ga4PrevRaw,gscRaw,gscPrevRaw,psiRaw,hsRaw,kwRaw,ga4TrendRaw,gscTrendRaw,topPagesRaw,hsSrcRaw]=await Promise.all([
+  const [ga4Raw,ga4PrevRaw,gscRaw,gscPrevRaw,psiRaw,hsRaw,kwRaw,ga4TrendRaw,gscTrendRaw,topPagesRaw,hsSrcRaw,convPagesRaw]=await Promise.all([
     fetchGA4Week(cfg,startDate,endDate),fetchGA4Week(cfg,prevStart,prevEnd),
     fetchGSCWeek(cfg,startDate,endDate),fetchGSCWeek(cfg,prevStart,prevEnd),
     fetchPageSpeed(cfg),fetchHubSpot(cfg),fetchGSCKeywords(cfg),
     fetchGA4Trend(cfg),fetchGSCTrend(cfg),
     fetchTopPages(cfg,startDate,endDate),
-    fetchHubSpotSources(cfg,startDate)
+    fetchHubSpotSources(cfg,startDate),
+    fetchConversionPages(cfg)
   ]);
   const ga4cur=ga4Raw?processGA4Rows(ga4Raw):null,ga4prev=ga4PrevRaw?processGA4Rows(ga4PrevRaw):null,gsccur=gscRaw?processGSCRows(gscRaw):null,gscprev=gscPrevRaw?processGSCRows(gscPrevRaw):null,psi=psiRaw?processPSI(psiRaw):null;
   if(!ga4cur&&!gsccur&&!psi&&hsRaw===null)notify('Kunde inte ansluta till något API. Kontrollera uppgifterna i Inställningar.','error');
@@ -1514,9 +1648,11 @@ async function refreshAll(){
 
   renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hsRaw,kwRaw);
   renderKeywords(kwRaw);
+  renderBrandSplit(kwRaw);
   rebuildTrendChart(trendWeeks);
   renderTopPages(topPagesRaw);
   renderHubSpotSources(hsSrcRaw);
+  renderConversionPages(convPagesRaw);
 
   // Phase 2: PSI on top 3 pages (sequential after we know which pages)
   if(topPagesRaw&&topPagesRaw.rows&&topPagesRaw.rows.length&&cfg.psi){
@@ -1552,10 +1688,12 @@ function loadDemoData(){
     {keys:['underhållsplan bostadsrättsförening'],clicks:76,impressions:3900,position:12.6,ctr:0.019}
   ]};
   renderKeywords(demoKeywords);
+  renderBrandSplit(demoKeywords);
   const stored=getData();
   const demoWeeks=[{label:'W40',sessions:1820,ctr:2.1},{label:'W41',sessions:2100,ctr:2.3},{label:'W42',sessions:2340,ctr:2.5},{label:'W43',sessions:2180,ctr:2.4},{label:'W44',sessions:2510,ctr:2.7},{label:'W45',sessions:2760,ctr:2.9},{label:'W46',sessions:2850,ctr:3.1},{label:'W47',sessions:3180,ctr:3.25}];
   stored.weeks=demoWeeks;saveData(stored);
   renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,demoKeywords);
+  buildWeeklySummary(ga4cur,ga4prev,gsccur,gscprev,hs);
   rebuildTrendChart(demoWeeks);
 
   // Demo: top organic pages
@@ -1575,6 +1713,12 @@ function loadDemoData(){
     ...Array(4).fill({properties:{hs_analytics_source:'EMAIL_MARKETING'}}),
     ...Array(3).fill({properties:{hs_analytics_source:'SOCIAL_MEDIA'}}),
     ...Array(2).fill({properties:{hs_analytics_source:'PAID_SEARCH'}}),
+  ]});
+
+  renderConversionPages({rows:[
+    {dimensionValues:[{value:'/priser'}],metricValues:[{value:'318'},{value:'0.38'},{value:'67'}]},
+    {dimensionValues:[{value:'/features'}],metricValues:[{value:'541'},{value:'0.52'},{value:'89'}]},
+    {dimensionValues:[{value:'/demo'}],metricValues:[{value:'124'},{value:'0.31'},{value:'142'}]},
   ]});
 
   // Demo: per-page PSI
@@ -1797,5 +1941,6 @@ function openActionModal(idx){
 </div>
 </body>
 </html>
+
 
 
