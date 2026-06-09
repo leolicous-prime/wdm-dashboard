@@ -479,6 +479,13 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
         </div>
       </div>
       <div class="metrics-section">
+        <div class="section-title">PageSpeed — sidor med underkänd CLS</div>
+        <div class="metric-table">
+          <div class="metric-row header" style="grid-template-columns:3fr 80px 80px 80px"><span>Sida</span><span style="text-align:right">CLS</span><span style="text-align:right">LCP</span><span style="text-align:right">Status</span></div>
+          <div id="cls-fail-body"><div style="padding:1.25rem;text-align:center;color:var(--text3);font-size:13px;">Laddar…</div></div>
+        </div>
+      </div>
+      <div class="metrics-section">
         <div class="section-title">GA4 — engagemang &amp; avvisning</div>
         <div class="metric-table">
           <div class="metric-row header"><span>Mätvärde</span><span>Vad det mäter</span><span style="text-align:right">Denna vecka</span><span style="text-align:right">Förra veckan</span><span style="text-align:right">Förändring</span></div>
@@ -742,7 +749,7 @@ function setKpiDelta(id,cur,prev,lowerBetter=false){
   const pct=pctChange(cur,prev);
   if(pct===null)return;
   const better=lowerBetter?pct<0:pct>0;
-  const arrow=pct>0?'↑':'↓';
+  const arrow=better?'↑':'↓';
   el.textContent=arrow+' '+Math.abs(Math.round(pct))+'% vs förra veckan';
   el.className='kpi-delta '+(better?'delta-up':'delta-down');
 }
@@ -756,7 +763,7 @@ function getWeekNum(d){const j=new Date(d.getFullYear(),0,1);return Math.ceil(((
 let trendChart,channelChart,impClickChart;
 function initCharts(){
   const gc='rgba(0,0,0,.06)',tc='#9e9880';
-  trendChart=new Chart(document.getElementById('trendChart'),{type:'line',data:{labels:[],datasets:[{label:'Organic sessions',data:[],borderColor:'#FFB92A',backgroundColor:'rgba(255,185,42,.08)',tension:.4,fill:true,yAxisID:'y',pointRadius:4,pointBackgroundColor:'#FFB92A'},{label:'CTR %',data:[],borderColor:'#F45B80',borderDash:[5,4],tension:.4,fill:false,yAxisID:'y2',pointRadius:4,pointBackgroundColor:'#F45B80'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{color:tc,font:{size:11},callback:v=>v.toLocaleString()},grid:{color:gc}},y2:{position:'right',ticks:{color:tc,font:{size:11},callback:v=>v+'%'},grid:{display:false}},x:{ticks:{color:tc,font:{size:11}}}}}});
+  trendChart=new Chart(document.getElementById('trendChart'),{type:'line',data:{labels:[],datasets:[{label:'Organic sessions',data:[],borderColor:'#FFB92A',backgroundColor:'rgba(255,185,42,.08)',tension:.4,fill:true,yAxisID:'y',pointRadius:4,pointBackgroundColor:'#FFB92A'},{label:'CTR %',data:[],borderColor:'#F45B80',borderDash:[5,4],tension:.4,fill:false,yAxisID:'y2',pointRadius:4,pointBackgroundColor:'#F45B80'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{color:tc,font:{size:11},callback:v=>v.toLocaleString()},grid:{color:gc}},y2:{position:'right',ticks:{color:tc,font:{size:11},callback:v=>parseFloat(v.toFixed(2))+'%'},grid:{display:false}},x:{ticks:{color:tc,font:{size:11}}}}}});
   channelChart=new Chart(document.getElementById('channelChart'),{type:'doughnut',data:{labels:['Organic','Direct','Referral','Social','Other'],datasets:[{data:[0,0,0,0,0],backgroundColor:['#FFB92A','#F45B80','#8b5cf6','#0d9488','#c7bfa0'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#5a5545',font:{size:11},boxWidth:10,padding:12}}}}});
   impClickChart=new Chart(document.getElementById('impClickChart'),{type:'bar',data:{labels:[],datasets:[{label:'Impressions',data:[],backgroundColor:'rgba(139,92,246,.3)',borderColor:'#8b5cf6',borderWidth:1},{label:'Clicks',data:[],backgroundColor:'rgba(244,91,128,.3)',borderColor:'#F45B80',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{color:tc,font:{size:11}},grid:{color:gc}},x:{ticks:{color:tc,font:{size:11},autoSkip:true,maxRotation:30}}}}});
 }
@@ -976,7 +983,7 @@ async function fetchPagesPSI(cfg, pagesData){
   if(!cfg.psi||!pagesData||!pagesData.rows)return null;
   const base=cfg.gsc?cfg.gsc.replace(/\/$/,''):'';
   if(!base)return null;
-  const top3=pagesData.rows.slice(0,3).map(r=>base+r.dimensionValues[0].value);
+  const top3=pagesData.rows.slice(0,5).map(r=>base+r.dimensionValues[0].value);
   try{
     const results=await Promise.all(top3.map(url=>
       fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url='+encodeURIComponent(url)+'&strategy=mobile&key='+cfg.psi+'&category=performance')
@@ -1019,6 +1026,44 @@ function renderPagesPSI(results, pagesData){
       <span class="metric-val">${lcp}</span>
       <span class="metric-val">${cls}</span>
       <span class="metric-val">${inp}</span>
+      <span style="text-align:right"><span class="vital-status ${statusCls}">${statusLbl}</span></span>
+    </div>`;
+  }).join('');
+}
+
+function renderCLSFailing(results){
+  const el=document.getElementById('cls-fail-body');
+  if(!el)return;
+  if(!results||!results.length){
+    el.innerHTML='<div style="padding:1.25rem;text-align:center;color:var(--text3);font-size:13px;">Ingen data — ladda om för att hämta PSI-poäng.</div>';
+    return;
+  }
+  const failing=results
+    .filter(item=>item&&item.data&&!item.data.error)
+    .map(item=>{
+      const audits=item.data.lighthouseResult&&item.data.lighthouseResult.audits||{};
+      const clsNum=audits['cumulative-layout-shift']&&audits['cumulative-layout-shift'].numericValue;
+      const clsVal=audits['cumulative-layout-shift']&&audits['cumulative-layout-shift'].displayValue||'—';
+      const lcpVal=audits['largest-contentful-paint']&&audits['largest-contentful-paint'].displayValue||'—';
+      return{url:item.url,clsNum,clsVal,lcpVal};
+    })
+    .filter(p=>p.clsNum!=null&&p.clsNum>=0.1)
+    .sort((a,b)=>b.clsNum-a.clsNum)
+    .slice(0,5);
+  if(!failing.length){
+    el.innerHTML='<div style="padding:1.25rem;text-align:center;color:var(--green,#15803d);font-size:13px;">✓ Inga sidor med underkänd CLS bland de analyserade sidorna.</div>';
+    return;
+  }
+  el.innerHTML=failing.map(p=>{
+    const path=p.url.replace(/^https?:\/\/[^/]+/,'');
+    const short=path.length>45?path.slice(0,44)+'…':path||'/';
+    const statusCls=p.clsNum>=0.25?'status-poor':'status-needs';
+    const statusLbl=p.clsNum>=0.25?'Dålig':'Behöver arbete';
+    const clsColor=p.clsNum>=0.25?'#be185d':'#92580a';
+    return`<div class="metric-row" style="grid-template-columns:3fr 80px 80px 80px">
+      <span class="metric-name" style="font-size:12px;font-family:'DM Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${p.url}">${short}</span>
+      <span class="metric-val" style="color:${clsColor}">${p.clsVal}</span>
+      <span class="metric-val">${p.lcpVal}</span>
       <span style="text-align:right"><span class="vital-status ${statusCls}">${statusLbl}</span></span>
     </div>`;
   }).join('');
@@ -1478,6 +1523,7 @@ async function refreshAll(){
     notify('Hämtar sidspecifika PageSpeed-poäng…','info');
     const pagesPsiRaw=await fetchPagesPSI(cfg,topPagesRaw);
     renderPagesPSI(pagesPsiRaw,topPagesRaw);
+    renderCLSFailing(pagesPsiRaw);
   }
 
   document.getElementById('spin').style.display='none';
@@ -1488,8 +1534,8 @@ async function refreshAll(){
 function loadDemoData(){
   const ga4cur={sessions:5240,organicSessions:3180,users:3540,bounce:0.46,engage:0.54,engTime:102,pps:2.4,channels:{'Organic Search':3180,'Direct':1040,'Referral':560,'Social':380,'Email':80}};
   const ga4prev={sessions:4820,organicSessions:2940,users:3210,bounce:0.49,engage:0.51,engTime:94,pps:2.2,channels:{'Organic Search':2940,'Direct':980,'Referral':480,'Social':320,'Email':100}};
-  const gsccur={clicks:1340,impressions:41200,position:13.8,ctr:3.25,dailyRows:Array.from({length:8},(_,i)=>({keys:[isoDate(daysAgo(7-i))],impressions:4800+Math.round(Math.random()*1200),clicks:160+Math.round(Math.random()*80)}))};
-  const gscprev={clicks:1180,impressions:36800,position:15.2,ctr:2.96};
+  const gsccur={clicks:1180,impressions:38400,position:14.8,ctr:2.61,dailyRows:Array.from({length:8},(_,i)=>({keys:[isoDate(daysAgo(7-i))],impressions:4800+Math.round(Math.random()*1200),clicks:160+Math.round(Math.random()*80)}))};
+  const gscprev={clicks:1340,impressions:41200,position:13.2,ctr:3.25};
   const psi={mobile:{performance:68,accessibility:91,bestPractices:87,seo:94,lcp:'2.8 s',cls:'0.08',inp:'180 ms',fcp:'1.6 s',tbt:'240 ms',si:'3.9 s',lcpNum:2800,clsNum:0.08,inpNum:180,fcpNum:1600,tbtNum:240,siNum:3900},desktop:{performance:88,accessibility:94,bestPractices:92,seo:97,lcp:'1.1 s',cls:'0.02',inp:'60 ms',fcp:'0.7 s',tbt:'80 ms',si:'1.4 s',lcpNum:1100,clsNum:0.02,inpNum:60,fcpNum:700,tbtNum:80,siNum:1400}};
   const hs={current:48,previous:39};
   setStatus('ga4',true,'GA4 (demo)');setStatus('gsc',true,'Search Console (demo)');setStatus('ps',true,'PageSpeed (demo)');setStatus('hs',true,'HubSpot (demo)');  // status labels intentionally kept as-is in demo mode
@@ -1532,11 +1578,15 @@ function loadDemoData(){
   ]});
 
   // Demo: per-page PSI
-  renderPagesPSI([
+  const demoPagesPsi=[
     {url:'https://planima.se/underhallsplan',data:{lighthouseResult:{categories:{performance:{score:.62}},audits:{'largest-contentful-paint':{displayValue:'3.1 s',numericValue:3100},'cumulative-layout-shift':{displayValue:'0.08',numericValue:0.08},'interaction-to-next-paint':{displayValue:'210 ms',numericValue:210}}}}},
     {url:'https://planima.se/features',data:{lighthouseResult:{categories:{performance:{score:.78}},audits:{'largest-contentful-paint':{displayValue:'2.1 s',numericValue:2100},'cumulative-layout-shift':{displayValue:'0.04',numericValue:0.04},'interaction-to-next-paint':{displayValue:'140 ms',numericValue:140}}}}},
     {url:'https://planima.se/blog/underhallsplan-brf',data:{lighthouseResult:{categories:{performance:{score:.44}},audits:{'largest-contentful-paint':{displayValue:'4.8 s',numericValue:4800},'cumulative-layout-shift':{displayValue:'0.19',numericValue:0.19},'interaction-to-next-paint':{displayValue:'380 ms',numericValue:380}}}}},
-  ],{rows:[{metricValues:[{value:'892'}]},{metricValues:[{value:'541'}]},{metricValues:[{value:'412'}]}]});
+    {url:'https://planima.se/priser',data:{lighthouseResult:{categories:{performance:{score:.38}},audits:{'largest-contentful-paint':{displayValue:'5.2 s',numericValue:5200},'cumulative-layout-shift':{displayValue:'0.31',numericValue:0.31},'interaction-to-next-paint':{displayValue:'420 ms',numericValue:420}}}}},
+    {url:'https://planima.se/blog/fastighetsforvaltning',data:{lighthouseResult:{categories:{performance:{score:.55}},audits:{'largest-contentful-paint':{displayValue:'3.6 s',numericValue:3600},'cumulative-layout-shift':{displayValue:'0.22',numericValue:0.22},'interaction-to-next-paint':{displayValue:'290 ms',numericValue:290}}}}},
+  ];
+  renderPagesPSI(demoPagesPsi,{rows:[{metricValues:[{value:'892'}]},{metricValues:[{value:'541'}]},{metricValues:[{value:'412'}]},{metricValues:[{value:'318'}]},{metricValues:[{value:'284'}]}]});
+  renderCLSFailing(demoPagesPsi);
 
   notify('Demodata laddat. Lägg till API-nycklar i Inställningar för livedata.','info');
 }
