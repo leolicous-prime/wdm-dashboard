@@ -123,7 +123,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 
 /* METRICS TABLE */
 .metrics-section{margin-bottom:1.5rem;}
-.section-title{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem;}
+.section-title{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem;display:flex;align-items:center;gap:6px;}
+.section-source{font-size:9px;font-family:'DM Mono',monospace;font-weight:600;color:var(--text3);background:rgba(0,0,0,.06);border-radius:4px;padding:1px 5px;letter-spacing:.04em;text-transform:uppercase;flex-shrink:0;}
 .metric-table{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
 .metric-row{display:grid;grid-template-columns:1fr 2fr 90px 90px 100px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;gap:12px;}
 .metric-row:last-child{border-bottom:none;}
@@ -409,7 +410,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       </div>
       <div class="chart-grid">
         <div class="chart-card full">
-          <div class="chart-header"><div><div class="chart-title">Weekly trend — organic sessions &amp; CTR</div><div class="chart-subtitle">Senaste 8 veckor, uppdateras vid varje uppdatering.</div></div><button class="kpi-insight-btn" style="position:static;margin-left:auto" onclick="showInsight('trend',event)">✦</button></div>
+          <div class="chart-header"><div><div class="chart-title">Organiska sessioner &amp; CTR — senaste 8 veckor</div><div class="chart-subtitle">Den grå linjen visar rullande 4-veckorssnitt</div></div><button class="kpi-insight-btn" style="position:static;margin-left:auto" onclick="showInsight('trend',event)">✦</button></div>
           <div class="legend-row">
             <div class="legend-item"><div class="legend-dot" style="background:#FFB92A"></div>Organic sessions</div>
             <div class="legend-item"><div class="legend-dot" style="border:2px dashed #F45B80;background:transparent;border-radius:2px;"></div>CTR %</div>
@@ -417,11 +418,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
           <div class="chart-wrap" style="height:240px;"><canvas id="trendChart"></canvas></div>
         </div>
         <div class="chart-card">
-          <div class="chart-header"><div class="chart-title">Traffic by channel</div><button class="kpi-insight-btn" style="position:static;margin-left:auto" onclick="showInsight('channels',event)">✦</button></div>
+          <div class="chart-header"><div class="chart-title">Trafik per kanal — denna vecka</div><button class="kpi-insight-btn" style="position:static;margin-left:auto" onclick="showInsight('channels',event)">✦</button></div>
           <div class="chart-wrap" style="height:200px;"><canvas id="channelChart"></canvas></div>
         </div>
         <div class="chart-card">
-          <div class="chart-header"><div class="chart-title">Impressions vs clicks</div><button class="kpi-insight-btn" style="position:static;margin-left:auto" onclick="showInsight('impclick',event)">✦</button></div>
+          <div class="chart-header"><div class="chart-title">Sökvisningar vs faktiska klick — senaste 7 dagarna</div><button class="kpi-insight-btn" style="position:static;margin-left:auto" onclick="showInsight('impclick',event)">✦</button></div>
           <div class="legend-row">
             <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>Impressions</div>
             <div class="legend-item"><div class="legend-dot" style="background:#F45B80"></div>Clicks</div>
@@ -434,7 +435,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <!-- SEO -->
     <div id="tab-seo" style="display:none;">
       <div class="metrics-section">
-        <div class="section-title">Search Console — senaste 7 dagarna</div>
+        <div class="section-title"><span class="section-source">GSC</span>Söksynlighet — denna vecka vs förra</div>
         <div class="metric-table">
           <div class="metric-row header"><span>Mätvärde</span><span>Vad det mäter</span><span style="text-align:right">Denna vecka</span><span style="text-align:right">Förra veckan</span><span style="text-align:right">Förändring</span></div>
           <div class="metric-row"><span class="metric-name">Impressions</span><span class="metric-desc">Antal gånger dina sidor visades i sökresultaten</span><span class="metric-val" id="m-impressions">—</span><span class="metric-prev" id="mp-impressions">—</span><span class="metric-chg chg-neutral" id="mc-impressions">—</span></div>
@@ -444,7 +445,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
         </div>
       </div>
       <div class="metrics-section">
-        <div class="section-title">GA4 — organisk trafik</div>
+        <div class="section-title"><span class="section-source">GA4</span>Organisk trafik — denna vecka vs förra</div>
         <div class="metric-table">
           <div class="metric-row header"><span>Mätvärde</span><span>Vad det mäter</span><span style="text-align:right">Denna vecka</span><span style="text-align:right">Förra veckan</span><span style="text-align:right">Förändring</span></div>
           <div class="metric-row"><span class="metric-name">Organic sessions</span><span class="metric-desc">Besök via obetald sökning</span><span class="metric-val" id="m-sessions">—</span><span class="metric-prev" id="mp-sessions">—</span><span class="metric-chg chg-neutral" id="mc-sessions">—</span></div>
@@ -454,14 +455,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
         </div>
       </div>
       <div class="metrics-section">
-        <div class="section-title">Topporganiska sidor — senaste 7 dagarna</div>
+        <div class="section-title"><span class="section-source">GA4</span>Mest besökta organiska sidor — denna vecka</div>
         <div class="metric-table">
           <div class="metric-row header" style="grid-template-columns:3fr 90px 90px 100px"><span>Sida</span><span style="text-align:right">Sessions</span><span style="text-align:right">Bounce</span><span style="text-align:right">Avg. time</span></div>
           <div id="top-pages-body"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">Laddar…</div></div>
         </div>
       </div>
       <div class="metrics-section">
-        <div class="section-title">Toppnyckelord — senaste 30 dagarna</div>
+        <div class="section-title"><span class="section-source">GSC</span>Sökord som driver mest trafik — senaste 30 dagarna</div>
         <div class="metric-table">
           <div class="metric-row kw-row header">
             <span>Nyckelord</span>
@@ -474,7 +475,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
         </div>
       </div>
           <div class="metrics-section">
-            <div class="section-title">Branded vs Non-branded</div>
+            <div class="section-title"><span class="section-source">GSC</span>Varumärkessökningar vs övriga sökord — senaste 30 dagarna</div>
             <div class="metric-table">
               <div class="metric-row header" style="grid-template-columns:1fr 70px 70px 80px 80px">
                 <span>Typ</span><span style="text-align:right">Klick</span><span style="text-align:right">Impr.</span><span style="text-align:right">CTR</span><span style="text-align:right">Pos.</span>
@@ -487,21 +488,21 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <!-- PERFORMANCE -->
     <div id="tab-performance" style="display:none;">
       <div class="metrics-section">
-        <div class="section-title">HubSpot — nya kontakter</div>
+        <div class="section-title"><span class="section-source">HubSpot</span>Nya leads — denna vecka vs förra</div>
         <div class="metric-table">
           <div class="metric-row header"><span>Mätvärde</span><span>Vad det mäter</span><span style="text-align:right">Denna vecka</span><span style="text-align:right">Förra veckan</span><span style="text-align:right">Förändring</span></div>
           <div class="metric-row"><span class="metric-name">New contacts</span><span class="metric-desc">Totalt nya kontakter skapade (alla källor)</span><span class="metric-val" id="m-contacts">—</span><span class="metric-prev" id="mp-contacts">—</span><span class="metric-chg chg-neutral" id="mc-contacts">—</span></div>
         </div>
       </div>
       <div class="metrics-section">
-        <div class="section-title">HubSpot — kontakter per källa (denna vecka)</div>
+        <div class="section-title"><span class="section-source">HubSpot</span>Varifrån kom veckans leads — fördelning per kanal</div>
         <div class="metric-table">
           <div class="metric-row header" style="grid-template-columns:2fr 2fr 80px 80px"><span>Källa</span><span>Beskrivning</span><span style="text-align:right">Kontakter</span><span style="text-align:right">Andel</span></div>
           <div id="hs-sources-body"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">Laddar…</div></div>
         </div>
       </div>
       <div class="metrics-section">
-            <div class="section-title">Konversionssidor — sessioner denna vecka</div>
+            <div class="section-title"><span class="section-source">GA4</span>Viktigaste sidor för konvertering — besök denna vecka</div>
             <div class="metric-table">
               <div class="metric-row header" style="grid-template-columns:2fr 70px 70px 80px">
                 <span>Sida</span><span style="text-align:right">Sessioner</span><span style="text-align:right">Eng.tid</span><span style="text-align:right">Bounce</span>
@@ -510,14 +511,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
             </div>
           </div>
       <div class="metrics-section">
-        <div class="section-title">PageSpeed — sidor med underkänd CLS</div>
+        <div class="section-title"><span class="section-source">PSI</span>Sidor med visuella layouthopp (CLS) — kräver åtgärd</div>
         <div class="metric-table">
           <div class="metric-row header" style="grid-template-columns:3fr 80px 80px 80px"><span>Sida</span><span style="text-align:right">CLS</span><span style="text-align:right">LCP</span><span style="text-align:right">Status</span></div>
           <div id="cls-fail-body"><div style="padding:1.25rem;text-align:center;color:var(--text3);font-size:13px;">Laddar…</div></div>
         </div>
       </div>
       <div class="metrics-section">
-        <div class="section-title">GA4 — engagemang &amp; avvisning</div>
+        <div class="section-title"><span class="section-source">GA4</span>Hur besökarna beter sig på webbplatsen — denna vecka vs förra</div>
         <div class="metric-table">
           <div class="metric-row header"><span>Mätvärde</span><span>Vad det mäter</span><span style="text-align:right">Denna vecka</span><span style="text-align:right">Förra veckan</span><span style="text-align:right">Förändring</span></div>
           <div class="metric-row"><span class="metric-name">Bounce rate</span><span class="metric-desc">Sessioner utan interaktion. Lägre är bättre.</span><span class="metric-val" id="m-bounce">—</span><span class="metric-prev" id="mp-bounce">—</span><span class="metric-chg chg-neutral" id="mc-bounce">—</span></div>
@@ -530,7 +531,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <!-- CORE WEB VITALS -->
     <div id="tab-vitals" style="display:none;">
       <p style="font-size:12px;color:var(--text3);margin-bottom:1.5rem;">Klicka på ett CWV-kort för att se förbättringstips.</p>
-      <div class="section-title" style="margin-bottom:.75rem;">PageSpeed-poäng</div>
+      <div class="section-title" style="margin-bottom:.75rem;"><span class="section-source">PSI</span>Laddningshastighet &amp; kvalitet — mobil och desktop</div>
       <div class="ps-grid">
         <div class="chart-card">
           <div class="chart-header"><div><div class="chart-title">Mobile</div><div class="chart-subtitle">Live from PageSpeed API</div></div><span class="source-badge badge-ps">PSI</span></div>
@@ -553,13 +554,13 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       </div>
 
       <div class="metrics-section" style="margin-bottom:1.5rem;">
-        <div class="section-title" style="margin-bottom:.75rem;">PageSpeed — topporganiska sidor</div>
+        <div class="section-title" style="margin-bottom:.75rem;"><span class="section-source">PSI</span>Laddningstid per sida — mest besökta organiska sidor</div>
         <div class="metric-table">
           <div class="metric-row header" style="grid-template-columns:3fr 70px 70px 70px 70px 80px"><span>Sida</span><span style="text-align:right">Perf</span><span style="text-align:right">LCP</span><span style="text-align:right">CLS</span><span style="text-align:right">INP</span><span style="text-align:right">Status</span></div>
           <div id="pages-psi-body"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">Ladda data för att se sidspecifika poäng.</div></div>
         </div>
       </div>
-      <div class="section-title" style="margin-bottom:.75rem;">Core Web Vitals — mobil (klicka för förbättringstips)</div>
+      <div class="section-title" style="margin-bottom:.75rem;"><span class="section-source">PSI</span>Hur snabbt och stabilt sidan laddar på mobil — klicka på ett mätvärde för förbättringstips</div>
       <div class="cwv-strip">
         <div class="cwv-card" onclick="showCwvModal('lcp')"><div class="cwv-top"><span class="cwv-abbr">LCP</span><span class="vital-status" id="vs-lcp">—</span></div><div class="cwv-value" id="v-lcp">—</div><div class="cwv-name">Largest Contentful Paint</div><div class="cwv-target">Target: &lt; 2.5 s</div></div>
         <div class="cwv-card" onclick="showCwvModal('cls')"><div class="cwv-top"><span class="cwv-abbr">CLS</span><span class="vital-status" id="vs-cls">—</span></div><div class="cwv-value" id="v-cls">—</div><div class="cwv-name">Cumulative Layout Shift</div><div class="cwv-target">Target: &lt; 0.1</div></div>
@@ -2052,6 +2053,7 @@ function openActionModal(idx){
 </div>
 </body>
 </html>
+
 
 
 
