@@ -1522,31 +1522,77 @@ function buildWeeklySummary(ga4cur,ga4prev,gsccur,gscprev,hs){
   const txt=document.getElementById('summary-text');
   if(!el||!txt)return;
   const wk=getLastCompletedWeek();
-  const curWk=wk.weekNum, prevWk=getWeekNum(wk.prevStart);
+  const curWk=wk.weekNum,prevWk=getWeekNum(wk.prevStart);
   const wkLbl=document.getElementById('summary-week-label');
   if(wkLbl)wkLbl.textContent='v.'+curWk+' vs v.'+prevWk;
+
+  const hasGA4=ga4cur&&ga4prev;
+  const hasGSC=gsccur&&gscprev;
+  if(!hasGA4&&!hasGSC){return;}
+
+  // Compute directions
+  const trafficDir=hasGA4?(ga4cur.organicSessions||ga4cur.sessions)>(ga4prev.organicSessions||ga4prev.sessions)?1:-1:0;
+  const posDir=hasGSC?(gsccur.position<gscprev.position?1:-1):0; // 1=improved (lower pos)
+  const ctrDir=hasGSC?(gsccur.ctr>gscprev.ctr?1:-1):0;
+  const bounceDir=hasGA4?(ga4cur.bounce<ga4prev.bounce?1:-1):0; // 1=improved (lower)
+  const leadsDir=hs?(hs.current>=hs.previous?1:-1):0;
+  const trafficChgPct=hasGA4?pctChange(ga4cur.organicSessions||ga4cur.sessions,ga4prev.organicSessions||ga4prev.sessions):null;
+  const leadsChgPct=hs?pctChange(hs.current,hs.previous):null;
+
   const parts=[];
-  if(ga4cur&&ga4prev){
-    const s=ga4cur.organicSessions||ga4cur.sessions;
-    const sp=ga4prev.organicSessions||ga4prev.sessions;
-    const pct=Math.round(((s-sp)/sp)*100);
-    const dir=pct>=0?`ökade med ${pct}%`:`minskade med ${Math.abs(pct)}%`;
-    parts.push(`Organisk trafik ${dir} jämfört med v.${prevWk} (${s.toLocaleString('sv-SE')} sessioner v.${curWk}).`);
+
+  // 1. Traffic + ranking correlation
+  if(hasGA4&&hasGSC){
+    if(trafficDir>0&&posDir>0)
+      parts.push('Rankningarna förbättrades och trafiken följde med — ett tecken på att SEO-arbetet ger effekt i rätt riktning.');
+    else if(trafficDir>0&&posDir<=0)
+      parts.push('Trafiken ökade trots oförändrade eller försämrade rankningar, vilket kan tyda på ökad efterfrågan på Planimas lösningsområde eller starkare varumärkeskännedom.');
+    else if(trafficDir<0&&posDir>0)
+      parts.push('Rankningarna förbättrades men trafiken sjönk ändå — en möjlig förklaring är att de sökord vi klättrat på har lägre sökvolym, eller att titlar och beskrivningar inte lockar till klick.');
+    else
+      parts.push('Varken trafik eller rankningar visade tydlig rörelse den här veckan — datan stödjer inte en klar trend åt något håll.');
+  } else if(hasGA4){
+    parts.push(trafficDir>0?'Den organiska trafiken rörde sig uppåt jämfört med föregående vecka.':'Den organiska trafiken minskade jämfört med föregående vecka.');
   }
-  if(gsccur&&gscprev){
-    const ctrPct=Math.round(((gsccur.ctr-gscprev.ctr)/gscprev.ctr)*100);
-    const ctrDir=ctrPct>=0?'förbättrades':'försämrades';
-    const posDir=gsccur.position<gscprev.position?'förbättrades':'försämrades';
-    parts.push(`CTR ${ctrDir} med ${Math.abs(ctrPct)}% och snittsposition ${posDir} (${gsccur.position.toFixed(1)} vs ${gscprev.position.toFixed(1)}).`);
+
+  // 2. CTR insight — only if meaningful divergence from traffic
+  if(hasGSC){
+    if(ctrDir>0&&trafficDir<0)
+      parts.push('Klickfrekvensen förbättrades trots lägre trafikvolym — sökresultaten upplevs som mer relevanta, men volymen sökningar som når webbplatsen är fortfarande ett problem.');
+    else if(ctrDir<0&&trafficDir>0)
+      parts.push('Ökad trafik kombinerat med sjunkande klickfrekvens är ett varningssignal — en del av besöken drivs troligen av söktermer där Planimas erbjudande inte matchar besökarens faktiska avsikt.');
+    else if(ctrDir>0&&posDir>0)
+      parts.push('Bättre position och högre klickfrekvens i kombination är det starkaste möjliga signalet från söktrafiken — innehåll och synlighet rör sig åt rätt håll.');
   }
-  if(hs&&ga4cur){
-    const s=ga4cur.organicSessions||ga4cur.sessions;
-    const rate=s>0?(hs.current/s*100).toFixed(1):0;
-    const dir=hs.current>=hs.previous?`upp från ${hs.previous}`:`ner från ${hs.previous}`;
-    parts.push(`${hs.current} nya kontakter v.${curWk} (${dir}) — organisk konverteringsgrad: ${rate}%.`);
+
+  // 3. Leads vs traffic — look for divergence
+  if(hs&&hasGA4){
+    if(leadsDir>0&&trafficDir<0)
+      parts.push('Leadsen ökade trots minskad trafik — det tyder på att besöksflödet denna vecka var mer köpintentionsbaserat än vanligt, vilket är mer värt än ren volym.');
+    else if(leadsDir<0&&trafficDir>0){
+      const bigDrop=leadsChgPct!==null&&leadsChgPct<-20;
+      parts.push(bigDrop
+        ?'Trafiken ökade men leadsen föll kraftigt — något brister i konverteringsledet. Kontrollera att formulär, CTA:er och konversionssidor fungerar som förväntat.'
+        :'Trafiken ökade men leadsen hängde inte med i samma takt — konverteringssidorna kan behöva ses över.');
+    } else if(leadsDir>0&&trafficDir>0)
+      parts.push('Trafik och leads rör sig i samma riktning — webbplatsen omvandlar det ökade besöksflödet till faktiska affärsmöjligheter.');
   }
+
+  // 4. Bounce as anomaly signal — only if significant
+  if(hasGA4&&trafficChgPct!==null){
+    const bouncePct=pctChange(ga4cur.bounce,ga4prev.bounce);
+    if(bouncePct!==null&&bouncePct>15&&trafficDir>0)
+      parts.push('Studsfrekvensen steg i takt med trafiken — en indikation på att den tillkommande trafiken inte är tillräckligt kvalificerad eller att landningssidorna inte lever upp till besökarnas förväntningar.');
+    else if(bouncePct!==null&&bouncePct<-15)
+      parts.push('Engagemanget förbättrades tydligt — besökarna interagerar mer med webbplatsen, vilket är ett positivt tecken på innehållsrelevans.');
+  }
+
+  // 5. Fallback if only 1 part and it's vague
+  if(parts.length===1&&!hasGSC&&!hs)
+    parts.push('Datan ger inte tillräckliga signaler för en fullständig analys — anslut fler datakällor för en mer komplett bild.');
+
   if(!parts.length)return;
-  txt.textContent=parts.join(' ');
+  txt.textContent=parts.slice(0,5).join(' ');
   el.style.display='block';
 }
 
@@ -2113,6 +2159,7 @@ function openActionModal(idx){
 </div>
 </body>
 </html>
+
 
 
 
