@@ -389,6 +389,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <button class="tab-btn" onclick="showTab('performance')">Performance</button>
       <button class="tab-btn" onclick="showTab('vitals')">Core Web Vitals</button>
       <button class="tab-btn" onclick="showTab('guide')">Guide</button>
+      <button class="tab-btn" onclick="showTab('pillar')">Pillar-pages</button>
       <button class="tab-btn tab-intel" onclick="showTab('intelligence')"><svg class="tab-intel-icon" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M9 4.5a.75.75 0 0 1 .721.544l.813 2.846a3.75 3.75 0 0 0 2.576 2.576l2.846.813a.75.75 0 0 1 0 1.442l-2.846.813a3.75 3.75 0 0 0-2.576 2.576l-.813 2.846a.75.75 0 0 1-1.442 0l-.813-2.846a3.75 3.75 0 0 0-2.576-2.576l-2.846-.813a.75.75 0 0 1 0-1.442l2.846-.813A3.75 3.75 0 0 0 7.466 7.89l.813-2.846A.75.75 0 0 1 9 4.5ZM18 1.5a.75.75 0 0 1 .728.568l.258 1.036c.236.94.97 1.674 1.91 1.91l1.036.258a.75.75 0 0 1 0 1.456l-1.036.258c-.94.236-1.674.97-1.91 1.91l-.258 1.036a.75.75 0 0 1-1.456 0l-.258-1.036a2.625 2.625 0 0 0-1.91-1.91l-1.036-.258a.75.75 0 0 1 0-1.456l1.036-.258a2.625 2.625 0 0 0 1.91-1.91l.258-1.036A.75.75 0 0 1 18 1.5ZM16.5 15a.75.75 0 0 1 .712.513l.394 1.183c.15.447.5.799.948.948l1.183.395a.75.75 0 0 1 0 1.422l-1.183.395c-.447.15-.799.5-.948.948l-.395 1.183a.75.75 0 0 1-1.422 0l-.395-1.183a1.5 1.5 0 0 0-.948-.948l-1.183-.395a.75.75 0 0 1 0-1.422l1.183-.395c.447-.15.799-.5.948-.948l.395-1.183A.75.75 0 0 1 16.5 15Z" clip-rule="evenodd"/></svg>Intelligence Report</button>
     </div>
 
@@ -514,15 +515,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
             </div>
           </div>
       <div class="metrics-section">
-        <div class="section-title"><span class="section-source">GSC</span>Pillar-pages — organisk prestanda föregående vecka</div>
-        <div class="metric-table">
-          <div class="metric-row header" style="grid-template-columns:2fr 100px 80px 80px">
-            <span>Sida</span><span style="text-align:right">Trafik <span style="font-weight:400;opacity:.6">(mål 200)</span></span><span style="text-align:right">Position <span style="font-weight:400;opacity:.6">(mål 3)</span></span><span style="text-align:right">CTR <span style="font-weight:400;opacity:.6">(mål 10%)</span></span>
-          </div>
-          <div id="pillar-pages-body"><div style="padding:1.25rem;text-align:center;color:var(--text3);font-size:13px;">Laddar…</div></div>
-        </div>
-      </div>
-      <div class="metrics-section">
         <div class="section-title"><span class="section-source">PSI</span>Sidor med visuella layouthopp (CLS) — kräver åtgärd</div>
         <div class="metric-table">
           <div class="metric-row header" style="grid-template-columns:3fr 80px 80px 80px"><span>Sida</span><span style="text-align:right">CLS</span><span style="text-align:right">LCP</span><span style="text-align:right">Status</span></div>
@@ -621,6 +613,23 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
         <button class="btn-ghost" onclick="openSettings()">&#9881; Uppdatera API-uppgifter</button>
       </div>
     </div><!-- /tab-guide -->
+
+    <!-- PILLAR PAGES -->
+    <div id="tab-pillar" style="display:none;">
+      <p style="font-size:12px;color:var(--text3);margin-bottom:1.5rem;">Löpande mätning av organisk prestanda för Planimas viktigaste pillar-pages. Uppdateras varje vecka.</p>
+      <div class="metrics-section">
+        <div class="section-title"><span class="section-source">GSC</span>Pillar-pages — organisk prestanda föregående vecka</div>
+        <div class="metric-table">
+          <div class="metric-row header" style="grid-template-columns:2fr 110px 90px 90px">
+            <span>Sida</span>
+            <span style="text-align:right">Trafik <span style="font-weight:400;opacity:.6">(mål 200)</span></span>
+            <span style="text-align:right">Position <span style="font-weight:400;opacity:.6">(mål 3)</span></span>
+            <span style="text-align:right">CTR <span style="font-weight:400;opacity:.6">(mål 10%)</span></span>
+          </div>
+          <div id="pillar-pages-body"><div style="padding:1.25rem;text-align:center;color:var(--text3);font-size:13px;">Laddar…</div></div>
+        </div>
+      </div>
+    </div><!-- /tab-pillar -->
 
     <!-- INTELLIGENCE -->
     <div id="tab-intelligence" style="display:none;">
@@ -743,7 +752,7 @@ function startDashboard(){
 }
 
 // TABS
-const TABS=['overview','seo','performance','vitals','guide','intelligence'];
+const TABS=['overview','seo','performance','vitals','guide','pillar','intelligence'];
 function showTab(name){
   TABS.forEach(t=>document.getElementById('tab-'+t).style.display=t===name?'':'none');
   document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',TABS[i]===name));
