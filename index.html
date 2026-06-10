@@ -396,7 +396,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <div id="tab-overview">
       <div id="kpi-insight-pop"><div class="pop-header" id="kpi-insight-title">Insikt</div><button class="pop-close" onclick="closeInsightPop()">×</button><div id="kpi-insight-body"></div></div>
       <div id="weekly-summary" style="display:none;background:rgba(255,185,42,.08);border:1px solid rgba(255,185,42,.25);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.25rem;">
-  <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--primary2);margin-bottom:.4rem;">Veckans lägesbild</div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:.4rem;">
+    <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--primary2);">Lägesbild</span>
+    <span id="summary-week-label" style="font-size:10px;font-family:'DM Mono',monospace;font-weight:600;color:var(--text3);background:rgba(0,0,0,.06);border-radius:4px;padding:1px 6px;"></span>
+  </div>
   <div id="summary-text" style="font-size:13.5px;line-height:1.65;color:var(--text1);"></div>
 </div>
       <div class="kpi-grid">
@@ -792,7 +795,8 @@ function setKpiDelta(id,cur,prev,lowerBetter=false){
   const better=lowerBetter?pct<0:pct>0;
   const arrow=better?'↑':'↓';
   const wkInfo=getLastCompletedWeek();
-  el.textContent=arrow+' '+Math.abs(Math.round(pct))+'% vs v.'+(wkInfo.weekNum-1);
+  const prevWkNum=getWeekNum(wkInfo.prevStart);
+  el.textContent=arrow+' '+Math.abs(Math.round(pct))+'%  v.'+wkInfo.weekNum+' vs v.'+prevWkNum;
   el.className='kpi-delta '+(better?'delta-up':'delta-down');
 }
 
@@ -1503,17 +1507,20 @@ function buildWeeklySummary(ga4cur,ga4prev,gsccur,gscprev,hs){
   const el=document.getElementById('weekly-summary');
   const txt=document.getElementById('summary-text');
   if(!el||!txt)return;
+  const wk=getLastCompletedWeek();
+  const curWk=wk.weekNum, prevWk=getWeekNum(wk.prevStart);
+  const wkLbl=document.getElementById('summary-week-label');
+  if(wkLbl)wkLbl.textContent='v.'+curWk+' vs v.'+prevWk;
   const parts=[];
   if(ga4cur&&ga4prev){
     const s=ga4cur.organicSessions||ga4cur.sessions;
     const sp=ga4prev.organicSessions||ga4prev.sessions;
     const pct=Math.round(((s-sp)/sp)*100);
     const dir=pct>=0?`ökade med ${pct}%`:`minskade med ${Math.abs(pct)}%`;
-    parts.push(`Organisk trafik ${dir} jämfört med föregående vecka (${s.toLocaleString('sv-SE')} sessioner).`);
+    parts.push(`Organisk trafik ${dir} jämfört med v.${prevWk} (${s.toLocaleString('sv-SE')} sessioner v.${curWk}).`);
   }
   if(gsccur&&gscprev){
     const ctrPct=Math.round(((gsccur.ctr-gscprev.ctr)/gscprev.ctr)*100);
-    const posPct=Math.round(((gsccur.position-gscprev.position)/gscprev.position)*100);
     const ctrDir=ctrPct>=0?'förbättrades':'försämrades';
     const posDir=gsccur.position<gscprev.position?'förbättrades':'försämrades';
     parts.push(`CTR ${ctrDir} med ${Math.abs(ctrPct)}% och snittsposition ${posDir} (${gsccur.position.toFixed(1)} vs ${gscprev.position.toFixed(1)}).`);
@@ -1522,7 +1529,7 @@ function buildWeeklySummary(ga4cur,ga4prev,gsccur,gscprev,hs){
     const s=ga4cur.organicSessions||ga4cur.sessions;
     const rate=s>0?(hs.current/s*100).toFixed(1):0;
     const dir=hs.current>=hs.previous?`upp från ${hs.previous}`:`ner från ${hs.previous}`;
-    parts.push(`${hs.current} nya kontakter den här veckan (${dir}) — organisk konverteringsgrad: ${rate}%.`);
+    parts.push(`${hs.current} nya kontakter v.${curWk} (${dir}) — organisk konverteringsgrad: ${rate}%.`);
   }
   if(!parts.length)return;
   txt.textContent=parts.join(' ');
@@ -2092,6 +2099,7 @@ function openActionModal(idx){
 </div>
 </body>
 </html>
+
 
 
 
