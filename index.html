@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
-<title>WDM Dashboard v4 — Planima</title>
+<title>WDM Dashboard v5 — Planima</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
@@ -435,7 +435,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <!-- SEO -->
     <div id="tab-seo" style="display:none;">
       <div class="metrics-section">
-        <div class="section-title"><span class="section-source">GSC</span>Söksynlighet — denna vecka vs förra</div>
+        <div class="section-title"><span class="section-source">GSC</span>Söksynlighet — föregående vecka vs veckan dessförinnan</div>
         <div class="metric-table">
           <div class="metric-row header"><span>Mätvärde</span><span>Vad det mäter</span><span style="text-align:right">Denna vecka</span><span style="text-align:right">Förra veckan</span><span style="text-align:right">Förändring</span></div>
           <div class="metric-row"><span class="metric-name">Impressions</span><span class="metric-desc">Antal gånger dina sidor visades i sökresultaten</span><span class="metric-val" id="m-impressions">—</span><span class="metric-prev" id="mp-impressions">—</span><span class="metric-chg chg-neutral" id="mc-impressions">—</span></div>
@@ -445,7 +445,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
         </div>
       </div>
       <div class="metrics-section">
-        <div class="section-title"><span class="section-source">GA4</span>Organisk trafik — denna vecka vs förra</div>
+        <div class="section-title"><span class="section-source">GA4</span>Organisk trafik — föregående vecka vs veckan dessförinnan</div>
         <div class="metric-table">
           <div class="metric-row header"><span>Mätvärde</span><span>Vad det mäter</span><span style="text-align:right">Denna vecka</span><span style="text-align:right">Förra veckan</span><span style="text-align:right">Förändring</span></div>
           <div class="metric-row"><span class="metric-name">Organic sessions</span><span class="metric-desc">Besök via obetald sökning</span><span class="metric-val" id="m-sessions">—</span><span class="metric-prev" id="mp-sessions">—</span><span class="metric-chg chg-neutral" id="mc-sessions">—</span></div>
@@ -488,7 +488,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <!-- PERFORMANCE -->
     <div id="tab-performance" style="display:none;">
       <div class="metrics-section">
-        <div class="section-title"><span class="section-source">HubSpot</span>Nya leads — denna vecka vs förra</div>
+        <div class="section-title"><span class="section-source">HubSpot</span>Nya leads — föregående vecka vs veckan dessförinnan</div>
         <div class="metric-table">
           <div class="metric-row header"><span>Mätvärde</span><span>Vad det mäter</span><span style="text-align:right">Denna vecka</span><span style="text-align:right">Förra veckan</span><span style="text-align:right">Förändring</span></div>
           <div class="metric-row"><span class="metric-name">New contacts</span><span class="metric-desc">Totalt nya kontakter skapade (alla källor)</span><span class="metric-val" id="m-contacts">—</span><span class="metric-prev" id="mp-contacts">—</span><span class="metric-chg chg-neutral" id="mc-contacts">—</span></div>
@@ -518,7 +518,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
         </div>
       </div>
       <div class="metrics-section">
-        <div class="section-title"><span class="section-source">GA4</span>Hur besökarna beter sig på webbplatsen — denna vecka vs förra</div>
+        <div class="section-title"><span class="section-source">GA4</span>Hur besökarna beter sig på webbplatsen — föregående vecka vs veckan dessförinnan</div>
         <div class="metric-table">
           <div class="metric-row header"><span>Mätvärde</span><span>Vad det mäter</span><span style="text-align:right">Denna vecka</span><span style="text-align:right">Förra veckan</span><span style="text-align:right">Förändring</span></div>
           <div class="metric-row"><span class="metric-name">Bounce rate</span><span class="metric-desc">Sessioner utan interaktion. Lägre är bättre.</span><span class="metric-val" id="m-bounce">—</span><span class="metric-prev" id="mp-bounce">—</span><span class="metric-chg chg-neutral" id="mc-bounce">—</span></div>
@@ -661,7 +661,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 <div class="notif" id="notif"></div>
 
 <script>
-const CFG_KEY='wdm_cfg_v3',DATA_KEY='wdm_data_v3';
+const CFG_KEY='wdm_cfg_v4',DATA_KEY='wdm_data_v4';
 function getConfig(){try{return JSON.parse(localStorage.getItem(CFG_KEY)||'{}')}catch{return{}}}
 function saveConfigToStorage(c){localStorage.setItem(CFG_KEY,JSON.stringify(c))}
 function getData(){try{return JSON.parse(localStorage.getItem(DATA_KEY)||'{"weeks":[]}')}catch{return{weeks:[]}}}
@@ -791,7 +791,8 @@ function setKpiDelta(id,cur,prev,lowerBetter=false){
   if(pct===null)return;
   const better=lowerBetter?pct<0:pct>0;
   const arrow=better?'↑':'↓';
-  el.textContent=arrow+' '+Math.abs(Math.round(pct))+'% vs förra veckan';
+  const wkInfo=getLastCompletedWeek();
+  el.textContent=arrow+' '+Math.abs(Math.round(pct))+'% vs v.'+(wkInfo.weekNum-1);
   el.className='kpi-delta '+(better?'delta-up':'delta-down');
 }
 
@@ -799,6 +800,25 @@ function setKpiDelta(id,cur,prev,lowerBetter=false){
 function isoDate(d){return d.toISOString().split('T')[0];}
 function daysAgo(n){const d=new Date();d.setDate(d.getDate()-n);return d;}
 function getWeekNum(d){const j=new Date(d.getFullYear(),0,1);return Math.ceil(((d-j)/86400000+j.getDay()+1)/7);}
+// Returns the last completed Mon–Sun week and the one before it
+function getLastCompletedWeek(){
+  const today=new Date();
+  const dow=today.getDay(); // 0=Sun,1=Mon...6=Sat
+  const daysSinceMon=dow===0?6:dow-1;
+  // Last Sunday = end of last completed week
+  const curEnd=new Date(today);
+  curEnd.setDate(today.getDate()-daysSinceMon-1);
+  curEnd.setHours(0,0,0,0);
+  // Last Monday = start of last completed week
+  const curStart=new Date(curEnd);
+  curStart.setDate(curEnd.getDate()-6);
+  // Week before that
+  const prevEnd=new Date(curStart);
+  prevEnd.setDate(curStart.getDate()-1);
+  const prevStart=new Date(prevEnd);
+  prevStart.setDate(prevEnd.getDate()-6);
+  return{curStart,curEnd,prevStart,prevEnd,weekNum:getWeekNum(curStart)};
+}
 
 // CHARTS
 let trendChart,channelChart,impClickChart;
@@ -1180,7 +1200,8 @@ const CONV_PAGES=['/priser','/features','/demo'];
 async function fetchConversionPages(cfg){
   if(!cfg.ga4||!isGoogleAuthed())return null;
   const url=`https://analyticsdata.googleapis.com/v1beta/properties/${cfg.ga4}:runReport`;
-  const end=isoDate(new Date()),start=isoDate(daysAgo(7));
+  const{curStart,curEnd}=getLastCompletedWeek();
+  const start=isoDate(curStart),end=isoDate(curEnd);
   try{
     const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+googleAccessToken},body:JSON.stringify({dateRanges:[{startDate:start,endDate:end}],dimensions:[{name:'pagePath'}],metrics:[{name:'sessions'},{name:'bounceRate'},{name:'averageSessionDuration'}],dimensionFilter:{filter:{fieldName:'pagePath',inListFilter:{values:CONV_PAGES}}}})});
     if(!r.ok)return null;
@@ -1255,14 +1276,14 @@ function processPSI(data){
 async function fetchHubSpot(cfg){
   if(!cfg.hs)return null;
   if(!cfg.worker){setStatus('hs',false,'HubSpot: lägg till Worker URL i Inställningar');return null;}
-  const now=new Date(),weekAgo=new Date(now-7*24*3600000),twoWeeks=new Date(now-14*24*3600000);
+  const wk=getLastCompletedWeek();
   const mkBody=(after,before)=>JSON.stringify({filterGroups:[{filters:[{propertyName:'createdate',operator:'GTE',value:after.getTime()},{propertyName:'createdate',operator:'LTE',value:before.getTime()}]}],properties:['createdate'],limit:1});
   const headers={'X-HS-Token':cfg.hs,'Content-Type':'application/json'};
   const endpoint=cfg.worker.replace(/\/$/,'');
   try{
     const [r1,r2]=await Promise.all([
-      fetch(endpoint,{method:'POST',headers,body:mkBody(weekAgo,now)}),
-      fetch(endpoint,{method:'POST',headers,body:mkBody(twoWeeks,weekAgo)})
+      fetch(endpoint,{method:'POST',headers,body:mkBody(wk.curStart,wk.curEnd)}),
+      fetch(endpoint,{method:'POST',headers,body:mkBody(wk.prevStart,wk.prevEnd)})
     ]);
     if(!r1.ok){
       const err=await r1.json().catch(()=>({}));
@@ -1375,7 +1396,8 @@ function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,kwRaw){
     setMetric('contacts',fmt(hs.current),fmt(hs.previous));
   }
   // trend chart is rebuilt by refreshAll after API fetch; no-op here for demo/direct calls
-  document.getElementById('last-updated').textContent='Uppdaterad: '+new Date().toLocaleTimeString();
+  const _wkDisp=getLastCompletedWeek();
+  document.getElementById('last-updated').textContent='v.'+_wkDisp.weekNum+' ('+isoDate(_wkDisp.curStart)+' – '+isoDate(_wkDisp.curEnd)+')';
   updateBenchmarks(gsccur, psi, ga4cur);
   lastIntelData={gsccur,gscprev,psi,ga4cur,ga4prev,kwRaw:kwRaw||null};
   buildWeeklySummary(ga4cur,ga4prev,gsccur,gscprev,hs);
@@ -1396,7 +1418,7 @@ function showInsight(key,evt){
     const v=d.sessions,pv=d.sessionsPrev;
     heading='Organic sessions';
     const chg=pv?Math.round(((v-pv)/pv)*100):null;
-    const trend=chg!==null?(chg>=0?`upp ${chg}% vs förra veckan`:`ner ${Math.abs(chg)}% vs förra veckan`):'';
+    const trend=chg!==null?(chg>=0?`upp ${chg}% vs föregående vecka`:`ner ${Math.abs(chg)}% vs föregående vecka`):'';
     const ctx=v>500?'Det är ett hälsosamt flöde för en B2B SaaS i Planimas segment.':v>200?'Volymen är okej men det finns mer att hämta — särskilt icke-varumärkessökningar.':'Volymen är låg för ett mål om pipeline-tillväxt. Prioritera SEO på kommersiella sidor som /priser och /features.';
     text=`Organiska sessioner mäter hur många besök som kom från Google den här veckan — utan betald annonsering${trend?', '+trend:''}.${chg!==null&&chg<-10?' En nedgång på '+Math.abs(chg)+'% är värd att undersöka — kolla om specifika sidor tappat rankningar i GSC.':''} ${ctx}`;
   } else if(key==='position'){
@@ -1426,7 +1448,7 @@ function showInsight(key,evt){
     heading='New contacts (week)';
     const chg=pv?Math.round(((v-pv)/pv)*100):null;
     const cCtx=v>=20?'Bra volym. Fokus nu är att kvalificeringen är rätt — är kontakterna från rätt segment (BRF, fastighetsbolag)?':v>=10?'Okej volym men det finns utrymme att växa. Optimera CTA på /priser och /demo för att öka konverteringen.':'Låg volym. Undersök om lead-formulären syns tydligt och om det är enkelt att ta nästa steg från informationssidorna.';
-    text=`Antalet nya HubSpot-kontakter den här veckan${chg!==null?' ('+( chg>=0?'↑ '+chg:'↓ '+Math.abs(chg))+'% vs förra veckan)':''} är Planimas viktigaste webb-KPI — det är dessa som fyller sälj-pipeline. ${cCtx}`;
+    text=`Antalet nya HubSpot-kontakter den här veckan${chg!==null?' ('+( chg>=0?'↑ '+chg:'↓ '+Math.abs(chg))+'% vs föregående vecka)':''} är Planimas viktigaste webb-KPI — det är dessa som fyller sälj-pipeline. ${cCtx}`;
   } else if(key==='convrate'){
     const v=d.convrate;
     heading='Organic conv. rate';
@@ -1487,7 +1509,7 @@ function buildWeeklySummary(ga4cur,ga4prev,gsccur,gscprev,hs){
     const sp=ga4prev.organicSessions||ga4prev.sessions;
     const pct=Math.round(((s-sp)/sp)*100);
     const dir=pct>=0?`ökade med ${pct}%`:`minskade med ${Math.abs(pct)}%`;
-    parts.push(`Organisk trafik ${dir} jämfört med förra veckan (${s.toLocaleString('sv-SE')} sessioner).`);
+    parts.push(`Organisk trafik ${dir} jämfört med föregående vecka (${s.toLocaleString('sv-SE')} sessioner).`);
   }
   if(gsccur&&gscprev){
     const ctrPct=Math.round(((gsccur.ctr-gscprev.ctr)/gscprev.ctr)*100);
@@ -1745,7 +1767,8 @@ async function refreshAll(){
   if(cfg.demo){loadDemoData();return;}
   document.getElementById('spin').style.display='block';
   document.getElementById('refresh-lbl').textContent='Hämtar…';
-  const endDate=isoDate(new Date()),startDate=isoDate(daysAgo(7)),prevEnd=isoDate(daysAgo(7)),prevStart=isoDate(daysAgo(14));
+  const wk=getLastCompletedWeek();
+  const startDate=isoDate(wk.curStart),endDate=isoDate(wk.curEnd),prevStart=isoDate(wk.prevStart),prevEnd=isoDate(wk.prevEnd);
   if(cfg.oauth&&!isGoogleAuthed()){setStatus('ga4',false,'GA4: klicka "Sign in with Google"');setStatus('gsc',false,'GSC: klicka "Sign in with Google"');}
   notify('Hämtar livedata…','info');
   // Phase 1: fast parallel fetch of all main data
@@ -2069,6 +2092,7 @@ function openActionModal(idx){
 </div>
 </body>
 </html>
+
 
 
 
