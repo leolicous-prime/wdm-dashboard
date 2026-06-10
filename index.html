@@ -395,12 +395,20 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <!-- OVERVIEW -->
     <div id="tab-overview">
       <div id="kpi-insight-pop"><div class="pop-header" id="kpi-insight-title">Insikt</div><button class="pop-close" onclick="closeInsightPop()">×</button><div id="kpi-insight-body"></div></div>
-      <div id="weekly-summary" style="display:none;background:rgba(255,185,42,.08);border:1px solid rgba(255,185,42,.25);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.25rem;">
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:.4rem;">
+      <div id="weekly-summary" style="display:none;background:rgba(255,185,42,.08);border:1px solid rgba(255,185,42,.25);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:1.25rem;">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:.75rem;">
     <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--primary2);">Lägesbild</span>
     <span id="summary-week-label" style="font-size:10px;font-family:'DM Mono',monospace;font-weight:600;color:var(--text3);background:rgba(0,0,0,.06);border-radius:4px;padding:1px 6px;"></span>
   </div>
-  <div id="summary-text" style="font-size:13.5px;line-height:1.65;color:var(--text1);"></div>
+  <div id="summary-text" style="font-size:13.5px;line-height:1.65;color:var(--text1);margin-bottom:.9rem;"></div>
+  <div id="summary-standouts" style="display:none;margin-bottom:.9rem;">
+    <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:.4rem;">Vad sticker ut</div>
+    <div id="summary-standouts-list" style="font-size:13px;line-height:1.6;color:var(--text1);"></div>
+  </div>
+  <div id="summary-focus" style="display:none;">
+    <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:.4rem;">Fokus nästa vecka</div>
+    <div id="summary-focus-list" style="font-size:13px;line-height:1.6;color:var(--text1);"></div>
+  </div>
 </div>
       <div class="kpi-grid">
         <div class="kpi-card c-green"><button class="kpi-insight-btn" onclick="showInsight('sessions',event)">✦</button><div class="kpi-header"><div class="kpi-source">GA4</div><div class="kpi-label">Organic sessions</div></div><div class="kpi-value loading" id="kpi-sessions">—</div><div class="kpi-delta delta-neutral" id="d-sessions">laddar…</div></div>
@@ -1528,71 +1536,101 @@ function buildWeeklySummary(ga4cur,ga4prev,gsccur,gscprev,hs){
 
   const hasGA4=ga4cur&&ga4prev;
   const hasGSC=gsccur&&gscprev;
-  if(!hasGA4&&!hasGSC){return;}
+  if(!hasGA4&&!hasGSC)return;
 
-  // Compute directions
-  const trafficDir=hasGA4?(ga4cur.organicSessions||ga4cur.sessions)>(ga4prev.organicSessions||ga4prev.sessions)?1:-1:0;
-  const posDir=hasGSC?(gsccur.position<gscprev.position?1:-1):0; // 1=improved (lower pos)
+  // Directions — 1=positive, -1=negative, 0=unknown
+  const trafficDir=hasGA4?((ga4cur.organicSessions||ga4cur.sessions)>(ga4prev.organicSessions||ga4prev.sessions)?1:-1):0;
+  const posDir=hasGSC?(gsccur.position<gscprev.position?1:-1):0;
   const ctrDir=hasGSC?(gsccur.ctr>gscprev.ctr?1:-1):0;
-  const bounceDir=hasGA4?(ga4cur.bounce<ga4prev.bounce?1:-1):0; // 1=improved (lower)
-  const leadsDir=hs?(hs.current>=hs.previous?1:-1):0;
-  const trafficChgPct=hasGA4?pctChange(ga4cur.organicSessions||ga4cur.sessions,ga4prev.organicSessions||ga4prev.sessions):null;
+  const leadsDir=hs?(hs.current>hs.previous?1:hs.current<hs.previous?-1:0):0;
+  const bouncePct=hasGA4?pctChange(ga4cur.bounce,ga4prev.bounce):null;
   const leadsChgPct=hs?pctChange(hs.current,hs.previous):null;
 
-  const parts=[];
-
-  // 1. Traffic + ranking correlation
+  // ── WEEKLY SUMMARY (2–4 sentences) ────────────────────────
+  const summaryParts=[];
   if(hasGA4&&hasGSC){
     if(trafficDir>0&&posDir>0)
-      parts.push('Rankningarna förbättrades och trafiken följde med — ett tecken på att SEO-arbetet ger effekt i rätt riktning.');
+      summaryParts.push('Veckan ger en positiv signal — både synligheten i sök och besöksflödet rörde sig i rätt riktning.');
     else if(trafficDir>0&&posDir<=0)
-      parts.push('Trafiken ökade trots oförändrade eller försämrade rankningar, vilket kan tyda på ökad efterfrågan på Planimas lösningsområde eller starkare varumärkeskännedom.');
+      summaryParts.push('Trafiken ökade trots att rankningspositionen inte förbättrades, vilket är en indikation på att efterfrågan på Planimas lösningsområde kan vara på uppgång — värt att följa upp.');
     else if(trafficDir<0&&posDir>0)
-      parts.push('Rankningarna förbättrades men trafiken sjönk ändå — en möjlig förklaring är att de sökord vi klättrat på har lägre sökvolym, eller att titlar och beskrivningar inte lockar till klick.');
+      summaryParts.push('Det finns en splittrad signal den här veckan: rankningarna förbättrades men trafiken sjönk ändå — en möjlig förklaring är att de sökord vi klättrat på ännu inte ger volym, eller att klickbarheten behöver arbetas med.');
     else
-      parts.push('Varken trafik eller rankningar visade tydlig rörelse den här veckan — datan stödjer inte en klar trend åt något håll.');
+      summaryParts.push('Veckan visar inte på tydlig rörelse åt något håll — datan stödjer varken en positiv eller negativ trend, och bör ses som ett stabilt läge snarare än en signal.');
   } else if(hasGA4){
-    parts.push(trafficDir>0?'Den organiska trafiken rörde sig uppåt jämfört med föregående vecka.':'Den organiska trafiken minskade jämfört med föregående vecka.');
+    summaryParts.push(trafficDir>0?'Den organiska trafiken rörde sig uppåt jämfört med föregående vecka — en positiv signal, men en vecka är för kort för att dra slutsatser om trend.':'Den organiska trafiken minskade något jämfört med föregående vecka — värt att följa upp men inte alarmerande baserat på en vecka.');
   }
-
-  // 2. CTR insight — only if meaningful divergence from traffic
-  if(hasGSC){
-    if(ctrDir>0&&trafficDir<0)
-      parts.push('Klickfrekvensen förbättrades trots lägre trafikvolym — sökresultaten upplevs som mer relevanta, men volymen sökningar som når webbplatsen är fortfarande ett problem.');
-    else if(ctrDir<0&&trafficDir>0)
-      parts.push('Ökad trafik kombinerat med sjunkande klickfrekvens är ett varningssignal — en del av besöken drivs troligen av söktermer där Planimas erbjudande inte matchar besökarens faktiska avsikt.');
-    else if(ctrDir>0&&posDir>0)
-      parts.push('Bättre position och högre klickfrekvens i kombination är det starkaste möjliga signalet från söktrafiken — innehåll och synlighet rör sig åt rätt håll.');
-  }
-
-  // 3. Leads vs traffic — look for divergence
   if(hs&&hasGA4){
     if(leadsDir>0&&trafficDir<0)
-      parts.push('Leadsen ökade trots minskad trafik — det tyder på att besöksflödet denna vecka var mer köpintentionsbaserat än vanligt, vilket är mer värt än ren volym.');
-    else if(leadsDir<0&&trafficDir>0){
-      const bigDrop=leadsChgPct!==null&&leadsChgPct<-20;
-      parts.push(bigDrop
-        ?'Trafiken ökade men leadsen föll kraftigt — något brister i konverteringsledet. Kontrollera att formulär, CTA:er och konversionssidor fungerar som förväntat.'
-        :'Trafiken ökade men leadsen hängde inte med i samma takt — konverteringssidorna kan behöva ses över.');
-    } else if(leadsDir>0&&trafficDir>0)
-      parts.push('Trafik och leads rör sig i samma riktning — webbplatsen omvandlar det ökade besöksflödet till faktiska affärsmöjligheter.');
+      summaryParts.push('En intressant avvikelse: leadsen ökade trots lägre trafik, vilket kan tyda på att besöksflödet den här veckan var mer köpintentionsbaserat än vanligt.');
+    else if(leadsDir<0&&trafficDir>0)
+      summaryParts.push(leadsChgPct!==null&&leadsChgPct<-20
+        ?'Trafiken ökade men leadsen föll tydligt — det är ett mönster värt att undersöka. En rimlig hypotes är att konverteringssidorna inte mötte besökarnas förväntningar.'
+        :'Trafiken ökade men leadsen hängde inte riktigt med — en indikation på att konverteringsledet kan optimeras.');
+    else if(leadsDir>0&&trafficDir>0)
+      summaryParts.push('Trafik och leads rör sig i samma riktning, vilket är en positiv indikation på att webbplatsen omvandlar besöksflödet till faktiska affärsmöjligheter.');
   }
 
-  // 4. Bounce as anomaly signal — only if significant
-  if(hasGA4&&trafficChgPct!==null){
-    const bouncePct=pctChange(ga4cur.bounce,ga4prev.bounce);
-    if(bouncePct!==null&&bouncePct>15&&trafficDir>0)
-      parts.push('Studsfrekvensen steg i takt med trafiken — en indikation på att den tillkommande trafiken inte är tillräckligt kvalificerad eller att landningssidorna inte lever upp till besökarnas förväntningar.');
-    else if(bouncePct!==null&&bouncePct<-15)
-      parts.push('Engagemanget förbättrades tydligt — besökarna interagerar mer med webbplatsen, vilket är ett positivt tecken på innehållsrelevans.');
+  // ── WHAT STANDS OUT ───────────────────────────────────────
+  const standouts=[];
+  if(hasGSC){
+    if(ctrDir>0&&posDir<0)
+      standouts.push('Klickfrekvensen förbättrades trots sämre position — ett tecken på att sökresultatens innehåll upplevs som relevant.');
+    else if(ctrDir<0&&trafficDir>0)
+      standouts.push('Varning: trafiken ökade men klickfrekvensen sjönk — en del av besöken kan komma från söktermer som inte matchar erbjudandet.');
+    else if(ctrDir>0&&posDir>0)
+      standouts.push('Bättre position och högre klickfrekvens i kombination är det tydligaste positiva mönstret i söktrafiken den här veckan.');
   }
+  if(bouncePct!==null&&Math.abs(bouncePct)>15){
+    if(bouncePct>15)
+      standouts.push('Studsfrekvensen steg märkbart — en indikation på att besökarnas förväntningar och sidornas innehåll inte är i synk. Värt att följa upp.');
+    else
+      standouts.push('Engagemanget förbättrades — besökarna interagerar mer med webbplatsen, vilket är ett positivt tecken.');
+  }
+  if(hs&&leadsDir!==0){
+    if(leadsDir>0&&trafficDir<=0)
+      standouts.push('Leads ökade trots oförändrad eller minskad trafik — ett positivt undantag som bör undersökas för att förstå vad som drev konverteringarna.');
+    else if(leadsDir<0&&leadsChgPct!==null&&leadsChgPct<-25)
+      standouts.push('En tydligt svagare vecka för leads — en veckas data räcker inte för att slå larm, men bör följas upp noga nästa vecka.');
+  }
+  if(!standouts.length&&hasGSC&&hasGA4)
+    standouts.push('Inga tydliga avvikelser den här veckan — läget verkar stabilt.');
 
-  // 5. Fallback if only 1 part and it's vague
-  if(parts.length===1&&!hasGSC&&!hs)
-    parts.push('Datan ger inte tillräckliga signaler för en fullständig analys — anslut fler datakällor för en mer komplett bild.');
+  // ── FOCUS AREAS ───────────────────────────────────────────
+  const focus=[];
+  if(hasGSC&&ctrDir<0)
+    focus.push('Se över titlar och metabeskrivningar på de sidor som rankar men inte får klick.');
+  else if(hasGSC&&posDir<0&&trafficDir<0)
+    focus.push('Undersök om specifika sidor tappat rankningar — prioritera sidor med köpintent som /pris/ och /demo/.');
+  if(hs&&leadsDir<0)
+    focus.push('Gå igenom konversionssidorna och kontrollera att formulär och CTA:er fungerar och är relevanta.');
+  else if(hs&&leadsDir>0)
+    focus.push('Analysera vilka sidor och kanaler som drev leadsen — replikera det som fungerade.');
+  if(hasGA4&&bouncePct!==null&&bouncePct>15)
+    focus.push('Identifiera vilka landningssidor som har hög studsfrekvens och testa förbättringar i innehåll eller laddningstid.');
+  else if(hasGSC&&posDir>0&&ctrDir<0)
+    focus.push('Fortsätt arbeta med klickbarheten — bättre position utan CTR-förbättring tyder på att titlar och snippets kan stärkas.');
+  if(focus.length<2)
+    focus.push('Fortsätt följa trenden för organisk trafik och leads parallellt — en vecka ger signal, inte sanning.');
+  if(focus.length<3)
+    focus.push('Säkerställ att Core Web Vitals håller god nivå inför eventuella Googleuppdateringar.');
 
-  if(!parts.length)return;
-  txt.textContent=parts.slice(0,5).join(' ');
+  // ── RENDER ────────────────────────────────────────────────
+  if(!summaryParts.length)return;
+  txt.textContent=summaryParts.slice(0,4).join(' ');
+
+  const soEl=document.getElementById('summary-standouts');
+  const soList=document.getElementById('summary-standouts-list');
+  if(soEl&&soList&&standouts.length){
+    soList.innerHTML=standouts.slice(0,3).map(s=>`<div style="padding:2px 0 2px 14px;position:relative"><span style="position:absolute;left:0;top:6px;width:5px;height:5px;border-radius:50%;background:var(--primary2);display:block"></span>${s}</div>`).join('');
+    soEl.style.display='block';
+  }
+  const fcEl=document.getElementById('summary-focus');
+  const fcList=document.getElementById('summary-focus-list');
+  if(fcEl&&fcList&&focus.length){
+    fcList.innerHTML=focus.slice(0,3).map((f,i)=>`<div style="padding:2px 0 2px 18px;position:relative"><span style="position:absolute;left:0;top:3px;font-size:10px;font-family:'DM Mono',monospace;font-weight:600;color:var(--primary2)">${i+1}.</span>${f}</div>`).join('');
+    fcEl.style.display='block';
+  }
   el.style.display='block';
 }
 
@@ -2159,6 +2197,7 @@ function openActionModal(idx){
 </div>
 </body>
 </html>
+
 
 
 
