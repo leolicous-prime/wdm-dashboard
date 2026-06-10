@@ -507,8 +507,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <div class="metrics-section">
             <div class="section-title"><span class="section-source">GA4</span>Viktigaste sidor för konvertering — föregående vecka</div>
             <div class="metric-table">
-              <div class="metric-row header" style="grid-template-columns:2fr 70px 70px 80px">
-                <span>Sida</span><span style="text-align:right">Sessioner</span><span style="text-align:right">Eng.tid</span><span style="text-align:right">Bounce</span>
+              <div class="metric-row header" style="grid-template-columns:2fr 70px 70px 80px 60px">
+                <span>Sida</span><span style="text-align:right">Sessioner</span><span style="text-align:right">Eng.tid</span><span style="text-align:right">Bounce</span><span style="text-align:right">Leads</span>
               </div>
               <div id="conv-pages-body"><div style="padding:1.25rem;text-align:center;color:var(--text3);font-size:13px;">Laddar…</div></div>
             </div>
@@ -997,7 +997,7 @@ async function fetchHubSpotSources(cfg, startDate){
       headers:{'Content-Type':'application/json','x-hs-api-key':cfg.hs},
       body:JSON.stringify({
         filterGroups:[{filters:[{propertyName:'createdate',operator:'GTE',value:afterTs}]}],
-        properties:['hs_analytics_source','createdate'],
+        properties:['hs_analytics_source','hs_analytics_last_url','createdate'],
         limit:100,
         sorts:[{propertyName:'createdate',direction:'DESCENDING'}]
       })
@@ -1212,12 +1212,20 @@ async function fetchConversionPages(cfg){
     return await r.json();
   }catch(e){return null;}
 }
-function renderConversionPages(data){
+function renderConversionPages(data, hsData){
   const el=document.getElementById('conv-pages-body');
   if(!el)return;
   if(!data||!data.rows||!data.rows.length){
     el.innerHTML='<div style="padding:1.25rem;text-align:center;color:var(--text3);font-size:13px;">Konversionssidorna hittades inte bland veckans trafik.</div>';
     return;
+  }
+  // Build HS leads-per-page map from hs_analytics_last_url
+  const hsLeads={};
+  if(hsData&&hsData.results){
+    hsData.results.forEach(c=>{
+      const url=c.properties&&c.properties.hs_analytics_last_url||'';
+      CONV_PAGES.forEach(path=>{if(url.includes(path))hsLeads[path]=(hsLeads[path]||0)+1;});
+    });
   }
   const map={};
   (data.rows||[]).forEach(r=>{
@@ -1225,14 +1233,17 @@ function renderConversionPages(data){
   });
   el.innerHTML=CONV_PAGES.map(path=>{
     const d=map[path];
-    if(!d)return`<div class="metric-row" style="grid-template-columns:2fr 70px 70px 80px"><span class="metric-name" style="font-family:'DM Mono',monospace;font-size:12px;">${path}</span><span style="color:var(--text3);font-size:12px;" colspan="3">Ingen data</span></div>`;
+    const leads=hsLeads[path]||0;
+    const leadsCls=leads>0?'color:var(--accent);font-weight:600':'color:var(--text3)';
+    if(!d)return`<div class="metric-row" style="grid-template-columns:2fr 70px 70px 80px 60px"><span class="metric-name" style="font-family:'DM Mono',monospace;font-size:12px;">${path}</span><span style="color:var(--text3);font-size:12px;" colspan="3">Ingen data</span><span class="metric-val" style="${leadsCls}">${leads||'—'}</span></div>`;
     const bounceCls=d.bounce<0.4?'status-good':d.bounce<0.6?'status-needs':'status-poor';
     const bounceLbl=(d.bounce*100).toFixed(0)+'%';
-    return`<div class="metric-row" style="grid-template-columns:2fr 70px 70px 80px">
+    return`<div class="metric-row" style="grid-template-columns:2fr 70px 70px 80px 60px">
       <span class="metric-name" style="font-family:'DM Mono',monospace;font-size:12px;">${path}</span>
       <span class="metric-val">${Math.round(d.sessions).toLocaleString('sv-SE')}</span>
       <span class="metric-val">${fmtSec(d.dur*1000)}</span>
       <span style="text-align:right"><span class="vital-status ${bounceCls}">${bounceLbl}</span></span>
+      <span class="metric-val" style="${leadsCls}">${leads>0?leads:'—'}</span>
     </div>`;
   }).join('');
 }
@@ -1812,7 +1823,7 @@ async function refreshAll(){
   rebuildTrendChart(trendWeeks);
   renderTopPages(topPagesRaw);
   renderHubSpotSources(hsSrcRaw);
-  renderConversionPages(convPagesRaw);
+  renderConversionPages(convPagesRaw,hsSrcRaw);
 
   // Phase 2: PSI on top 3 pages (sequential after we know which pages)
   if(topPagesRaw&&topPagesRaw.rows&&topPagesRaw.rows.length&&cfg.psi){
@@ -2101,6 +2112,7 @@ function openActionModal(idx){
 </div>
 </body>
 </html>
+
 
 
 
