@@ -988,13 +988,13 @@ function renderTopPages(data){
 
 // API: HubSpot contact source breakdown
 async function fetchHubSpotSources(cfg, startDate){
-  if(!cfg.hs)return null;
-  const proxy='https://sparkling-wood-bc03wdm-hs-proxy.leonardo-a09.workers.dev';
+  if(!cfg.hs||!cfg.worker)return null;
+  const proxy=cfg.worker.replace(/\/$/,'');
   const afterTs=new Date(startDate).getTime();
   try{
-    const r=await fetch(proxy+'/crm/v3/objects/contacts/search',{
+    const r=await fetch(proxy,{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-hs-api-key':cfg.hs},
+      headers:{'Content-Type':'application/json','X-HS-Token':cfg.hs},
       body:JSON.stringify({
         filterGroups:[{filters:[{propertyName:'createdate',operator:'GTE',value:afterTs}]}],
         properties:['hs_analytics_source','hs_analytics_last_url','createdate'],
