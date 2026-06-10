@@ -395,19 +395,29 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <!-- OVERVIEW -->
     <div id="tab-overview">
       <div id="kpi-insight-pop"><div class="pop-header" id="kpi-insight-title">Insikt</div><button class="pop-close" onclick="closeInsightPop()">×</button><div id="kpi-insight-body"></div></div>
-      <div id="weekly-summary" style="display:none;background:rgba(255,185,42,.08);border:1px solid rgba(255,185,42,.25);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:1.25rem;">
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:.75rem;">
+      <div id="weekly-summary" style="display:none;border:1px solid rgba(255,185,42,.3);border-radius:12px;overflow:hidden;margin-bottom:1.25rem;">
+  <!-- Header row -->
+  <div style="display:flex;align-items:center;gap:8px;padding:.75rem 1.1rem;background:rgba(255,185,42,.1);cursor:pointer;user-select:none;" onclick="toggleAccordion('acc-summary')">
     <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--primary2);">Lägesbild</span>
     <span id="summary-week-label" style="font-size:10px;font-family:'DM Mono',monospace;font-weight:600;color:var(--text3);background:rgba(0,0,0,.06);border-radius:4px;padding:1px 6px;"></span>
+    <span style="margin-left:auto;font-size:14px;color:var(--text3);transition:transform .2s;" id="acc-summary-chevron">▾</span>
   </div>
-  <div id="summary-text" style="font-size:13.5px;line-height:1.65;color:var(--text1);margin-bottom:.9rem;"></div>
-  <div id="summary-standouts" style="display:none;margin-bottom:.9rem;">
-    <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:.4rem;">Vad sticker ut</div>
-    <div id="summary-standouts-list" style="font-size:13px;line-height:1.6;color:var(--text1);"></div>
-  </div>
-  <div id="summary-focus" style="display:none;">
-    <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:.4rem;">Fokus nästa vecka</div>
-    <div id="summary-focus-list" style="font-size:13px;line-height:1.6;color:var(--text1);"></div>
+  <!-- Accordion body -->
+  <div id="acc-summary" style="overflow:hidden;max-height:0;transition:max-height .3s ease;">
+    <div style="padding:.9rem 1.1rem;display:flex;flex-direction:column;gap:.85rem;">
+      <!-- Summary text -->
+      <div id="summary-text" style="font-size:13.5px;line-height:1.65;color:var(--text1);"></div>
+      <!-- What stands out -->
+      <div id="summary-standouts" style="display:none;">
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:.4rem;">Vad sticker ut</div>
+        <div id="summary-standouts-list" style="font-size:13px;line-height:1.6;color:var(--text1);"></div>
+      </div>
+      <!-- Focus next week -->
+      <div id="summary-focus" style="display:none;">
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:.4rem;">Fokus nästa vecka</div>
+        <div id="summary-focus-list" style="font-size:13px;line-height:1.6;color:var(--text1);"></div>
+      </div>
+    </div>
   </div>
 </div>
       <div class="kpi-grid">
@@ -1520,6 +1530,19 @@ function showInsight(key,evt){
   evt.stopPropagation();
 }
 function closeInsightPop(){document.getElementById('kpi-insight-pop').classList.remove('open');}
+function toggleAccordion(id,forceOpen){
+  const body=document.getElementById(id);
+  const chevron=document.getElementById(id+'-chevron');
+  if(!body)return;
+  const isOpen=body.style.maxHeight&&body.style.maxHeight!=='0px';
+  if(forceOpen===true||(!isOpen&&forceOpen!==false)){
+    body.style.maxHeight=body.scrollHeight+200+'px';
+    if(chevron)chevron.style.transform='rotate(0deg)';
+  } else {
+    body.style.maxHeight='0px';
+    if(chevron)chevron.style.transform='rotate(-90deg)';
+  }
+}
 document.addEventListener('click',function(e){
   const pop=document.getElementById('kpi-insight-pop');
   if(pop&&pop.classList.contains('open')&&!pop.contains(e.target))closeInsightPop();
@@ -1632,6 +1655,8 @@ function buildWeeklySummary(ga4cur,ga4prev,gsccur,gscprev,hs){
     fcEl.style.display='block';
   }
   el.style.display='block';
+  // Open accordion after render (small delay so scrollHeight is computed)
+  requestAnimationFrame(()=>toggleAccordion('acc-summary',true));
 }
 
 // INTELLIGENCE DATA STORE
@@ -2197,6 +2222,7 @@ function openActionModal(idx){
 </div>
 </body>
 </html>
+
 
 
 
