@@ -421,11 +421,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
           <div class="chart-wrap" style="height:240px;"><canvas id="trendChart"></canvas></div>
         </div>
         <div class="chart-card">
-          <div class="chart-header"><div class="chart-title">Trafik per kanal — denna vecka</div><button class="kpi-insight-btn" style="position:static;margin-left:auto" onclick="showInsight('channels',event)">✦</button></div>
+          <div class="chart-header"><div class="chart-title">Trafik per kanal — <span id="chart-channel-week">föregående vecka</span></div><button class="kpi-insight-btn" style="position:static;margin-left:auto" onclick="showInsight('channels',event)">✦</button></div>
           <div class="chart-wrap" style="height:200px;"><canvas id="channelChart"></canvas></div>
         </div>
         <div class="chart-card">
-          <div class="chart-header"><div class="chart-title">Sökvisningar vs faktiska klick — senaste 7 dagarna</div><button class="kpi-insight-btn" style="position:static;margin-left:auto" onclick="showInsight('impclick',event)">✦</button></div>
+          <div class="chart-header"><div class="chart-title">Sökvisningar vs faktiska klick — <span id="chart-impclick-week">föregående vecka</span></div><button class="kpi-insight-btn" style="position:static;margin-left:auto" onclick="showInsight('impclick',event)">✦</button></div>
           <div class="legend-row">
             <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>Impressions</div>
             <div class="legend-item"><div class="legend-dot" style="background:#F45B80"></div>Clicks</div>
@@ -458,7 +458,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
         </div>
       </div>
       <div class="metrics-section">
-        <div class="section-title"><span class="section-source">GA4</span>Mest besökta organiska sidor — denna vecka</div>
+        <div class="section-title"><span class="section-source">GA4</span>Mest besökta organiska sidor — föregående vecka</div>
         <div class="metric-table">
           <div class="metric-row header" style="grid-template-columns:3fr 90px 90px 100px"><span>Sida</span><span style="text-align:right">Sessions</span><span style="text-align:right">Bounce</span><span style="text-align:right">Avg. time</span></div>
           <div id="top-pages-body"><div style="padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;">Laddar…</div></div>
@@ -505,7 +505,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
         </div>
       </div>
       <div class="metrics-section">
-            <div class="section-title"><span class="section-source">GA4</span>Viktigaste sidor för konvertering — besök denna vecka</div>
+            <div class="section-title"><span class="section-source">GA4</span>Viktigaste sidor för konvertering — föregående vecka</div>
             <div class="metric-table">
               <div class="metric-row header" style="grid-template-columns:2fr 70px 70px 80px">
                 <span>Sida</span><span style="text-align:right">Sessioner</span><span style="text-align:right">Eng.tid</span><span style="text-align:right">Bounce</span>
@@ -1401,7 +1401,9 @@ function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,kwRaw){
   }
   // trend chart is rebuilt by refreshAll after API fetch; no-op here for demo/direct calls
   const _wkDisp=getLastCompletedWeek();
-  document.getElementById('last-updated').textContent='v.'+_wkDisp.weekNum+' ('+isoDate(_wkDisp.curStart)+' – '+isoDate(_wkDisp.curEnd)+')';
+  const _wkLabel='v.'+_wkDisp.weekNum+' ('+isoDate(_wkDisp.curStart)+' – '+isoDate(_wkDisp.curEnd)+')';
+  document.getElementById('last-updated').textContent=_wkLabel;
+  ['chart-channel-week','chart-impclick-week'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='v.'+_wkDisp.weekNum;});
   updateBenchmarks(gsccur, psi, ga4cur);
   lastIntelData={gsccur,gscprev,psi,ga4cur,ga4prev,kwRaw:kwRaw||null};
   buildWeeklySummary(ga4cur,ga4prev,gsccur,gscprev,hs);
@@ -2099,6 +2101,7 @@ function openActionModal(idx){
 </div>
 </body>
 </html>
+
 
 
 
