@@ -514,6 +514,15 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
             </div>
           </div>
       <div class="metrics-section">
+        <div class="section-title"><span class="section-source">GSC</span>Pillar-pages — organisk prestanda föregående vecka</div>
+        <div class="metric-table">
+          <div class="metric-row header" style="grid-template-columns:2fr 100px 80px 80px">
+            <span>Sida</span><span style="text-align:right">Trafik <span style="font-weight:400;opacity:.6">(mål 200)</span></span><span style="text-align:right">Position <span style="font-weight:400;opacity:.6">(mål 3)</span></span><span style="text-align:right">CTR <span style="font-weight:400;opacity:.6">(mål 10%)</span></span>
+          </div>
+          <div id="pillar-pages-body"><div style="padding:1.25rem;text-align:center;color:var(--text3);font-size:13px;">Laddar…</div></div>
+        </div>
+      </div>
+      <div class="metrics-section">
         <div class="section-title"><span class="section-source">PSI</span>Sidor med visuella layouthopp (CLS) — kräver åtgärd</div>
         <div class="metric-table">
           <div class="metric-row header" style="grid-template-columns:3fr 80px 80px 80px"><span>Sida</span><span style="text-align:right">CLS</span><span style="text-align:right">LCP</span><span style="text-align:right">Status</span></div>
@@ -1249,6 +1258,72 @@ function renderConversionPages(data, hsData){
   }).join('');
 }
 
+// API: Pillar pages — GSC performance for key academy pages
+const PILLAR_PAGES=[
+  {url:'https://planima.se/academy/underhallsskuld/',label:'Underhållsskuld'},
+  {url:'https://planima.se/academy/underhallsplanering/',label:'Underhållsplanering'}
+];
+async function fetchPillarPages(cfg){
+  if(!cfg.gsc||!isGoogleAuthed())return null;
+  const url='https://www.googleapis.com/webmasters/v3/sites/'+encodeURIComponent(cfg.gsc)+'/searchAnalytics/query';
+  const{curStart,curEnd}=getLastCompletedWeek();
+  try{
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+googleAccessToken},
+      body:JSON.stringify({startDate:isoDate(curStart),endDate:isoDate(curEnd),dimensions:['page'],
+        dimensionFilterGroups:[{filters:[{dimension:'page',operator:'includingRegex',expression:'academy/(underhallsskuld|underhallsplanering)'}]}],
+        rowLimit:10})});
+    if(!r.ok)return null;
+    return await r.json();
+  }catch(e){return null;}
+}
+function pillarBadge(val,good,great,lowerBetter=false){
+  if(val===null||val===undefined)return'<span class="vital-status">—</span>';
+  let cls,lbl;
+  if(lowerBetter){
+    if(val<=great)      {cls='status-good';lbl='Kanon';}
+    else if(val<=good)  {cls='status-needs';lbl='Bra';}
+    else                {cls='status-poor';lbl='Under mål';}
+  }else{
+    if(val>=great)      {cls='status-good';lbl='Kanon';}
+    else if(val>=good)  {cls='status-needs';lbl='Bra';}
+    else                {cls='status-poor';lbl='Under mål';}
+  }
+  return`<span class="vital-status ${cls}">${lbl}</span>`;
+}
+function renderPillarPages(data){
+  const el=document.getElementById('pillar-pages-body');
+  if(!el)return;
+  if(!data||!data.rows||!data.rows.length){
+    el.innerHTML='<div style="padding:1.25rem;text-align:center;color:var(--text3);font-size:13px;">Ingen GSC-data för pillar-pages denna period.</div>';
+    return;
+  }
+  const map={};
+  data.rows.forEach(r=>{map[r.keys[0]]={clicks:r.clicks,position:r.position,ctr:r.ctr*100};});
+  el.innerHTML=PILLAR_PAGES.map(({url,label})=>{
+    const d=map[url];
+    if(!d)return`<div class="metric-row" style="grid-template-columns:2fr 100px 80px 80px">
+      <span class="metric-name">${label}</span>
+      <span class="metric-val" colspan="3" style="color:var(--text3)">Ingen data</span>
+      <span></span><span></span>
+    </div>`;
+    return`<div class="metric-row" style="grid-template-columns:2fr 100px 80px 80px">
+      <span class="metric-name">${label}</span>
+      <span style="text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:6px">
+        <span style="font-size:13px;font-weight:500">${d.clicks}</span>
+        ${pillarBadge(d.clicks,200,250)}
+      </span>
+      <span style="text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:6px">
+        <span style="font-size:13px;font-weight:500">${d.position.toFixed(1)}</span>
+        ${pillarBadge(d.position,10,3,true)}
+      </span>
+      <span style="text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:6px">
+        <span style="font-size:13px;font-weight:500">${d.ctr.toFixed(1)}%</span>
+        ${pillarBadge(d.ctr,10,15)}
+      </span>
+    </div>`;
+  }).join('');
+}
+
 // API: PageSpeed
 async function fetchPageSpeed(cfg){
   if(!cfg.gsc||!cfg.psi)return null;
@@ -1793,14 +1868,15 @@ async function refreshAll(){
   if(cfg.oauth&&!isGoogleAuthed()){setStatus('ga4',false,'GA4: klicka "Sign in with Google"');setStatus('gsc',false,'GSC: klicka "Sign in with Google"');}
   notify('Hämtar livedata…','info');
   // Phase 1: fast parallel fetch of all main data
-  const [ga4Raw,ga4PrevRaw,gscRaw,gscPrevRaw,psiRaw,hsRaw,kwRaw,ga4TrendRaw,gscTrendRaw,topPagesRaw,hsSrcRaw,convPagesRaw]=await Promise.all([
+  const [ga4Raw,ga4PrevRaw,gscRaw,gscPrevRaw,psiRaw,hsRaw,kwRaw,ga4TrendRaw,gscTrendRaw,topPagesRaw,hsSrcRaw,convPagesRaw,pillarRaw]=await Promise.all([
     fetchGA4Week(cfg,startDate,endDate),fetchGA4Week(cfg,prevStart,prevEnd),
     fetchGSCWeek(cfg,startDate,endDate),fetchGSCWeek(cfg,prevStart,prevEnd),
     fetchPageSpeed(cfg),fetchHubSpot(cfg),fetchGSCKeywords(cfg),
     fetchGA4Trend(cfg),fetchGSCTrend(cfg),
     fetchTopPages(cfg,startDate,endDate),
     fetchHubSpotSources(cfg,startDate),
-    fetchConversionPages(cfg)
+    fetchConversionPages(cfg),
+    fetchPillarPages(cfg)
   ]);
   const ga4cur=ga4Raw?processGA4Rows(ga4Raw):null,ga4prev=ga4PrevRaw?processGA4Rows(ga4PrevRaw):null,gsccur=gscRaw?processGSCRows(gscRaw):null,gscprev=gscPrevRaw?processGSCRows(gscPrevRaw):null,psi=psiRaw?processPSI(psiRaw):null;
   if(!ga4cur&&!gsccur&&!psi&&hsRaw===null)notify('Kunde inte ansluta till något API. Kontrollera uppgifterna i Inställningar.','error');
@@ -1825,6 +1901,7 @@ async function refreshAll(){
   renderTopPages(topPagesRaw);
   renderHubSpotSources(hsSrcRaw);
   renderConversionPages(convPagesRaw,hsSrcRaw);
+  renderPillarPages(pillarRaw);
 
   // Phase 2: PSI on top 3 pages (sequential after we know which pages)
   if(topPagesRaw&&topPagesRaw.rows&&topPagesRaw.rows.length&&cfg.psi){
