@@ -1035,7 +1035,8 @@ function renderHubSpotSources(data){
       src==='SOCIAL_MEDIA'?'Från organiskt inlägg i sociala medier':
       src==='EMAIL_MARKETING'?'Klickade via ett e-postutskick':
       src==='PAID_SEARCH'?'Från Google Ads eller betald sökning':
-      src==='PAID_SOCIAL'?'Från betald annons i sociala medier':'—';
+      src==='PAID_SOCIAL'?'Från betald annons i sociala medier':
+      src==='OFFLINE'?'Manuellt inlagd av säljteamet — inte via webb':'—';
     return `<div class="metric-row" style="grid-template-columns:2fr 2fr 80px 80px">
       <span class="metric-name">${label}</span>
       <span class="metric-desc">${desc}</span>
@@ -1200,7 +1201,7 @@ function renderBrandSplit(data){
   el.innerHTML=row('🏷 Branded',brand,'')+'<div style="height:1px;background:var(--border);margin:0 0"></div>'+row('🔍 Non-branded',nonbrand,'');
 }
 
-const CONV_PAGES=['/priser','/features','/demo'];
+const CONV_PAGES=['/pris/','/demo/','/fa-prisuppgift/','/prova/','/berakna-pris/','/kontakt/'];
 async function fetchConversionPages(cfg){
   if(!cfg.ga4||!isGoogleAuthed())return null;
   const url=`https://analyticsdata.googleapis.com/v1beta/properties/${cfg.ga4}:runReport`;
@@ -2112,6 +2113,7 @@ function openActionModal(idx){
 </div>
 </body>
 </html>
+
 
 
 
