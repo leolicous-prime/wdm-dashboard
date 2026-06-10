@@ -409,7 +409,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       </div>
       <div class="chart-grid">
         <div class="chart-card full">
-          <div class="chart-header"><div><div class="chart-title">Weekly trend — organic sessions &amp; CTR</div><div class="chart-subtitle">Senaste 8 veckor, uppdateras vid varje uppdatering.</div></div></div>
+          <div class="chart-header"><div><div class="chart-title">Weekly trend — organic sessions &amp; CTR</div><div class="chart-subtitle">Senaste 8 veckor, uppdateras vid varje uppdatering.</div></div><button class="kpi-insight-btn" style="position:static;margin-left:auto" onclick="showInsight('trend',event)">✦</button></div>
           <div class="legend-row">
             <div class="legend-item"><div class="legend-dot" style="background:#FFB92A"></div>Organic sessions</div>
             <div class="legend-item"><div class="legend-dot" style="border:2px dashed #F45B80;background:transparent;border-radius:2px;"></div>CTR %</div>
@@ -417,11 +417,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
           <div class="chart-wrap" style="height:240px;"><canvas id="trendChart"></canvas></div>
         </div>
         <div class="chart-card">
-          <div class="chart-header"><div class="chart-title">Traffic by channel</div></div>
+          <div class="chart-header"><div class="chart-title">Traffic by channel</div><button class="kpi-insight-btn" style="position:static;margin-left:auto" onclick="showInsight('channels',event)">✦</button></div>
           <div class="chart-wrap" style="height:200px;"><canvas id="channelChart"></canvas></div>
         </div>
         <div class="chart-card">
-          <div class="chart-header"><div class="chart-title">Impressions vs clicks</div></div>
+          <div class="chart-header"><div class="chart-title">Impressions vs clicks</div><button class="kpi-insight-btn" style="position:static;margin-left:auto" onclick="showInsight('impclick',event)">✦</button></div>
           <div class="legend-row">
             <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>Impressions</div>
             <div class="legend-item"><div class="legend-dot" style="background:#F45B80"></div>Clicks</div>
@@ -1290,6 +1290,7 @@ function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,kwRaw){
     if(ga4prev)setKpiDelta('bounce',ga4cur.bounce,ga4prev.bounce,true);
     else document.getElementById('d-bounce').textContent='engagement: '+fmtPct(ga4cur.engage*100);
     setStatus('ga4',true,'GA4 ansluten');
+    storeInsightData('channels',ga4cur.channels);
     channelChart.data.labels=Object.keys(ga4cur.channels);
     channelChart.data.datasets[0].data=Object.values(ga4cur.channels);
     channelChart.update();
@@ -1415,6 +1416,31 @@ function showInsight(key,evt){
     const pct=v?v.toFixed(2):'—';
     const rCtx=v>=2?'Stark konverteringsgrad för B2B SaaS. Organisk trafiken håller hög kvalitet.':v>=0.5?'Normalt för B2B SaaS (branschsnitt 0.5–2%). Öka genom att lägga tydligare CTA på bloggartiklar och guidesidor.':'Låg konvertering trots trafik. Troliga orsaker: besökarna är för tidigt i köpprocessen, eller CTA saknas / är otydlig. Lägg till "Boka demo"-knapp synligt på toppsidorna.';
     text=`Organisk konverteringsgrad (${pct}%) = nya HubSpot-kontakter ÷ organiska sessioner. Det berättar om din trafik faktiskt genererar potentiella kunder. ${rCtx}`;
+  }
+  else if(key==='trend'){
+    heading='Weekly trend';
+    const weeks=getData().weeks||[];
+    const last=weeks.slice(-1)[0],prev=weeks.slice(-2,-1)[0];
+    const falling=weeks.length>=3&&weeks[weeks.length-1].sessions<weeks[weeks.length-3].sessions;
+    const rising=weeks.length>=3&&weeks[weeks.length-1].sessions>weeks[weeks.length-3].sessions;
+    const dir=falling?'fallande':'stigande';
+    const ctrTrend=last&&prev?(last.ctr<prev.ctr?'sjunker':'stiger'):'okänd riktning';
+    text=`Grafen visar 8 veckors organisk trafik och CTR. Den grå streckade linjen är det rullande 4-veckorssnittet — den jämnar ut avvikelser och visar den verkliga trenden. ${falling?'Trenden är fallande de senaste veckorna, vilket kräver uppmärksamhet.':rising?'Trenden är stigande — ett gott tecken.':'Trenden är relativt stabil.'} CTR ${ctrTrend} parallellt med sessionerna — om de rör sig isär (sessioner upp men CTR ned) kan det tyda på rankförändringar utan CTR-förbättring.`;
+  } else if(key==='channels'){
+    heading='Traffic by channel';
+    const ch=d.channels||{};
+    const total=Object.values(ch).reduce((s,v)=>s+v,0)||1;
+    const organic=ch['Organic Search']||0;
+    const orgPct=Math.round(organic/total*100);
+    const orgCtx=orgPct>=50?'Bra — organisk trafik dominerar, vilket ger lägre beroendet av betald annonsering.':orgPct>=30?'Okej mix. Kolla om direkttrafik och referrals kan konverteras bättre.':'Låg organisk andel. Investering i SEO och innehåll kan minska beroendet av betalda kanaler.';
+    text=`Kanalfördelningen visar var din trafik kommer ifrån. Organisk sökning står för ${orgPct}% av trafiken. ${orgCtx} För Planima är Organic Search den viktigaste kanalen — den attraherar besökare som aktivt söker fastighetsförvaltningslösningar.`;
+  } else if(key==='impclick'){
+    heading='Impressions vs clicks';
+    const impr=d.impressions||0;
+    const ctr=d.ctr||0;
+    const dailyImpr=Math.round(impr/7);
+    const ctrCtx=ctr<1?'En CTR under 1% är ett tydligt signal om att titles och meta-descriptions behöver ses över. Fokusera på de sidor med flest visningar men lägst CTR i GSC.':ctr<2?'Godkänd CTR men stor potential att klättra. Testa att reframea titlarna mot problemet besökaren löser.':'Bra CTR — dina titles matchar sökintentionen väl.';
+    text=`Grafen visar gapet mellan synlighet och klick — du syns ~${dailyImpr.toLocaleString('sv-SE')} gånger/dag på Google men konverterar till klick i ${ctr.toFixed(1)}% av fallen. ${ctrCtx} Det stora gapet mellan staplarna är din största konverteringsmöjlighet utan att publicera nytt innehåll.`;
   }
   if(!text){pop.classList.remove('open');return;}
   title.textContent=heading;
@@ -2026,6 +2052,7 @@ function openActionModal(idx){
 </div>
 </body>
 </html>
+
 
 
 
