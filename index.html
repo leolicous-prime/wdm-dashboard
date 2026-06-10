@@ -569,6 +569,15 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
         <div class="cwv-card" onclick="showCwvModal('tbt')"><div class="cwv-top"><span class="cwv-abbr">TBT</span><span class="vital-status" id="vs-tbt">—</span></div><div class="cwv-value" id="v-tbt">—</div><div class="cwv-name">Total Blocking Time</div><div class="cwv-target">Target: &lt; 200 ms</div></div>
         <div class="cwv-card" onclick="showCwvModal('si')"><div class="cwv-top"><span class="cwv-abbr">SI</span><span class="vital-status" id="vs-si">—</span></div><div class="cwv-value" id="v-si">—</div><div class="cwv-name">Speed Index</div><div class="cwv-target">Target: &lt; 3.4 s</div></div>
       </div>
+      <div class="section-title" style="margin-bottom:.75rem;margin-top:1.25rem;"><span class="section-source">PSI</span>Hur snabbt och stabilt sidan laddar på desktop — klicka på ett mätvärde för förbättringstips</div>
+      <div class="cwv-strip">
+        <div class="cwv-card" onclick="showCwvModal('lcp')"><div class="cwv-top"><span class="cwv-abbr">LCP</span><span class="vital-status" id="vs-lcp-d">—</span></div><div class="cwv-value" id="v-lcp-d">—</div><div class="cwv-name">Largest Contentful Paint</div><div class="cwv-target">Target: &lt; 2.5 s</div></div>
+        <div class="cwv-card" onclick="showCwvModal('cls')"><div class="cwv-top"><span class="cwv-abbr">CLS</span><span class="vital-status" id="vs-cls-d">—</span></div><div class="cwv-value" id="v-cls-d">—</div><div class="cwv-name">Cumulative Layout Shift</div><div class="cwv-target">Target: &lt; 0.1</div></div>
+        <div class="cwv-card" onclick="showCwvModal('inp')"><div class="cwv-top"><span class="cwv-abbr">INP</span><span class="vital-status" id="vs-inp-d">—</span></div><div class="cwv-value" id="v-inp-d">—</div><div class="cwv-name">Interaction to Next Paint</div><div class="cwv-target">Target: &lt; 200 ms</div></div>
+        <div class="cwv-card" onclick="showCwvModal('fcp')"><div class="cwv-top"><span class="cwv-abbr">FCP</span><span class="vital-status" id="vs-fcp-d">—</span></div><div class="cwv-value" id="v-fcp-d">—</div><div class="cwv-name">First Contentful Paint</div><div class="cwv-target">Target: &lt; 1.8 s</div></div>
+        <div class="cwv-card" onclick="showCwvModal('tbt')"><div class="cwv-top"><span class="cwv-abbr">TBT</span><span class="vital-status" id="vs-tbt-d">—</span></div><div class="cwv-value" id="v-tbt-d">—</div><div class="cwv-name">Total Blocking Time</div><div class="cwv-target">Target: &lt; 200 ms</div></div>
+        <div class="cwv-card" onclick="showCwvModal('si')"><div class="cwv-top"><span class="cwv-abbr">SI</span><span class="vital-status" id="vs-si-d">—</span></div><div class="cwv-value" id="v-si-d">—</div><div class="cwv-name">Speed Index</div><div class="cwv-target">Target: &lt; 3.4 s</div></div>
+      </div>
     </div>
 
     <!-- GUIDE -->
@@ -1341,6 +1350,13 @@ function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,kwRaw){
       if(vEl)vEl.textContent=val;
       if(sEl){const s=cwvStatus(key,num);sEl.textContent=CWV_LBL[s];sEl.className='vital-status '+CWV_CLS[s];}
     });
+    if(d){
+      [['lcp',d.lcpNum,d.lcp],['cls',d.clsNum,d.cls],['inp',d.inpNum,d.inp],['fcp',d.fcpNum,d.fcp],['tbt',d.tbtNum,d.tbt],['si',d.siNum,d.si]].forEach(([key,num,val])=>{
+        const vEl=document.getElementById('v-'+key+'-d'),sEl=document.getElementById('vs-'+key+'-d');
+        if(vEl)vEl.textContent=val||'—';
+        if(sEl&&num!=null){const s=cwvStatus(key,num);sEl.textContent=CWV_LBL[s];sEl.className='vital-status '+CWV_CLS[s];}
+      });
+    }
   }
   if(hs!==null){
     document.getElementById('kpi-conv').textContent=fmt(hs.current);
@@ -2053,6 +2069,7 @@ function openActionModal(idx){
 </div>
 </body>
 </html>
+
 
 
 
