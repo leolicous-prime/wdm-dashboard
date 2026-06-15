@@ -811,11 +811,18 @@ function setKpiDelta(id,cur,prev,lowerBetter=false){
   if(!el||cur===null||prev===null||!prev)return;
   const pct=pctChange(cur,prev);
   if(pct===null)return;
-  const better=lowerBetter?pct<0:pct>0;
-  const arrow=better?'↑':'↓';
   const wkInfo=getLastCompletedWeek();
   const prevWkNum=getWeekNum(wkInfo.prevStart);
-  el.textContent=arrow+' '+Math.abs(Math.round(pct))+'%  v.'+wkInfo.weekNum+' vs v.'+prevWkNum;
+  const wkSuffix='  v.'+wkInfo.weekNum+' vs v.'+prevWkNum;
+  // Under ±2% = meningslös förändring visually — visa neutral
+  if(Math.abs(pct)<2){
+    el.textContent='~ oförändrat'+wkSuffix;
+    el.className='kpi-delta delta-neutral';
+    return;
+  }
+  const better=lowerBetter?pct<0:pct>0;
+  const arrow=better?'↑':'↓';
+  el.textContent=arrow+' '+Math.abs(Math.round(pct))+'%'+wkSuffix;
   el.className='kpi-delta '+(better?'delta-up':'delta-down');
 }
 
