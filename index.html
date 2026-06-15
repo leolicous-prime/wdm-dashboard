@@ -106,6 +106,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .delta-up{color:var(--green);}
 .delta-down{color:var(--accent);}
 .delta-neutral{color:var(--text3);}
+.kpi-prev{font-size:11px;color:var(--text3);margin-top:4px;font-family:'DM Mono',monospace;}
 .kpi-source{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;white-space:nowrap;flex-shrink:0;}
 
 /* CHARTS */
@@ -421,12 +422,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   </div>
 </div>
       <div class="kpi-grid">
-        <div class="kpi-card c-green"><button class="kpi-insight-btn" onclick="showInsight('sessions',event)">✦</button><div class="kpi-header"><div class="kpi-source">GA4</div><div class="kpi-label">Organic sessions</div></div><div class="kpi-value loading" id="kpi-sessions">—</div><div class="kpi-delta delta-neutral" id="d-sessions">laddar…</div></div>
-        <div class="kpi-card c-blue"><button class="kpi-insight-btn" onclick="showInsight('position',event)">✦</button><div class="kpi-header"><div class="kpi-source">GSC</div><div class="kpi-label">Avg. position</div></div><div class="kpi-value loading" id="kpi-position">—</div><div class="kpi-delta delta-neutral" id="d-position">lägre är bättre</div></div>
-        <div class="kpi-card c-teal"><button class="kpi-insight-btn" onclick="showInsight('ctr',event)">✦</button><div class="kpi-header"><div class="kpi-source">GSC</div><div class="kpi-label">Click-through rate</div></div><div class="kpi-value loading" id="kpi-ctr">—</div><div class="kpi-delta delta-neutral" id="d-ctr">laddar…</div></div>
+        <div class="kpi-card c-green"><button class="kpi-insight-btn" onclick="showInsight('sessions',event)">✦</button><div class="kpi-header"><div class="kpi-source">GA4</div><div class="kpi-label">Organic sessions</div></div><div class="kpi-value loading" id="kpi-sessions">—</div><div class="kpi-delta delta-neutral" id="d-sessions">laddar…</div><div class="kpi-prev" id="prev-sessions"></div></div>
+        <div class="kpi-card c-blue"><button class="kpi-insight-btn" onclick="showInsight('position',event)">✦</button><div class="kpi-header"><div class="kpi-source">GSC</div><div class="kpi-label">Avg. position</div></div><div class="kpi-value loading" id="kpi-position">—</div><div class="kpi-delta delta-neutral" id="d-position">lägre är bättre</div><div class="kpi-prev" id="prev-position"></div></div>
+        <div class="kpi-card c-teal"><button class="kpi-insight-btn" onclick="showInsight('ctr',event)">✦</button><div class="kpi-header"><div class="kpi-source">GSC</div><div class="kpi-label">Click-through rate</div></div><div class="kpi-value loading" id="kpi-ctr">—</div><div class="kpi-delta delta-neutral" id="d-ctr">laddar…</div><div class="kpi-prev" id="prev-ctr"></div></div>
         <div class="kpi-card c-amber"><button class="kpi-insight-btn" onclick="showInsight('speed',event)">✦</button><div class="kpi-header"><div class="kpi-source">PageSpeed</div><div class="kpi-label">Mobile speed score</div></div><div class="kpi-value loading" id="kpi-speed">—</div><div class="kpi-delta delta-neutral" id="d-speed">0–100</div></div>
-        <div class="kpi-card c-purple"><button class="kpi-insight-btn" onclick="showInsight('bounce',event)">✦</button><div class="kpi-header"><div class="kpi-source">GA4</div><div class="kpi-label">Bounce rate</div></div><div class="kpi-value loading" id="kpi-bounce">—</div><div class="kpi-delta delta-neutral" id="d-bounce">laddar…</div></div>
-        <div class="kpi-card c-red"><button class="kpi-insight-btn" onclick="showInsight('conv',event)">✦</button><div class="kpi-header"><div class="kpi-source">HubSpot</div><div class="kpi-label">New contacts (week)</div></div><div class="kpi-value loading" id="kpi-conv">—</div><div class="kpi-delta delta-neutral" id="d-conv">laddar…</div></div>
+        <div class="kpi-card c-purple"><button class="kpi-insight-btn" onclick="showInsight('bounce',event)">✦</button><div class="kpi-header"><div class="kpi-source">GA4</div><div class="kpi-label">Bounce rate</div></div><div class="kpi-value loading" id="kpi-bounce">—</div><div class="kpi-delta delta-neutral" id="d-bounce">laddar…</div><div class="kpi-prev" id="prev-bounce"></div></div>
+        <div class="kpi-card c-red"><button class="kpi-insight-btn" onclick="showInsight('conv',event)">✦</button><div class="kpi-header"><div class="kpi-source">HubSpot</div><div class="kpi-label">New contacts (week)</div></div><div class="kpi-value loading" id="kpi-conv">—</div><div class="kpi-delta delta-neutral" id="d-conv">laddar…</div><div class="kpi-prev" id="prev-conv"></div></div>
         <div class="kpi-card c-teal"><button class="kpi-insight-btn" onclick="showInsight('convrate',event)">✦</button><div class="kpi-header"><div class="kpi-source">Web</div><div class="kpi-label">Organic conv. rate</div></div><div class="kpi-value loading" id="kpi-convrate">—</div><div class="kpi-delta delta-neutral" id="d-convrate">sessioner → kontakter</div></div>
       </div>
       <div class="chart-grid">
@@ -909,12 +910,14 @@ function processGSCRows(data){
   return agg;
 }
 
-// API: GA4 weekly trend (last 8 weeks, organic only)
+// API: GA4 weekly trend (last 8 completed weeks, organic only)
 async function fetchGA4Trend(cfg){
   if(!cfg.ga4||!isGoogleAuthed())return null;
   const url='https://analyticsdata.googleapis.com/v1beta/properties/'+cfg.ga4+':runReport';
+  const{curEnd}=getLastCompletedWeek();
+  const trendStart=new Date(curEnd);trendStart.setDate(curEnd.getDate()-55);
   const body={
-    dateRanges:[{startDate:isoDate(daysAgo(55)),endDate:isoDate(new Date())}],
+    dateRanges:[{startDate:isoDate(trendStart),endDate:isoDate(curEnd)}],
     dimensions:[{name:'yearWeek'},{name:'sessionDefaultChannelGroup'}],
     metrics:[{name:'sessions'}],
     orderBys:[{dimension:{dimensionName:'yearWeek'}}]
@@ -938,12 +941,14 @@ function processGA4Trend(data){
     .map(([yw,sessions])=>({label:'W'+yw.slice(-2),sessions:Math.round(sessions)}));
 }
 
-// API: GSC weekly trend (last 8 weeks, daily→weekly aggregation)
+// API: GSC weekly trend (last 8 completed weeks, daily→weekly aggregation)
 async function fetchGSCTrend(cfg){
   if(!cfg.gsc||!isGoogleAuthed())return null;
   const url='https://www.googleapis.com/webmasters/v3/sites/'+encodeURIComponent(cfg.gsc)+'/searchAnalytics/query';
+  const{curEnd:gscTrendEnd}=getLastCompletedWeek();
+  const gscTrendStart=new Date(gscTrendEnd);gscTrendStart.setDate(gscTrendEnd.getDate()-55);
   try{
-    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+googleAccessToken},body:JSON.stringify({startDate:isoDate(daysAgo(55)),endDate:isoDate(new Date()),dimensions:['date'],rowLimit:56})});
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+googleAccessToken},body:JSON.stringify({startDate:isoDate(gscTrendStart),endDate:isoDate(gscTrendEnd),dimensions:['date'],rowLimit:56})});
     if(!r.ok)return null;
     return await r.json();
   }catch(e){console.error('GSC trend',e);return null;}
@@ -1351,8 +1356,8 @@ function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,kwRaw){
     document.getElementById('kpi-bounce').className='kpi-value';
     storeInsightData('sessions',s);storeInsightData('sessionsPrev',sp);
     storeInsightData('bounce',ga4cur.bounce);storeInsightData('bouncePrev',ga4prev?ga4prev.bounce:null);
-    if(sp)setKpiDelta('sessions',s,sp);
-    if(ga4prev)setKpiDelta('bounce',ga4cur.bounce,ga4prev.bounce,true);
+    if(sp){setKpiDelta('sessions',s,sp);document.getElementById('prev-sessions').textContent='Föreg.: '+fmt(sp);}
+    if(ga4prev){setKpiDelta('bounce',ga4cur.bounce,ga4prev.bounce,true);document.getElementById('prev-bounce').textContent='Föreg.: '+fmtPct(ga4prev.bounce*100);}
     else document.getElementById('d-bounce').textContent='engagement: '+fmtPct(ga4cur.engage*100);
     setStatus('ga4',true,'GA4 ansluten');
     storeInsightData('channels',ga4cur.channels);
@@ -1374,7 +1379,12 @@ function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,kwRaw){
     document.getElementById('kpi-ctr').className='kpi-value';
     storeInsightData('position',gsccur.position);storeInsightData('positionPrev',gscprev?gscprev.position:null);
     storeInsightData('ctr',gsccur.ctr);storeInsightData('impressions',gsccur.impressions);
-    if(gscprev){setKpiDelta('position',gsccur.position,gscprev.position,true);setKpiDelta('ctr',gsccur.ctr,gscprev.ctr);}
+    if(gscprev){
+      setKpiDelta('position',gsccur.position,gscprev.position,true);
+      setKpiDelta('ctr',gsccur.ctr,gscprev.ctr);
+      document.getElementById('prev-position').textContent='Föreg.: '+fmtPos(gscprev.position);
+      document.getElementById('prev-ctr').textContent='Föreg.: '+fmtPct(gscprev.ctr);
+    }
     setStatus('gsc',true,'Search Console ansluten');
     setMetric('impressions',fmt(gsccur.impressions),gscprev?fmt(gscprev.impressions):null);
     setMetric('clicks',fmt(gsccur.clicks),gscprev?fmt(gscprev.clicks):null);
@@ -1418,6 +1428,7 @@ function renderAll(ga4cur,ga4prev,gsccur,gscprev,psi,hs,kwRaw){
     document.getElementById('kpi-conv').className='kpi-value';
     storeInsightData('contacts',hs.current);storeInsightData('contactsPrev',hs.previous);
     setKpiDelta('conv',hs.current,hs.previous);
+    if(hs.previous!=null)document.getElementById('prev-conv').textContent='Föreg.: '+fmt(hs.previous);
     if(ga4cur){
       const s=ga4cur.organicSessions||ga4cur.sessions;
       const rate=s>0?+(hs.current/s*100).toFixed(2):0;
